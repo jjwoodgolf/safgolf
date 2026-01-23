@@ -1,5 +1,4 @@
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
-import safLogoWhite from "@/assets/saf-logo-white.png";
 
 const Footer = () => {
   const quickLinks = [
@@ -30,11 +29,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* About */}
           <div>
-            <img
-              src={safLogoWhite}
-              alt="Student Athlete Foundation"
-              className="h-12 w-auto mb-6"
-            />
+            <h4 className="font-display text-lg font-bold mb-6">Student Athlete Foundation</h4>
             <p className="text-white/70 leading-relaxed mb-6">
               Empowering lives through golf. Helping junior golfers achieve college dreams 
               and providing healing programs for military veterans.
