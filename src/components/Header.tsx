@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import safLogo from "@/assets/saf-logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +21,7 @@ const Header = () => {
           {/* Logo */}
           <a href="#" className="flex items-center gap-3">
             <img
-              src="https://www.thestudentathletefoundation.org/wp-content/uploads/2026/01/2-1024x473.png"
+              src={safLogo}
               alt="Student Athlete Foundation"
               className="h-12 w-auto object-contain"
             />
