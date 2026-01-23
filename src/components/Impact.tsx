@@ -40,7 +40,7 @@ const Impact = () => {
       <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-secondary font-semibold uppercase tracking-wider text-sm">Our Impact</span>
+          <span className="text-white/80 font-semibold uppercase tracking-wider text-sm">Our Impact</span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mt-4 mb-6">
             Making a Difference
           </h2>
@@ -58,8 +58,8 @@ const Impact = () => {
               className="bg-white/10 backdrop-blur-sm rounded-xl p-8 text-center border border-white/10 hover:bg-white/20 transition-colors duration-300"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <stat.icon className="h-8 w-8 text-secondary" />
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <stat.icon className="h-8 w-8 text-white" />
               </div>
               <div className="font-display text-4xl md:text-5xl font-bold text-white mb-2">
                 {stat.value}

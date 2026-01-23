@@ -43,7 +43,7 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary transition-colors"
                   aria-label={social.label}
                 >
                   <social.icon className="h-5 w-5" />
@@ -91,20 +91,20 @@ const Footer = () => {
             <h4 className="font-display text-lg font-bold mb-6">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
+                <MapPin className="h-5 w-5 text-white flex-shrink-0 mt-0.5" />
                 <span className="text-white/70">
                   Houston, Texas
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-secondary flex-shrink-0" />
-                <a href="mailto:info@thestudentathletefoundation.org" className="text-white/70 hover:text-secondary transition-colors">
+                <Mail className="h-5 w-5 text-white flex-shrink-0" />
+                <a href="mailto:info@thestudentathletefoundation.org" className="text-white/70 hover:text-white transition-colors">
                   info@thestudentathletefoundation.org
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-secondary flex-shrink-0" />
-                <a href="tel:+1234567890" className="text-white/70 hover:text-secondary transition-colors">
+                <Phone className="h-5 w-5 text-white flex-shrink-0" />
+                <a href="tel:+1234567890" className="text-white/70 hover:text-white transition-colors">
                   (123) 456-7890
                 </a>
               </li>
@@ -118,13 +118,13 @@ const Footer = () => {
             © {new Date().getFullYear()} Student Athlete Foundation. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-white/60 hover:text-secondary transition-colors">
+            <a href="#" className="text-white/60 hover:text-white transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="text-white/60 hover:text-secondary transition-colors">
+            <a href="#" className="text-white/60 hover:text-white transition-colors">
               Terms of Service
             </a>
-            <a href="#" className="text-white/60 hover:text-secondary transition-colors">
+            <a href="#" className="text-white/60 hover:text-white transition-colors">
               501(c)(3) Status
             </a>
           </div>

@@ -6,98 +6,97 @@
 
 @layer base {
   :root {
-    /* Primary: Deep Navy Blue - Trust & Professionalism */
+    /* Primary: Maroon #990000 - Bold & Professional */
     --background: 0 0% 100%;
-    --foreground: 215 35% 15%;
+    --foreground: 0 0% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 35% 15%;
+    --card-foreground: 0 0% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 35% 15%;
+    --popover-foreground: 0 0% 8%;
 
-    /* Navy Blue Primary */
-    --primary: 215 50% 23%;
+    /* Maroon Primary #990000 = 0 100% 30% */
+    --primary: 0 100% 30%;
     --primary-foreground: 0 0% 100%;
 
-    /* Warm Gold Accent for CTAs */
-    --secondary: 45 85% 55%;
-    --secondary-foreground: 215 50% 15%;
+    /* Light gray secondary */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
 
     /* Soft Gray Muted */
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Forest Green Accent - Golf Theme */
-    --accent: 152 45% 35%;
+    /* Maroon Accent */
+    --accent: 0 100% 30%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 90%;
-    --input: 210 20% 90%;
-    --ring: 215 50% 23%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 100% 30%;
 
     --radius: 0.5rem;
 
     /* Custom Tokens */
-    --hero-overlay: 215 50% 15%;
-    --success-green: 152 55% 40%;
-    --warm-cream: 40 30% 97%;
-    --gold-accent: 45 85% 55%;
+    --hero-overlay: 0 0% 5%;
+    --success-green: 0 100% 30%;
+    --warm-cream: 0 0% 98%;
+    --gold-accent: 0 100% 30%;
     
     /* Typography */
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-foreground: 0 0% 26%;
+    --sidebar-primary: 0 100% 30%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 91%;
+    --sidebar-ring: 0 100% 30%;
   }
 
   .dark {
-    --background: 215 35% 10%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
 
-    --card: 215 35% 12%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 215 35% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 45 85% 55%;
-    --primary-foreground: 215 50% 15%;
+    --primary: 0 100% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 40% 25%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 30% 18%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 152 45% 40%;
+    --accent: 0 100% 35%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 215 30% 20%;
-    --input: 215 30% 20%;
-    --ring: 45 85% 55%;
-    
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 100% 40%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 100% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 100% 40%;
   }
 }
 
@@ -167,8 +166,8 @@
   .hero-gradient {
     background: linear-gradient(
       135deg,
-      hsl(var(--hero-overlay) / 0.92) 0%,
-      hsl(var(--accent) / 0.85) 100%
+      hsl(0 0% 0% / 0.85) 0%,
+      hsl(0 100% 20% / 0.80) 100%
     );
   }
 }
