@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import safLogo from "@/assets/saf-logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,9 +18,13 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
-          {/* Brand Name */}
+          {/* Logo */}
           <a href="#" className="flex items-center">
-            <span className="font-display text-xl font-bold text-primary">Student Athlete Foundation</span>
+            <img
+              src={safLogo}
+              alt="Student Athlete Foundation"
+              className="h-12 w-auto"
+            />
           </a>
 
           {/* Desktop Navigation */}
