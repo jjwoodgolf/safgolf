@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import safLogo from "@/assets/saf-logo.png";
 
 const Footer = () => {
@@ -17,13 +17,6 @@ const Footer = () => {
     { label: "Recruiting Services", href: "#programs" },
   ];
 
-  const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-  ];
-
   return (
     <footer id="contact" className="bg-primary text-white">
       <div className="container-custom section-padding">
@@ -33,24 +26,12 @@ const Footer = () => {
             <img
               src={safLogo}
               alt="Student Athlete Foundation"
-              className="h-12 w-auto mb-6 brightness-0 invert"
+              className="h-24 w-auto mb-6 brightness-0 invert"
             />
-            <p className="text-white/70 leading-relaxed mb-6">
+            <p className="text-white/70 leading-relaxed">
               Empowering lives through golf. Helping junior golfers achieve college dreams 
               and providing healing programs for military veterans.
             </p>
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary transition-colors"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -91,22 +72,16 @@ const Footer = () => {
           <div>
             <h4 className="font-display text-lg font-bold mb-6">Contact Us</h4>
             <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-white flex-shrink-0 mt-0.5" />
-                <span className="text-white/70">
-                  Houston, Texas
-                </span>
-              </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-white flex-shrink-0" />
-                <a href="mailto:info@thestudentathletefoundation.org" className="text-white/70 hover:text-white transition-colors">
-                  info@thestudentathletefoundation.org
+                <a href="mailto:safsportshouston@gmail.com" className="text-white/70 hover:text-white transition-colors">
+                  safsportshouston@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-white flex-shrink-0" />
-                <a href="tel:+1234567890" className="text-white/70 hover:text-white transition-colors">
-                  (123) 456-7890
+                <a href="tel:+17135869569" className="text-white/70 hover:text-white transition-colors">
+                  (713) 586-9569
                 </a>
               </li>
             </ul>
