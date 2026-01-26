@@ -11,6 +11,7 @@ const Footer = () => {
   ];
 
   const programs = [
+    { label: "Junior Golf Player Development", href: "#programs" },
     { label: "College Golf Scholarships", href: "#programs" },
     { label: "Veterans Golf Program", href: "#programs" },
     { label: "Golf Showcase Events", href: "#programs" },
