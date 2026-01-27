@@ -1,21 +1,22 @@
+import { Link } from "react-router-dom";
 import { Mail, Phone } from "lucide-react";
 import safLogo from "@/assets/saf-logo.png";
 
 const Footer = () => {
   const quickLinks = [
-    { label: "About Us", href: "#about" },
-    { label: "Programs", href: "#programs" },
-    { label: "Success Stories", href: "#success" },
-    { label: "Sponsors", href: "#sponsors" },
-    { label: "Donate", href: "#donate" },
+    { label: "About Us", href: "/about" },
+    { label: "Programs", href: "/programs" },
+    { label: "Success Stories", href: "/success-stories" },
+    { label: "Sponsors", href: "/sponsors" },
+    { label: "Donate", href: "/donate" },
   ];
 
   const programs = [
-    { label: "Junior Golf Player Development", href: "#programs" },
-    { label: "College Golf Scholarships", href: "#programs" },
-    { label: "Veterans Golf Program", href: "#programs" },
-    { label: "Golf Showcase Events", href: "#programs" },
-    { label: "Recruiting Services", href: "#programs" },
+    { label: "Junior Golf Player Development", href: "/programs/junior-golf" },
+    { label: "College Golf Scholarships", href: "/programs/college-scholarships" },
+    { label: "Veterans Golf Program", href: "/programs/veterans" },
+    { label: "Golf Showcase Events", href: "/programs/showcase-events" },
+    { label: "Recruiting Services", href: "/programs/recruiting" },
   ];
 
   return (
@@ -41,12 +42,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-white/70 hover:text-secondary transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -58,12 +59,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {programs.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-white/70 hover:text-secondary transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -95,15 +96,15 @@ const Footer = () => {
             © {new Date().getFullYear()} Student Athlete Foundation. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-white/60 hover:text-white transition-colors">
+            <Link to="#" className="text-white/60 hover:text-white transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-white/60 hover:text-white transition-colors">
+            </Link>
+            <Link to="#" className="text-white/60 hover:text-white transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="text-white/60 hover:text-white transition-colors">
+            </Link>
+            <Link to="#" className="text-white/60 hover:text-white transition-colors">
               501(c)(3) Status
-            </a>
+            </Link>
           </div>
         </div>
       </div>
