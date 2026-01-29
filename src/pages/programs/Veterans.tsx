@@ -35,17 +35,30 @@ const Veterans = () => {
     <Layout>
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Users className="h-8 w-8 text-white" />
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+                Veterans Golf Program
+              </h1>
+              <p className="text-white/80 text-xl max-w-xl mx-auto lg:mx-0">
+                Complimentary golf programs for military veterans, providing healing, 
+                community, and a new passion through the game of golf.
+              </p>
+            </div>
+            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://www.youtube.com/embed/RkiURQXDk68"
+                title="Veterans Golf Program"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
           </div>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            Veterans Golf Program
-          </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            Complimentary golf programs for military veterans, providing healing, 
-            community, and a new passion through the game of golf.
-          </p>
         </div>
       </section>
 
