@@ -38,9 +38,9 @@ const Veterans = () => {
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left lg:pl-8">
-              <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
+              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
                 <svg 
-                  className="h-8 w-8 text-white" 
+                  className="h-12 w-12 text-white" 
                   viewBox="0 0 24 24" 
                   fill="none" 
                   stroke="currentColor" 
