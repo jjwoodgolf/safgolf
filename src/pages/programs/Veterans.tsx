@@ -37,9 +37,36 @@ const Veterans = () => {
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left lg:pl-8">
               <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
-                <Users className="h-8 w-8 text-white" />
+                <svg 
+                  className="h-8 w-8 text-white" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="1.5"
+                >
+                  {/* Flag pole */}
+                  <line x1="4" y1="2" x2="4" y2="22" strokeLinecap="round" />
+                  {/* Flag outline */}
+                  <path d="M4 4h16v10H4z" fill="currentColor" fillOpacity="0.2" />
+                  {/* Stripes */}
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="8" x2="20" y2="8" />
+                  <line x1="4" y1="10" x2="20" y2="10" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  {/* Stars region */}
+                  <rect x="4" y="4" width="8" height="6" fill="currentColor" fillOpacity="0.3" stroke="currentColor" />
+                  {/* Stars */}
+                  <circle cx="6" cy="5.5" r="0.5" fill="currentColor" />
+                  <circle cx="8" cy="5.5" r="0.5" fill="currentColor" />
+                  <circle cx="10" cy="5.5" r="0.5" fill="currentColor" />
+                  <circle cx="7" cy="7" r="0.5" fill="currentColor" />
+                  <circle cx="9" cy="7" r="0.5" fill="currentColor" />
+                  <circle cx="6" cy="8.5" r="0.5" fill="currentColor" />
+                  <circle cx="8" cy="8.5" r="0.5" fill="currentColor" />
+                  <circle cx="10" cy="8.5" r="0.5" fill="currentColor" />
+                </svg>
               </div>
               <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
                 Veterans Golf Program
