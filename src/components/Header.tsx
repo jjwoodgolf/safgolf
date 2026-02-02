@@ -26,15 +26,12 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 bg-primary px-4 py-2 rounded-lg">
+          <Link to="/" className="flex items-center">
             <img
               src={safLogo}
               alt="Student Athlete Foundation"
-              className="h-10 w-auto"
+              className="h-12 w-auto"
             />
-            <span className="text-muted-foreground font-medium text-sm hidden sm:block">
-              Student Athlete Foundation
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
