@@ -31,7 +31,7 @@ const ProgramsPage = () => {
       title: "Golf Showcase Events",
       description: "Competitive events designed to give junior golfers exposure to college coaches and scouts. Showcase your skills in a professional tournament environment.",
       link: "/programs/showcase-events",
-      features: ["College coach attendance", "Professional scoring", "Video highlights", "Networking opportunities"],
+      features: ["College Golf Combine", "Professional scoring", "Video highlights", "Networking opportunities"],
     },
     {
       icon: UserCheck,
