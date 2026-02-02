@@ -61,6 +61,7 @@ export default {
         gold: "hsl(var(--gold-accent))",
         cream: "hsl(var(--warm-cream))",
         success: "hsl(var(--success-green))",
+        "icon-bg": "hsl(var(--icon-bg))",
       },
       fontFamily: {
         display: ['Playfair Display', 'Georgia', 'serif'],
