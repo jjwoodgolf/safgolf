@@ -31,6 +31,7 @@ const Header = () => {
               src={safLogo}
               alt="Student Athlete Foundation"
               className="h-12 w-auto"
+              style={{ filter: 'brightness(0) saturate(100%) invert(62%) sepia(98%) saturate(1029%) hue-rotate(182deg) brightness(101%) contrast(101%)' }}
             />
           </Link>
 
