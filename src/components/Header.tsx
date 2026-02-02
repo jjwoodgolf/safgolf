@@ -26,11 +26,11 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center pl-[10px]">
             <img
               src={safLogo}
               alt="Student Athlete Foundation"
-              className="h-12 w-auto"
+              className="h-[62px] w-auto"
               style={{ filter: 'brightness(0) saturate(100%) invert(62%) sepia(98%) saturate(1029%) hue-rotate(182deg) brightness(101%) contrast(101%)' }}
             />
           </Link>
