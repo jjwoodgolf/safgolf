@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import safLogo from "@/assets/saf-logo.png";
+import safLogoFull from "@/assets/saf-logo-full.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,10 +28,9 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center pl-[10px]">
             <img
-              src={safLogo}
+              src={safLogoFull}
               alt="Student Athlete Foundation"
               className="h-[62px] w-auto"
-              style={{ filter: 'brightness(0) saturate(100%) invert(14%) sepia(100%) saturate(7500%) hue-rotate(0deg) brightness(70%) contrast(115%)' }}
             />
           </Link>
 
