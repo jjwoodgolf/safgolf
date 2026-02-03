@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Target, Users, Award, GraduationCap, Heart, Calendar, UserCheck, Quote, ArrowRight } from "lucide-react";
+import mediaLogos from "@/assets/media-logos.png";
 
 const Index = () => {
   const values = [
@@ -71,6 +72,20 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        
+        {/* Media Logos Banner */}
+        <section className="bg-white py-8">
+          <div className="px-[100px]">
+            <img 
+              src={mediaLogos} 
+              alt="As featured in CBS, Fox Sports, ESPN Radio, KHOU 11, NewsFix CW39, NBC, Golf" 
+              className="w-full h-auto object-contain"
+              style={{ 
+                filter: 'grayscale(100%) sepia(100%) hue-rotate(-50deg) saturate(300%) brightness(0.4)'
+              }}
+            />
+          </div>
+        </section>
         
         {/* Mission Preview Section */}
         <section className="section-padding bg-muted">
