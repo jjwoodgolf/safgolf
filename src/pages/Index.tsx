@@ -76,6 +76,9 @@ const Index = () => {
         {/* Media Logos Banner */}
         <section className="bg-white py-8">
           <div className="px-[100px]">
+            <p className="text-[10px] text-muted-foreground text-center mb-4 lowercase">
+              golf programs have been featured on...
+            </p>
             <img 
               src={mediaLogos} 
               alt="As featured in CBS, Fox Sports, ESPN Radio, KHOU 11, NewsFix CW39, NBC, Golf" 
