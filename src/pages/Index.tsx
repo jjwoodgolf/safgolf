@@ -75,7 +75,7 @@ const Index = () => {
         
         {/* Media Logos Banner */}
         <section className="bg-white py-8">
-          <div className="px-[100px]">
+          <div className="px-[60px]">
             <p className="text-[10px] text-muted-foreground text-center mb-4 lowercase font-bold">
               golf programs have been featured on...
             </p>
@@ -84,7 +84,7 @@ const Index = () => {
               alt="As featured in CBS, Fox Sports, ESPN Radio, KHOU 11, NewsFix CW39, NBC, Golf" 
               className="w-full h-auto object-contain"
               style={{ 
-                filter: 'grayscale(100%) contrast(1.2) brightness(0.3)'
+                filter: 'grayscale(100%)'
               }}
             />
           </div>
