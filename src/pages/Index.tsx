@@ -84,7 +84,7 @@ const Index = () => {
               alt="As featured in CBS, Fox Sports, ESPN Radio, KHOU 11, NewsFix CW39, NBC, Golf" 
               className="w-full h-auto object-contain"
               style={{ 
-                filter: 'grayscale(100%) sepia(100%) hue-rotate(-50deg) saturate(300%) brightness(0.4)'
+                filter: 'grayscale(100%) contrast(1.2) brightness(0.3)'
               }}
             />
           </div>
