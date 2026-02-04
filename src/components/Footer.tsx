@@ -7,7 +7,6 @@ const Footer = () => {
     { label: "About Us", href: "/about" },
     { label: "Programs", href: "/programs" },
     { label: "Success Stories", href: "/success-stories" },
-    { label: "Sponsors", href: "/sponsors" },
     { label: "Donate", href: "/donate" },
   ];
 
