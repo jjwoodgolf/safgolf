@@ -68,6 +68,24 @@ const SponsorsPage = () => {
         </div>
       </section>
 
+      {/* Why Sponsor Section */}
+      <section className="section-padding bg-background">
+        <div className="container-custom">
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-12">
+              Why Sponsor Student Athlete Foundation
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-6 text-left">
+              <p className="text-muted-foreground text-lg">Tax-deductible charitable contribution</p>
+              <p className="text-muted-foreground text-lg">Brand visibility tied to education and service</p>
+              <p className="text-muted-foreground text-lg">Community goodwill and local impact</p>
+              <p className="text-muted-foreground text-lg">Alignment with youth development and veterans</p>
+              <p className="text-muted-foreground text-lg">Long-term partnership opportunities</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Current Sponsors */}
       <section className="section-padding bg-muted">
         <div className="container-custom">
