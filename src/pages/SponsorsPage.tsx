@@ -4,45 +4,49 @@ import { Handshake, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SponsorsPage = () => {
-  const sponsorshipLevels = [
+  const sponsorshipTiers = [
     {
-      tier: "Platinum",
-      emoji: "🏆",
-      amount: "$10,000+",
+      amount: "$100,000+",
+      title: "Facility Naming Rights Sponsor",
       benefits: [
-        "Premier logo placement on all materials",
-        "Event naming rights",
-        "VIP access to all events",
-        "Featured in press releases",
-        "Social media spotlight",
-        "Exclusive networking events",
+        "Primary branding and naming recognition",
+        "Homepage logo placement",
+        "Facility signage",
+        "Program-wide recognition",
+        "Direct partnership with SAF leadership",
       ],
-      bgClass: "bg-gradient-to-b from-muted to-background",
+      cta: "inquiry",
     },
     {
-      tier: "Gold",
-      emoji: "🥇",
-      amount: "$5,000+",
+      amount: "$25,000",
+      title: "Major Program Sponsor",
       benefits: [
-        "Logo on event materials",
-        "Recognition at events",
-        "VIP access to select events",
-        "Social media recognition",
-        "Newsletter features",
+        "Program naming recognition",
+        "Website and newsletter visibility",
+        "On-site signage at events and clinics",
+        "Annual impact report",
       ],
-      bgClass: "bg-gradient-to-b from-secondary/20 to-secondary/5",
+      cta: "inquiry",
     },
     {
-      tier: "Silver",
-      emoji: "🥈",
-      amount: "$2,500+",
+      amount: "$10,000",
+      title: "Annual Business Sponsor",
       benefits: [
-        "Logo on website",
-        "Event recognition",
-        "Social media mention",
+        "Logo placement on sponsor wall",
+        "Quarterly newsletter recognition",
+        "Social media acknowledgment",
+      ],
+      cta: "sponsor",
+    },
+    {
+      amount: "$5,000",
+      title: "Supporting Sponsor",
+      benefits: [
+        "Website recognition",
         "Newsletter acknowledgment",
+        "Community impact recognition",
       ],
-      bgClass: "bg-gradient-to-b from-muted/50 to-muted",
+      cta: "sponsor",
     },
   ];
 
@@ -86,73 +90,47 @@ const SponsorsPage = () => {
         </div>
       </section>
 
-      {/* Current Sponsors */}
+      {/* Sponsorship Tiers */}
       <section className="section-padding bg-muted">
         <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-accent font-semibold uppercase tracking-wider text-sm">Community Support</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-              Thank You to Our Sponsors
-            </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              These organizations and individuals make our mission possible through their generous contributions.
-            </p>
-          </div>
-
-          {/* Sponsor Tiers Display */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {sponsorshipLevels.map((level) => (
-              <div key={level.tier} className={`${level.bgClass} rounded-xl p-8 text-center border border-border`}>
-                <div className="text-4xl mb-4">{level.emoji}</div>
-                <h3 className="font-display text-xl font-bold text-foreground mb-2">{level.tier} Sponsors</h3>
-                <p className="text-muted-foreground text-sm mb-6">{level.amount}</p>
-                <div className="h-32 flex items-center justify-center text-muted-foreground italic border-2 border-dashed border-border rounded-lg">
-                  Your logo here
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Sponsorship Opportunities */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-accent font-semibold uppercase tracking-wider text-sm">Partner With Us</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
               Sponsorship Opportunities
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Join our mission to support junior golfers and veterans. Choose the sponsorship level that works for your organization.
+              We offer structured sponsorship opportunities designed to provide both meaningful impact and sponsor visibility.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {sponsorshipLevels.map((level, index) => (
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {sponsorshipTiers.map((tier, index) => (
               <div
-                key={level.tier}
+                key={tier.title}
                 className="bg-card rounded-xl p-8 shadow-lg border border-border hover:shadow-xl transition-shadow"
-                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="text-4xl mb-4 text-center">{level.emoji}</div>
-                <h3 className="font-display text-2xl font-bold text-foreground text-center mb-2">
-                  {level.tier}
-                </h3>
-                <p className="text-accent font-bold text-xl text-center mb-6">{level.amount}</p>
-                <ul className="space-y-3 mb-8">
-                  {level.benefits.map((benefit) => (
+                <div className="mb-4">
+                  <p className="text-primary font-bold text-2xl">{tier.amount}</p>
+                  <h3 className="font-display text-xl font-bold text-foreground mt-1">
+                    {tier.title}
+                  </h3>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {tier.benefits.map((benefit) => (
                     <li key={benefit} className="flex items-start gap-2">
-                      <CheckCircle className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-muted-foreground">{benefit}</span>
                     </li>
                   ))}
                 </ul>
-                <Link to="/contact">
-                  <Button variant="outline" className="w-full">
-                    Become a Sponsor
-                  </Button>
-                </Link>
+                {tier.cta === "inquiry" ? (
+                  <p className="text-sm text-muted-foreground italic">Details provided upon inquiry</p>
+                ) : (
+                  <Link to="/contact">
+                    <Button variant="accent" className="w-full">
+                      Sponsor Now
+                    </Button>
+                  </Link>
+                )}
               </div>
             ))}
           </div>
