@@ -137,6 +137,23 @@ const SponsorsPage = () => {
         </div>
       </section>
 
+      {/* How Funds Are Used */}
+      <section className="section-padding bg-background">
+        <div className="container-custom">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-10">
+              How Sponsorship Funds Are Used
+            </h2>
+            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+              <p className="text-muted-foreground text-lg">Youth scholarships</p>
+              <p className="text-muted-foreground text-lg">Program operations</p>
+              <p className="text-muted-foreground text-lg">Facility access and equipment</p>
+              <p className="text-muted-foreground text-lg">Veteran programming support</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section-padding bg-cream">
         <div className="container-custom">
