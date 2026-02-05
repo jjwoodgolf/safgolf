@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users } from "lucide-react";
+import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users, GraduationCap, Settings, Building, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SponsorsPage = () => {
@@ -160,10 +160,22 @@ const SponsorsPage = () => {
               How Sponsorship Funds Are Used
             </h2>
             <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-              <p className="text-muted-foreground text-lg">Youth scholarships</p>
-              <p className="text-muted-foreground text-lg">Program operations</p>
-              <p className="text-muted-foreground text-lg">Facility access and equipment</p>
-              <p className="text-muted-foreground text-lg">Veteran programming support</p>
+              <div className="flex flex-col items-center gap-3">
+                <GraduationCap className="h-8 w-8 text-primary" />
+                <p className="text-muted-foreground text-lg">College recruiting program</p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <Settings className="h-8 w-8 text-primary" />
+                <p className="text-muted-foreground text-lg">Program operations</p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <Building className="h-8 w-8 text-primary" />
+                <p className="text-muted-foreground text-lg">Facility access and equipment</p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <Shield className="h-8 w-8 text-primary" />
+                <p className="text-muted-foreground text-lg">Veteran programming support</p>
+              </div>
             </div>
           </div>
         </div>
