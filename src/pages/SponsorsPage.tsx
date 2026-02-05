@@ -49,15 +49,22 @@ const SponsorsPage = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+      <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            Our Sponsors
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-4">
+            Partner With the Student Athlete Foundation
           </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            We're grateful for the generous support of our sponsors and partners who 
-            help make our programs possible.
+          <p className="text-white/90 text-xl md:text-2xl font-medium max-w-3xl mx-auto mb-6">
+            Creating access, opportunity, and education through the game of golf
           </p>
+          <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
+            Your sponsorship directly funds youth development, college pathways, and adaptive golf programs for military veterans.
+          </p>
+          <Link to="/contact">
+            <Button variant="heroOutline" size="xl">
+              Become a Sponsor
+            </Button>
+          </Link>
         </div>
       </section>
 
