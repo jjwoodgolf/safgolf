@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { Handshake, CheckCircle } from "lucide-react";
+import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SponsorsPage = () => {
@@ -79,12 +79,27 @@ const SponsorsPage = () => {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-12">
               Why Sponsor Student Athlete Foundation
             </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-6 text-left">
-              <p className="text-muted-foreground text-lg">Tax-deductible charitable contribution</p>
-              <p className="text-muted-foreground text-lg">Brand visibility tied to education and service</p>
-              <p className="text-muted-foreground text-lg">Community goodwill and local impact</p>
-              <p className="text-muted-foreground text-lg">Alignment with youth development and veterans</p>
-              <p className="text-muted-foreground text-lg">Long-term partnership opportunities</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
+              <div className="flex items-center gap-3">
+                <Receipt className="h-5 w-5 text-primary flex-shrink-0" />
+                <p className="text-muted-foreground text-lg">Tax-deductible charitable contribution</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Eye className="h-5 w-5 text-primary flex-shrink-0" />
+                <p className="text-muted-foreground text-lg">Brand visibility tied to education and service</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-primary flex-shrink-0" />
+                <p className="text-muted-foreground text-lg">Community goodwill and local impact</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Target className="h-5 w-5 text-primary flex-shrink-0" />
+                <p className="text-muted-foreground text-lg">Alignment with youth development and veterans</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-primary flex-shrink-0" />
+                <p className="text-muted-foreground text-lg">Long-term partnership opportunities</p>
+              </div>
             </div>
           </div>
         </div>
