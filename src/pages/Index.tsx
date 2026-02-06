@@ -95,10 +95,7 @@ const Index = () => {
           <div className="container-custom">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="text-accent font-semibold uppercase tracking-wider text-sm">About Us</span>
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-                Transforming Lives Through Golf
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">
+              <p className="text-muted-foreground text-lg leading-relaxed mt-4">
                 The Student Athlete Foundation is a 501(c)(3) non-profit organization dedicated to 
                 empowering lives through the beautiful game of golf.
               </p>
