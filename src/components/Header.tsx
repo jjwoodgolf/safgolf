@@ -12,7 +12,7 @@ const Header = () => {
     { label: "About", href: "/about" },
     { label: "Events", href: "/events" },
     { label: "Programs", href: "/programs" },
-    { label: "Success Stories", href: "/success-stories" },
+    { label: "Success", href: "/success-stories" },
     { label: "Sponsors", href: "/sponsors" },
     { label: "Contact", href: "/contact" },
   ];
