@@ -6,19 +6,21 @@ import { Button } from "@/components/ui/button";
 const SponsorsPage = () => {
   const sponsorshipTiers = [
     {
-      amount: "$100,000+",
+      amount: "TBD",
       title: "Facility Naming Rights Sponsor",
       benefits: [
+        "Exclusive naming rights on building",
         "Primary branding and naming recognition",
         "Homepage logo placement",
         "Facility signage",
         "Program-wide recognition",
         "Direct partnership with SAF leadership",
+        "Private 1-day golf school for up to 10 people",
       ],
       cta: "inquiry",
     },
     {
-      amount: "$25,000",
+      amount: "TBD",
       title: "Major Program Sponsor",
       benefits: [
         "Program naming recognition",
@@ -29,8 +31,8 @@ const SponsorsPage = () => {
       cta: "inquiry",
     },
     {
-      amount: "$10,000",
-      title: "Annual Business Sponsor",
+      amount: "$999/month",
+      title: "Gold Business Sponsor",
       benefits: [
         "Logo placement on sponsor wall",
         "Quarterly newsletter recognition",
@@ -39,9 +41,10 @@ const SponsorsPage = () => {
       cta: "sponsor",
     },
     {
-      amount: "$5,000",
-      title: "Supporting Sponsor",
+      amount: "$500/month",
+      title: "Silver Sponsor",
       benefits: [
+        "1 year commitment",
         "Website recognition",
         "Newsletter acknowledgment",
         "Community impact recognition",
