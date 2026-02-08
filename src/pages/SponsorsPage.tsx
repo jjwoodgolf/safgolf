@@ -17,13 +17,14 @@ const SponsorsPage = () => {
         "Direct partnership with SAF leadership",
         "Private 1-day golf school for up to 10 people",
         "Corporate membership to indoor golf training for up to 5 people",
+        "Scholarship named after the name of your choice",
+        "Media recognition during scholarship award ceremony",
         "Program naming recognition",
         "On-site signage at events and clinics",
         "Annual impact report",
         "Logo placement on sponsor wall",
-        "Quarterly newsletter recognition",
+        "Logo placement on all SAF media materials",
         "Social media acknowledgment",
-        "1 year commitment",
         "Website recognition",
         "Newsletter acknowledgment",
         "Community impact recognition",
@@ -39,6 +40,10 @@ const SponsorsPage = () => {
         "On-site signage at events and clinics",
         "Annual impact report",
         "Corporate membership to indoor golf training for up to 3 people",
+        "Scholarship named after the name of your choice",
+        "Media recognition during scholarship award ceremony",
+        "1 social media post recognition",
+        "1 newsletter featured email",
         "Logo placement on sponsor wall",
         "Quarterly newsletter recognition",
         "Social media acknowledgment",
@@ -48,6 +53,17 @@ const SponsorsPage = () => {
         "Community impact recognition",
       ],
       cta: "inquiry",
+    },
+    {
+      amount: "$2,500",
+      title: "College Scholarship Sponsor",
+      benefits: [
+        "Scholarship named after the name of your choice",
+        "Media recognition during scholarship award ceremony",
+        "1 social media post recognition",
+        "1 newsletter featured email",
+      ],
+      cta: "sponsor",
     },
     {
       amount: "$999/month",
@@ -138,8 +154,11 @@ const SponsorsPage = () => {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
               Sponsorship Opportunities
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed">
+            <p className="text-muted-foreground text-lg leading-relaxed mb-4">
               We offer structured sponsorship opportunities designed to provide both meaningful impact and sponsor visibility.
+            </p>
+            <p className="text-primary font-medium">
+              All sponsorships are tax-deductible charitable contributions.
             </p>
           </div>
 
