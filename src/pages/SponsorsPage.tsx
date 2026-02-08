@@ -66,6 +66,19 @@ const SponsorsPage = () => {
       cta: "sponsor",
     },
     {
+      amount: "$5,000",
+      title: "Sponsor a Junior Golfer",
+      benefits: [
+        "1-year commitment",
+        "Player development coaching",
+        "College recruiting mentorship",
+        "Access to practice facility for one year",
+        "Equipment needs",
+        "Regional tournament costs",
+      ],
+      cta: "sponsor",
+    },
+    {
       amount: "$999/month",
       title: "Gold Business Sponsor",
       benefits: [
