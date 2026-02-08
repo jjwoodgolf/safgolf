@@ -12,7 +12,7 @@ const Events = () => {
     },
     {
       icon: GraduationCap,
-      title: "(3) College Golf Combines",
+      title: "College Golf Combines",
       description: "Competitive showcase events connecting junior golfers with college coaches for recruiting opportunities.",
     },
     {
@@ -27,7 +27,7 @@ const Events = () => {
     },
     {
       icon: Calendar,
-      title: "(3) SAF Golf Fundraisers",
+      title: "SAF Golf Fundraisers",
       description: "Annual fundraising events that support our programs and create networking opportunities for sponsors and participants.",
     },
     {
