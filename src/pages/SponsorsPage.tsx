@@ -58,10 +58,13 @@ const SponsorsPage = () => {
       amount: "$2,500",
       title: "College Scholarship Sponsor",
       benefits: [
+        "Annual sponsorship",
         "Scholarship named after the name of your choice",
         "Media recognition during scholarship award ceremony",
         "1 social media post recognition",
         "1 newsletter featured email",
+        "Logo placement on sponsor wall at facility",
+        "Website recognition",
       ],
       cta: "sponsor",
     },
