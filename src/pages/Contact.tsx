@@ -1,14 +1,16 @@
 import Layout from "@/components/Layout";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,13 +19,32 @@ const Contact = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from("contact_submissions").insert({
+        name: formData.name.trim().slice(0, 200),
+        email: formData.email.trim().slice(0, 255),
+        phone: formData.phone.trim().slice(0, 30) || null,
+        subject: formData.subject.trim().slice(0, 300),
+        message: formData.message.trim().slice(0, 5000),
+      });
+      if (error) throw error;
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -115,9 +136,9 @@ const Contact = () => {
                     required
                   />
                 </div>
-                <Button type="submit" variant="accent" size="lg" className="w-full">
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Message
+                <Button type="submit" variant="accent" size="lg" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </div>
