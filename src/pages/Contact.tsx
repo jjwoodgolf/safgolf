@@ -23,14 +23,17 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("contact_submissions").insert({
-        name: formData.name.trim().slice(0, 200),
-        email: formData.email.trim().slice(0, 255),
-        phone: formData.phone.trim().slice(0, 30) || null,
-        subject: formData.subject.trim().slice(0, 300),
-        message: formData.message.trim().slice(0, 5000),
+      const { data, error } = await supabase.functions.invoke("submit-contact", {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        },
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       toast({
         title: "Message Sent!",
         description: "Thank you for contacting us. We'll get back to you soon.",

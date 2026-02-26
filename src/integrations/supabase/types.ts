@@ -20,6 +20,7 @@ export type Database = {
           email: string
           id: string
           message: string
+          metadata: Json | null
           name: string
           phone: string | null
           subject: string
@@ -29,6 +30,7 @@ export type Database = {
           email: string
           id?: string
           message: string
+          metadata?: Json | null
           name: string
           phone?: string | null
           subject: string
@@ -38,6 +40,7 @@ export type Database = {
           email?: string
           id?: string
           message?: string
+          metadata?: Json | null
           name?: string
           phone?: string | null
           subject?: string
@@ -49,7 +52,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_contact_rate_limit: {
+        Args: { client_ip: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
