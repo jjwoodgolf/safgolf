@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users, GraduationCap, Settings, Building, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SuccessGallerySlider from "@/components/SuccessGallerySlider";
 
 const SponsorsPage = () => {
   const sponsorshipTiers = [
