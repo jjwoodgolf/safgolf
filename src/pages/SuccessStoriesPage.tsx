@@ -51,6 +51,12 @@ const SuccessStoriesPage = () => {
         </div>
       </section>
 
+      {/* Student Athletes Gallery */}
+      <SuccessGallerySlider
+        title="SAF Student Athletes"
+        subtitle="Dozens of junior golfers have gone through our programs and achieved their college dreams."
+      />
+
       {/* Stories Section */}
       <section className="section-padding bg-muted">
         <div className="container-custom">

@@ -105,6 +105,13 @@ const ProgramsPage = () => {
         </div>
       </section>
 
+      {/* Student Athletes Gallery */}
+      <SuccessGallerySlider
+        title="Program Participants"
+        subtitle="Real student athletes who have benefited from our programs."
+        compact
+      />
+
       {/* CTA Section */}
       <section className="section-padding bg-cream">
         <div className="container-custom text-center">
