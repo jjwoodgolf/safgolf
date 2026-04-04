@@ -247,6 +247,12 @@ const SponsorsPage = () => {
         </div>
       </section>
 
+      {/* Your Dollars at Work */}
+      <SuccessGallerySlider
+        title="Your Sponsorship Dollars at Work"
+        subtitle="See the student athletes whose futures are being shaped by your generous support."
+      />
+
       {/* CTA Section */}
       <section className="section-padding bg-cream">
         <div className="container-custom">
