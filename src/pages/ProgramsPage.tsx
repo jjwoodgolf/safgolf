@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { GraduationCap, Users, Award, Calendar, UserCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SuccessGallerySlider from "@/components/SuccessGallerySlider";
 
 const ProgramsPage = () => {
   const programs = [
