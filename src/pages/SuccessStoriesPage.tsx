@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SuccessGallerySlider from "@/components/SuccessGallerySlider";
 
 const SuccessStoriesPage = () => {
   const stories = [
@@ -49,6 +50,12 @@ const SuccessStoriesPage = () => {
           </p>
         </div>
       </section>
+
+      {/* Student Athletes Gallery */}
+      <SuccessGallerySlider
+        title="SAF Student Athletes"
+        subtitle="Dozens of junior golfers have gone through our programs and achieved their college dreams."
+      />
 
       {/* Stories Section */}
       <section className="section-padding bg-muted">

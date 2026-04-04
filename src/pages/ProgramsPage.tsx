@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { GraduationCap, Users, Award, Calendar, UserCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SuccessGallerySlider from "@/components/SuccessGallerySlider";
 
 const ProgramsPage = () => {
   const programs = [
@@ -103,6 +104,13 @@ const ProgramsPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Student Athletes Gallery */}
+      <SuccessGallerySlider
+        title="Program Participants"
+        subtitle="Real student athletes who have benefited from our programs."
+        compact
+      />
 
       {/* CTA Section */}
       <section className="section-padding bg-cream">

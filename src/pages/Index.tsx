@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Target, Users, Award, GraduationCap, Heart, Calendar, UserCheck, Quote, ArrowRight } from "lucide-react";
 import mediaLogos from "@/assets/media-logos.png";
+import SuccessGallerySlider from "@/components/SuccessGallerySlider";
 
 const Index = () => {
   const values = [
@@ -227,6 +228,9 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        {/* Student Athletes Gallery */}
+        <SuccessGallerySlider />
 
         {/* Donate CTA Section */}
         <section className="section-padding bg-cream">

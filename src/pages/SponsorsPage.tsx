@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users, GraduationCap, Settings, Building, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SuccessGallerySlider from "@/components/SuccessGallerySlider";
 
 const SponsorsPage = () => {
   const sponsorshipTiers = [
@@ -245,6 +246,12 @@ const SponsorsPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Your Dollars at Work */}
+      <SuccessGallerySlider
+        title="Your Sponsorship Dollars at Work"
+        subtitle="See the student athletes whose futures are being shaped by your generous support."
+      />
 
       {/* CTA Section */}
       <section className="section-padding bg-cream">
