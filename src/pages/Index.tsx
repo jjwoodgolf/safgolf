@@ -228,6 +228,9 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Student Athletes Gallery */}
+        <SuccessGallerySlider />
+
         {/* Donate CTA Section */}
         <section className="section-padding bg-cream">
           <div className="container-custom text-center">
