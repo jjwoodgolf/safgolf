@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { UserCheck, CheckCircle, ArrowRight, FileText, Mail, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,8 @@ const Recruiting = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="College Recruiting Services | SAF" description="Recruiting support: profile building, video, coach outreach, and application guidance." path="/programs/recruiting" />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">

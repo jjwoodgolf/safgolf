@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Target, Users, Award, Heart, Trophy, Star } from "lucide-react";
 
 const About = () => {
@@ -40,7 +41,8 @@ const About = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="About Us | Student Athlete Foundation" description="Learn about SAF's mission to fund junior golf scholarships and support military veterans through golf in Houston, TX." path="/about" />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">

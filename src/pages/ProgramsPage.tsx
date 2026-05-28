@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { GraduationCap, Users, Award, Calendar, UserCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,8 @@ const ProgramsPage = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="Programs | Junior Golf, Scholarships & Veterans" description="Explore SAF programs: junior golf development, college scholarships, veteran golf, showcase events, and recruiting support." path="/programs" />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">

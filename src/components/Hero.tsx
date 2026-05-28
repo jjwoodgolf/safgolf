@@ -51,15 +51,15 @@ const Hero = () => {
           <div className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-primary-foreground">200+</div>
-              <div className="text-sm text-white/70 mt-1">Golfers Mentored</div>
+              <div className="text-sm text-white/85 mt-1">Golfers Mentored</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-primary-foreground">50+</div>
-              <div className="text-sm text-white/70 mt-1">Veterans Served</div>
+              <div className="text-sm text-white/85 mt-1">Veterans Served</div>
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-primary-foreground">15+</div>
-              <div className="text-sm text-white/70 mt-1">Years of Impact</div>
+              <div className="text-sm text-white/85 mt-1">Years of Impact</div>
             </div>
           </div>
         </div>

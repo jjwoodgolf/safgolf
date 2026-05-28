@@ -3,26 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Athlete Foundation | College Golf Scholarships &amp; Veterans Programs</title>
-    <meta name="description" content="The Student Athlete Foundation helps junior golfers achieve college scholarship dreams and provides free golf programs for military veterans. Support our mission today.">
+    <title>Student Athlete Foundation — Golf Scholarships & Veterans</title>
+    <meta name="description" content="Helping junior golfers earn college scholarships and providing free golf programs for military veterans. Houston-based 501(c)(3)." />
     <meta name="keywords" content="golf scholarships, college golf, junior golf, veterans golf program, non-profit, Houston golf" />
-    
+
+    <!-- Preload hero LCP image -->
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?q=80&w=2070" fetchpriority="high" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    
-    
-    <meta property="og:image" content="https://www.thestudentathletefoundation.org/wp-content/uploads/2026/01/2-1024x473.png">
-    
+    <meta property="og:title" content="Student Athlete Foundation" />
+    <meta property="og:description" content="Golf scholarships for junior athletes and free programs for veterans." />
+    <meta property="og:url" content="https://safgolf.lovable.app/" />
+    <meta property="og:image" content="https://www.thestudentathletefoundation.org/wp-content/uploads/2026/01/2-1024x473.png" />
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    
-    
-    <meta property="og:title" content="Student Athlete Foundation | College Golf Scholarships &amp; Veterans Programs">
-  <meta name="twitter:title" content="Student Athlete Foundation | College Golf Scholarships &amp; Veterans Programs">
-  <meta property="og:description" content="The Student Athlete Foundation helps junior golfers achieve college scholarship dreams and provides free golf programs for military veterans. Support our mission today.">
-  <meta name="twitter:description" content="The Student Athlete Foundation helps junior golfers achieve college scholarship dreams and provides free golf programs for military veterans. Support our mission today.">
-  <meta name="twitter:image" content="https://www.thestudentathletefoundation.org/wp-content/uploads/2026/01/2-1024x473.png">
-</head>
+    <meta name="twitter:title" content="Student Athlete Foundation" />
+    <meta name="twitter:description" content="Golf scholarships for junior athletes and free programs for veterans." />
+    <meta name="twitter:image" content="https://www.thestudentathletefoundation.org/wp-content/uploads/2026/01/2-1024x473.png" />
+
+    <!-- Structured data: Organization + WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["NGO", "Organization"],
+          "name": "Student Athlete Foundation",
+          "alternateName": "SAF",
+          "url": "https://safgolf.lovable.app/",
+          "logo": "https://safgolf.lovable.app/favicon.ico",
+          "email": "safsportshouston@gmail.com",
+          "telephone": "+1-713-586-9569",
+          "description": "501(c)(3) non-profit helping junior golfers earn college scholarships and providing free golf programs for military veterans.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Houston",
+            "addressRegion": "TX",
+            "addressCountry": "US"
+          },
+          "nonprofitStatus": "Nonprofit501c3"
+        },
+        {
+          "@type": "WebSite",
+          "name": "Student Athlete Foundation",
+          "url": "https://safgolf.lovable.app/"
+        }
+      ]
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

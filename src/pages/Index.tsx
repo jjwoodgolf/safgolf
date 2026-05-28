@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Target, Users, Award, GraduationCap, Heart, Calendar, UserCheck, Quote, ArrowRight } from "lucide-react";
 import mediaLogos from "@/assets/media-logos.png";
@@ -70,6 +71,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Student Athlete Foundation — Golf Scholarships & Veterans"
+        description="Houston 501(c)(3) helping junior golfers earn college scholarships and providing free golf programs for military veterans."
+        path="/"
+      />
       <Header />
       <main>
         <Hero />

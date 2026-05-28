@@ -1,0 +1,21 @@
+# Student Athlete Foundation
+
+> Houston-based 501(c)(3) non-profit helping junior golfers earn college scholarships and providing free golf programs for military veterans and amputees.
+
+The Student Athlete Foundation (SAF) provides financial assistance, academic advisement, college coach exposure, and golf training. Programs include junior golf development, college scholarships, veterans rehabilitation through golf, showcase events, and recruiting services. Founded over 15 years ago, SAF has mentored 200+ junior golfers and served 50+ veterans.
+
+## Pages
+
+- [Home](/): Mission overview, impact stats, featured programs.
+- [About](/about): Foundation history, values, leadership.
+- [Programs](/programs): All SAF programs at a glance.
+- [Junior Golf Development](/programs/junior-golf): Training and mentorship for young golfers.
+- [College Scholarships](/programs/college-scholarships): Financial aid and recruiting guidance.
+- [Veterans Golf Program](/programs/veterans): Free golf programs for military veterans.
+- [Golf Showcase Events](/programs/showcase-events): Exposure events with college coaches.
+- [Recruiting Services](/programs/recruiting): Profile building, video, and coach outreach.
+- [Success Stories](/success-stories): Real student-athletes and veterans we've helped.
+- [Sponsors](/sponsors): Sponsorship tiers and partnership opportunities.
+- [Events](/events): Tournament and fundraiser calendar.
+- [Donate](/donate): Tax-deductible donation options.
+- [Contact](/contact): Email, phone, and contact form.

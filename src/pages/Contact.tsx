@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +57,27 @@ const Contact = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO
+        title="Contact Us | Student Athlete Foundation"
+        description="Get in touch with the Student Athlete Foundation in Houston, TX. Phone, email, and contact form."
+        path="/contact"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Student Athlete Foundation",
+          telephone: "+1-713-586-9569",
+          email: "safsportshouston@gmail.com",
+          url: "https://safgolf.lovable.app/contact",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Houston",
+            addressRegion: "TX",
+            addressCountry: "US",
+          },
+          openingHours: "Mo-Fr 09:00-17:00",
+        }}
+      />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
