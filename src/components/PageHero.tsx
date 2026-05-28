@@ -10,11 +10,16 @@ import hero07 from "@/assets/hero/hero-07.jpg";
 import hero08 from "@/assets/hero/hero-08.jpg";
 import hero09 from "@/assets/hero/hero-09.jpg";
 import hero10 from "@/assets/hero/hero-10.jpg";
+import hero11 from "@/assets/hero/hero-11.jpg";
+import hero12 from "@/assets/hero/hero-12.jpg";
+import hero13 from "@/assets/hero/hero-13.jpg";
+import hero14 from "@/assets/hero/hero-14.jpg";
 
-// Full-resolution (1920x1080) hero photography of real SAF student athletes
+// Real SAF student athlete photography. Displayed fully contained (no crop)
+// over a blurred backdrop of the same image so people are never cut off.
 const ALL_IMAGES = [
-  hero01, hero02, hero03, hero04, hero05,
-  hero06, hero07, hero08, hero09, hero10,
+  hero01, hero02, hero03, hero04, hero05, hero06, hero07,
+  hero08, hero09, hero10, hero11, hero12, hero13, hero14,
 ];
 
 interface PageHeroProps {
