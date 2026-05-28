@@ -13,19 +13,29 @@ The user has uploaded photographs of real SAF student athletes and program parti
 
 ## Registry
 
-### Student athlete gallery (15 images)
+### Hero banner photography (10 images, 1920×1080)
 
-Source upload: `SAF_Success.png` — a 5×3 photo collage of real SAF student athletes, cropped into 15 individual JPGs.
+Source uploads: 10 user-supplied JPEGs of SAF student athletes (tournaments, signing days, awards, swing action). Center-cropped to 16:9 and resized to 1920×1080 for full-bleed hero use.
 
 | Path | Subject | Dimensions |
 |---|---|---|
-| `src/assets/success-gallery/student-01.jpg` … `student-15.jpg` | SAF junior golfers / student athletes in action | 368×283 each |
+| `src/assets/hero/hero-01.jpg` … `hero-10.jpg` | Real SAF student athletes: tournament winners, college signings, swing action | 1920×1080 each |
 
 **Where they're used:**
-- `src/components/SuccessGallerySlider.tsx` — auto-scrolling carousel on Home, Success Stories, Programs, Sponsors pages
-- `src/components/PageHero.tsx` — rotating slideshow background for every page hero (each page sets a different `imageOffset` for variety)
+- `src/components/PageHero.tsx` — rotating slideshow background on every page hero (each page sets a different `imageOffset` for variety).
 
-**Caveat:** Source images are small (368×283). They work as **darkened/overlayed hero backgrounds** and as **card-sized gallery tiles**, but should not be used as standalone full-bleed hero images without an overlay — they will pixelate.
+### Student athlete gallery (15 images, low-res)
+
+Source upload: `SAF_Success.png` — a 5×3 photo collage, cropped into 15 individual JPGs.
+
+| Path | Subject | Dimensions |
+|---|---|---|
+| `src/assets/success-gallery/student-01.jpg` … `student-15.jpg` | SAF junior golfers / student athletes | 368×283 each |
+
+**Where they're used:**
+- `src/components/SuccessGallerySlider.tsx` — auto-scrolling carousel on Home, Success Stories, Programs, Sponsors pages.
+
+**Caveat:** Source images are small (368×283). Use only as card-sized gallery tiles. For hero backgrounds, prefer the `src/assets/hero/` set above.
 
 ### Branding assets
 
