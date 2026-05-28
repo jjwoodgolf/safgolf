@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
+import PageHero from "@/components/PageHero";
 import { Link } from "react-router-dom";
 import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users, GraduationCap, Settings, Building, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -117,25 +118,18 @@ const SponsorsPage = () => {
   return (
     <Layout>
       <SEO title="Sponsors & Partners | Student Athlete Foundation" description="Become an SAF sponsor. Naming rights, program sponsorships, and tiered partnerships supporting golf scholarships and veterans." path="/sponsors" />
-            {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-4">
-            Partner With the Student Athlete Foundation
-          </h1>
-          <p className="text-white/90 text-xl md:text-2xl font-medium max-w-3xl mx-auto mb-6">
-            Creating access, opportunity, and education through the game of golf
-          </p>
-          <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
-            Your sponsorship directly funds youth development, college pathways, and adaptive golf programs for military veterans.
-          </p>
-          <Link to="/contact">
-            <Button variant="heroOutline" size="xl">
-              Become a Sponsor
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <PageHero
+        kicker="Sponsorship"
+        title="Partner With the Student Athlete Foundation"
+        subtitle="Creating access, opportunity, and education through the game of golf. Your sponsorship directly funds youth development, college pathways, and adaptive golf programs for military veterans."
+        imageOffset={10}
+      >
+        <Link to="/contact">
+          <Button variant="heroOutline" size="xl">
+            Become a Sponsor
+          </Button>
+        </Link>
+      </PageHero>
 
       {/* Why Sponsor Section */}
       <section className="section-padding bg-background">
