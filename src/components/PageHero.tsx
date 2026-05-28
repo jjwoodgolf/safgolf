@@ -1,25 +1,20 @@
 import { useEffect, useRef, useState, ReactNode } from "react";
 
-import student01 from "@/assets/success-gallery/student-01.jpg";
-import student02 from "@/assets/success-gallery/student-02.jpg";
-import student03 from "@/assets/success-gallery/student-03.jpg";
-import student04 from "@/assets/success-gallery/student-04.jpg";
-import student05 from "@/assets/success-gallery/student-05.jpg";
-import student06 from "@/assets/success-gallery/student-06.jpg";
-import student07 from "@/assets/success-gallery/student-07.jpg";
-import student08 from "@/assets/success-gallery/student-08.jpg";
-import student09 from "@/assets/success-gallery/student-09.jpg";
-import student10 from "@/assets/success-gallery/student-10.jpg";
-import student11 from "@/assets/success-gallery/student-11.jpg";
-import student12 from "@/assets/success-gallery/student-12.jpg";
-import student13 from "@/assets/success-gallery/student-13.jpg";
-import student14 from "@/assets/success-gallery/student-14.jpg";
-import student15 from "@/assets/success-gallery/student-15.jpg";
+import hero01 from "@/assets/hero/hero-01.jpg";
+import hero02 from "@/assets/hero/hero-02.jpg";
+import hero03 from "@/assets/hero/hero-03.jpg";
+import hero04 from "@/assets/hero/hero-04.jpg";
+import hero05 from "@/assets/hero/hero-05.jpg";
+import hero06 from "@/assets/hero/hero-06.jpg";
+import hero07 from "@/assets/hero/hero-07.jpg";
+import hero08 from "@/assets/hero/hero-08.jpg";
+import hero09 from "@/assets/hero/hero-09.jpg";
+import hero10 from "@/assets/hero/hero-10.jpg";
 
+// Full-resolution (1920x1080) hero photography of real SAF student athletes
 const ALL_IMAGES = [
-  student01, student02, student03, student04, student05,
-  student06, student07, student08, student09, student10,
-  student11, student12, student13, student14, student15,
+  hero01, hero02, hero03, hero04, hero05,
+  hero06, hero07, hero08, hero09, hero10,
 ];
 
 interface PageHeroProps {
