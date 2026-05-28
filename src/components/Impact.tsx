@@ -67,7 +67,7 @@ const Impact = () => {
               <h3 className="text-white font-semibold text-lg mb-2">
                 {stat.label}
               </h3>
-              <p className="text-white/60 text-sm">
+              <p className="text-white/85 text-sm">
                 {stat.description}
               </p>
             </div>
