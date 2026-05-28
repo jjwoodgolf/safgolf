@@ -71,6 +71,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Student Athlete Foundation — Golf Scholarships & Veterans"
+        description="Houston 501(c)(3) helping junior golfers earn college scholarships and providing free golf programs for military veterans."
+        path="/"
+      />
       <Header />
       <main>
         <Hero />
