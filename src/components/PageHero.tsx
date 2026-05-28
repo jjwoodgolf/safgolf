@@ -85,26 +85,39 @@ const PageHero = ({
       className={`relative ${minHeight} flex pt-32 pb-16 overflow-hidden`}
       aria-label={title}
     >
-      {/* Slideshow background */}
-      <div className="absolute inset-0">
+      {/* Slideshow background — blurred fill behind a fully-contained sharp image
+          so no part of the photo (or the people in it) is ever cropped out. */}
+      <div className="absolute inset-0 bg-primary">
         {slides.map((src, i) => (
-          <img
+          <div
             key={i}
-            src={src}
-            alt=""
-            aria-hidden="true"
-            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
               i === active ? "opacity-100" : "opacity-0"
             }`}
-            loading={i === 0 ? "eager" : "lazy"}
-            fetchPriority={i === 0 ? "high" : "auto"}
-          />
+            aria-hidden="true"
+          >
+            {/* Blurred backdrop — fills the frame edge-to-edge */}
+            <img
+              src={src}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+            {/* Sharp, fully-visible image — letterboxed inside the frame */}
+            <img
+              src={src}
+              alt=""
+              className="absolute inset-0 w-full h-full object-contain"
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "auto"}
+            />
+          </div>
         ))}
       </div>
 
       {/* Translucent brand overlay — keeps imagery visible while ensuring text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/85 via-primary/75 to-primary/90" />
-      <div className="absolute inset-0 bg-black/15" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/55 to-primary/80" />
+      <div className="absolute inset-0 bg-black/20" />
 
       {/* Slide indicators */}
       {slides.length > 1 && (
