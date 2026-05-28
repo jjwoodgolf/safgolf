@@ -47,18 +47,12 @@ const ProgramsPage = () => {
   return (
     <Layout>
       <SEO title="Programs | Junior Golf, Scholarships & Veterans" description="Explore SAF programs: junior golf development, college scholarships, veteran golf, showcase events, and recruiting support." path="/programs" />
-            {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            Our Programs
-          </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            Comprehensive programs designed to support junior golfers on their journey to college 
-            and provide healing opportunities for our nation's veterans.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        kicker="What We Do"
+        title="Our Programs"
+        subtitle="Comprehensive programs designed to support junior golfers on their journey to college and provide healing opportunities for our nation's veterans."
+        imageOffset={8}
+      />
 
       {/* Programs Grid */}
       <section className="section-padding bg-muted">

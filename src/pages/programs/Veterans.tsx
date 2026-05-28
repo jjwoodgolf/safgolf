@@ -35,61 +35,23 @@ const Veterans = () => {
   return (
     <Layout>
       <SEO title="Veterans Golf Program | SAF" description="Free golf programs for military veterans and amputees in partnership with the PGA." path="/programs/veterans" />
-            {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left lg:pl-8">
-              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-6">
-                <svg 
-                  className="h-12 w-12 text-white" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="1.5"
-                >
-                  {/* Flag pole */}
-                  <line x1="4" y1="2" x2="4" y2="22" strokeLinecap="round" />
-                  {/* Flag outline */}
-                  <path d="M4 4h16v10H4z" fill="currentColor" fillOpacity="0.2" />
-                  {/* Stripes */}
-                  <line x1="4" y1="6" x2="20" y2="6" />
-                  <line x1="4" y1="8" x2="20" y2="8" />
-                  <line x1="4" y1="10" x2="20" y2="10" />
-                  <line x1="4" y1="12" x2="20" y2="12" />
-                  {/* Stars region */}
-                  <rect x="4" y="4" width="8" height="6" fill="currentColor" fillOpacity="0.3" stroke="currentColor" />
-                  {/* Stars */}
-                  <circle cx="6" cy="5.5" r="0.5" fill="currentColor" />
-                  <circle cx="8" cy="5.5" r="0.5" fill="currentColor" />
-                  <circle cx="10" cy="5.5" r="0.5" fill="currentColor" />
-                  <circle cx="7" cy="7" r="0.5" fill="currentColor" />
-                  <circle cx="9" cy="7" r="0.5" fill="currentColor" />
-                  <circle cx="6" cy="8.5" r="0.5" fill="currentColor" />
-                  <circle cx="8" cy="8.5" r="0.5" fill="currentColor" />
-                  <circle cx="10" cy="8.5" r="0.5" fill="currentColor" />
-                </svg>
-              </div>
-              <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-                Veterans Golf Program
-              </h1>
-              <p className="text-white/80 text-xl max-w-xl mx-auto lg:mx-0">
-                Complimentary golf programs for military veterans, providing healing, 
-                community, and a new passion through the game of golf.
-              </p>
-            </div>
-            <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
-              <iframe
-                src="https://www.youtube.com/embed/RkiURQXDk68"
-                title="Veterans Golf Program"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            </div>
-          </div>
+      <PageHero
+        kicker="Honoring Our Heroes"
+        title="Veterans Golf Program"
+        subtitle="Complimentary golf programs for military veterans, providing healing, community, and a new passion through the game of golf."
+        imageOffset={11}
+        minHeight="min-h-[600px] md:min-h-[680px]"
+      >
+        <div className="w-full max-w-3xl mx-auto mt-6 aspect-video rounded-2xl overflow-hidden shadow-2xl">
+          <iframe
+            src="https://www.youtube.com/embed/RkiURQXDk68"
+            title="Veterans Golf Program"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          />
         </div>
-      </section>
+      </PageHero>
 
       {/* Program Overview */}
       <section className="section-padding bg-muted">

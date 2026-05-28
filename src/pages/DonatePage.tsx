@@ -43,18 +43,12 @@ const DonatePage = () => {
   return (
     <Layout>
       <SEO title="Donate | Student Athlete Foundation" description="Make a tax-deductible donation to fund golf scholarships for junior athletes and free programs for military veterans." path="/donate" />
-            {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            Support Our Mission
-          </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            Your tax-deductible donation directly supports junior golfers pursuing college dreams 
-            and veterans finding healing through golf.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        kicker="Donate"
+        title="Support Our Mission"
+        subtitle="Your tax-deductible donation directly supports junior golfers pursuing college dreams and veterans finding healing through golf."
+        imageOffset={4}
+      />
 
       {/* Main Donation CTA */}
       <section className="section-padding bg-cream">

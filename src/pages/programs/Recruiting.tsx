@@ -59,21 +59,12 @@ const Recruiting = () => {
   return (
     <Layout>
       <SEO title="College Recruiting Services | SAF" description="Recruiting support: profile building, video, coach outreach, and application guidance." path="/programs/recruiting" />
-            {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <UserCheck className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            Recruiting Services
-          </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            Personalized guidance to navigate the complex college golf recruiting landscape 
-            and find your perfect fit.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        kicker="College Pathway"
+        title="Recruiting Services"
+        subtitle="Personalized guidance to navigate the complex college golf recruiting landscape and find your perfect fit."
+        imageOffset={7}
+      />
 
       {/* Services Overview */}
       <section className="section-padding bg-muted">
