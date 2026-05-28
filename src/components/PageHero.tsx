@@ -10,11 +10,16 @@ import hero07 from "@/assets/hero/hero-07.jpg";
 import hero08 from "@/assets/hero/hero-08.jpg";
 import hero09 from "@/assets/hero/hero-09.jpg";
 import hero10 from "@/assets/hero/hero-10.jpg";
+import hero11 from "@/assets/hero/hero-11.jpg";
+import hero12 from "@/assets/hero/hero-12.jpg";
+import hero13 from "@/assets/hero/hero-13.jpg";
+import hero14 from "@/assets/hero/hero-14.jpg";
 
-// Full-resolution (1920x1080) hero photography of real SAF student athletes
+// Real SAF student athlete photography. Displayed fully contained (no crop)
+// over a blurred backdrop of the same image so people are never cut off.
 const ALL_IMAGES = [
-  hero01, hero02, hero03, hero04, hero05,
-  hero06, hero07, hero08, hero09, hero10,
+  hero01, hero02, hero03, hero04, hero05, hero06, hero07,
+  hero08, hero09, hero10, hero11, hero12, hero13, hero14,
 ];
 
 interface PageHeroProps {
@@ -80,26 +85,39 @@ const PageHero = ({
       className={`relative ${minHeight} flex pt-32 pb-16 overflow-hidden`}
       aria-label={title}
     >
-      {/* Slideshow background */}
-      <div className="absolute inset-0">
+      {/* Slideshow background — blurred fill behind a fully-contained sharp image
+          so no part of the photo (or the people in it) is ever cropped out. */}
+      <div className="absolute inset-0 bg-primary">
         {slides.map((src, i) => (
-          <img
+          <div
             key={i}
-            src={src}
-            alt=""
-            aria-hidden="true"
-            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
               i === active ? "opacity-100" : "opacity-0"
             }`}
-            loading={i === 0 ? "eager" : "lazy"}
-            fetchPriority={i === 0 ? "high" : "auto"}
-          />
+            aria-hidden="true"
+          >
+            {/* Blurred backdrop — fills the frame edge-to-edge */}
+            <img
+              src={src}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+            {/* Sharp, fully-visible image — letterboxed inside the frame */}
+            <img
+              src={src}
+              alt=""
+              className="absolute inset-0 w-full h-full object-contain"
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "auto"}
+            />
+          </div>
         ))}
       </div>
 
       {/* Translucent brand overlay — keeps imagery visible while ensuring text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/85 via-primary/75 to-primary/90" />
-      <div className="absolute inset-0 bg-black/15" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/55 to-primary/80" />
+      <div className="absolute inset-0 bg-black/20" />
 
       {/* Slide indicators */}
       {slides.length > 1 && (
