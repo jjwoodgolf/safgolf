@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { Users, CheckCircle, ArrowRight, Heart, Shield, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,8 @@ const Veterans = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="Veterans Golf Program | SAF" description="Free golf programs for military veterans and amputees in partnership with the PGA." path="/programs/veterans" />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 items-center">

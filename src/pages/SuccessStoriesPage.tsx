@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,8 @@ const SuccessStoriesPage = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="Success Stories | Student Athlete Foundation" description="Meet the student-athletes who earned college scholarships and the veterans whose lives changed through SAF programs." path="/success-stories" />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">

@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { Handshake, CheckCircle, Receipt, Eye, Heart, Target, Users, GraduationCap, Settings, Building, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -115,7 +116,8 @@ const SponsorsPage = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="Sponsors & Partners | Student Athlete Foundation" description="Become an SAF sponsor. Naming rights, program sponsorships, and tiered partnerships supporting golf scholarships and veterans." path="/sponsors" />
+            {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-4">

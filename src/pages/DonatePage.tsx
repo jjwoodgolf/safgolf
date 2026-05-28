@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Heart, CreditCard, Building2, Gift, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -41,7 +42,8 @@ const DonatePage = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
+      <SEO title="Donate | Student Athlete Foundation" description="Make a tax-deductible donation to fund golf scholarships for junior athletes and free programs for military veterans." path="/donate" />
+            {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
