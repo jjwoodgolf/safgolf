@@ -39,7 +39,18 @@ const SuccessStoriesPage = () => {
 
   return (
     <Layout>
-      <SEO title="Success Stories | Student Athlete Foundation" description="Meet the student-athletes who earned college scholarships and the veterans whose lives changed through SAF programs." path="/success-stories" />
+      <SEO
+        title="Success Stories | Student Athlete Foundation"
+        description="Meet the student-athletes who earned college scholarships and the veterans whose lives changed through SAF programs."
+        path="/success-stories"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "SAF Success Stories",
+          description: "Junior golfers and veterans whose lives were changed through the Student Athlete Foundation.",
+          url: "https://safgolf.lovable.app/success-stories",
+        }}
+      />
             {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
         <div className="container-custom text-center">
