@@ -103,11 +103,13 @@ const PageHero = ({
               className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
               loading={i === 0 ? "eager" : "lazy"}
             />
-            {/* Sharp, fully-visible image — letterboxed inside the frame */}
+            {/* Sharp, fully-visible image — letterboxed inside the frame.
+                Anchored to the bottom so subjects' heads stay fully in frame. */}
             <img
               src={src}
               alt=""
               className="absolute inset-0 w-full h-full object-contain"
+              style={{ objectPosition: "center bottom" }}
               loading={i === 0 ? "eager" : "lazy"}
               fetchPriority={i === 0 ? "high" : "auto"}
             />
