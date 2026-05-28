@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/PageHero";
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,12 +77,17 @@ const Contact = () => {
           openingHours: "Mo-Fr 09:00-17:00",
         }}
       />
-      <PageHero
-        kicker="Get In Touch"
-        title="Contact Us"
-        subtitle="Have questions about our programs or want to get involved? We'd love to hear from you."
-        imageOffset={2}
-      />
+            {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+        <div className="container-custom text-center">
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+            Contact Us
+          </h1>
+          <p className="text-white/80 text-xl max-w-3xl mx-auto">
+            Have questions about our programs or want to get involved? We'd love to hear from you.
+          </p>
+        </div>
+      </section>
 
       {/* Contact Section */}
       <section className="section-padding bg-muted">

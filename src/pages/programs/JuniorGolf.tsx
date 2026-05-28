@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/PageHero";
 import { Link } from "react-router-dom";
 import { GraduationCap, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,12 +23,21 @@ const JuniorGolf = () => {
   return (
     <Layout>
       <SEO title="Junior Golf Development | SAF" description="Comprehensive training and mentorship for young golfers aiming at college scholarships." path="/programs/junior-golf" />
-      <PageHero
-        kicker="Junior Development"
-        title="Junior Golf Player Development"
-        subtitle="Comprehensive training programs for young golfers looking to improve their skills, build confidence, and compete at higher levels."
-        imageOffset={5}
-      />
+            {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+        <div className="container-custom text-center">
+          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <GraduationCap className="h-8 w-8 text-white" />
+          </div>
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+            Junior Golf Player Development
+          </h1>
+          <p className="text-white/80 text-xl max-w-3xl mx-auto">
+            Comprehensive training programs for young golfers looking to improve their skills, 
+            build confidence, and compete at higher levels.
+          </p>
+        </div>
+      </section>
 
       {/* Program Overview */}
       <section className="section-padding bg-muted">

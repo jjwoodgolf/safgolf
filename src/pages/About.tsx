@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/PageHero";
 import { Target, Users, Award, Heart, Trophy, Star } from "lucide-react";
 
 const About = () => {
@@ -43,12 +42,18 @@ const About = () => {
   return (
     <Layout>
       <SEO title="About Us | Student Athlete Foundation" description="Learn about SAF's mission to fund junior golf scholarships and support military veterans through golf in Houston, TX." path="/about" />
-      <PageHero
-        kicker="Who We Are"
-        title="About Us"
-        subtitle="The Student Athlete Foundation is a 501(c)(3) non-profit organization dedicated to empowering lives through the beautiful game of golf."
-        imageOffset={0}
-      />
+            {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+        <div className="container-custom text-center">
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+            About Us
+          </h1>
+          <p className="text-white/80 text-xl max-w-3xl mx-auto">
+            The Student Athlete Foundation is a 501(c)(3) non-profit organization dedicated to 
+            empowering lives through the beautiful game of golf.
+          </p>
+        </div>
+      </section>
 
       {/* Mission Section */}
       <section className="section-padding bg-muted">

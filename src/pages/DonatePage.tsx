@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/PageHero";
 import { Heart, CreditCard, Building2, Gift, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -44,12 +43,18 @@ const DonatePage = () => {
   return (
     <Layout>
       <SEO title="Donate | Student Athlete Foundation" description="Make a tax-deductible donation to fund golf scholarships for junior athletes and free programs for military veterans." path="/donate" />
-      <PageHero
-        kicker="Donate"
-        title="Support Our Mission"
-        subtitle="Your tax-deductible donation directly supports junior golfers pursuing college dreams and veterans finding healing through golf."
-        imageOffset={4}
-      />
+            {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+        <div className="container-custom text-center">
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+            Support Our Mission
+          </h1>
+          <p className="text-white/80 text-xl max-w-3xl mx-auto">
+            Your tax-deductible donation directly supports junior golfers pursuing college dreams 
+            and veterans finding healing through golf.
+          </p>
+        </div>
+      </section>
 
       {/* Main Donation CTA */}
       <section className="section-padding bg-cream">

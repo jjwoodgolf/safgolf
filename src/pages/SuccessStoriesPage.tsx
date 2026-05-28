@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/PageHero";
 import { Link } from "react-router-dom";
 import { Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,12 +51,18 @@ const SuccessStoriesPage = () => {
           url: "https://safgolf.lovable.app/success-stories",
         }}
       />
-      <PageHero
-        kicker="Their Journey"
-        title="Success Stories"
-        subtitle="These are just a few of the many student-athletes who have achieved their college golf dreams with the help of the Student Athlete Foundation."
-        imageOffset={1}
-      />
+            {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+        <div className="container-custom text-center">
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+            Success Stories
+          </h1>
+          <p className="text-white/80 text-xl max-w-3xl mx-auto">
+            These are just a few of the many student-athletes who have achieved their college golf 
+            dreams with the help of the Student Athlete Foundation.
+          </p>
+        </div>
+      </section>
 
       {/* Student Athletes Gallery */}
       <SuccessGallerySlider

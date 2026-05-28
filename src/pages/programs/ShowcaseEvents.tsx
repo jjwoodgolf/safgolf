@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/PageHero";
 import { Link } from "react-router-dom";
 import { Calendar, CheckCircle, ArrowRight, Camera, Trophy, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,12 +47,21 @@ const ShowcaseEvents = () => {
   return (
     <Layout>
       <SEO title="Golf Showcase Events | SAF" description="Competitive showcase events giving junior golfers direct exposure to college coaches and scouts." path="/programs/showcase-events" />
-      <PageHero
-        kicker="Get Noticed"
-        title="Golf Showcase Events"
-        subtitle="Competitive events designed to give junior golfers maximum exposure to college coaches and scouts."
-        imageOffset={9}
-      />
+            {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+        <div className="container-custom text-center">
+          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Calendar className="h-8 w-8 text-white" />
+          </div>
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
+            Golf Showcase Events
+          </h1>
+          <p className="text-white/80 text-xl max-w-3xl mx-auto">
+            Competitive events designed to give junior golfers maximum exposure to 
+            college coaches and scouts.
+          </p>
+        </div>
+      </section>
 
       {/* Program Overview */}
       <section className="section-padding bg-muted">
