@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
+import PageHero from "@/components/PageHero";
 import { Calendar, Users, GraduationCap, Trophy, Gift, Award, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";

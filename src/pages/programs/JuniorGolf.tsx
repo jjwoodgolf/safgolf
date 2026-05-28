@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
+import PageHero from "@/components/PageHero";
 import { Link } from "react-router-dom";
 import { GraduationCap, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";

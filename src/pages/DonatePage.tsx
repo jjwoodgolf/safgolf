@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
+import PageHero from "@/components/PageHero";
 import { Heart, CreditCard, Building2, Gift, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
