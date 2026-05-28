@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Target, Users, Award, GraduationCap, Heart, Calendar, UserCheck, Quote, ArrowRight } from "lucide-react";
 import mediaLogos from "@/assets/media-logos.png";
