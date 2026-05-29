@@ -1,142 +1,124 @@
 
-# SAF Website Completion & Optimization Plan
+# SAF Sales Tool — Completion Plan
 
-## 1. Audit vs. Best-in-Class Nonprofits
-
-Benchmarks: charity: water, St. Jude, Folds of Honor, First Tee, Wounded Warrior Project. What they share that we should match:
-
-- **Donate CTA visible on every page** (sticky header + footer + mid-page)
-- **Concrete impact math** ($X = Y outcome) above the fold of donate page ✅ partial
-- **Transparent financials** (990s, annual report, % of $ to programs)
-- **Recurring giving prioritized** (monthly toggle defaulted)
-- **Real photos + named beneficiaries** ✅ partial (gallery added)
-- **Press / media credibility band** ✅ done
-- **Email capture for newsletter** ❌ missing
-- **Multiple ways to give** (one-time, monthly, DAF, stock, employer match, legacy)
-- **Tax-deductibility + EIN displayed** (currently shows "XX-XXXXXXX" placeholder ❌)
-- **Strong SEO/JSON-LD as NonProfit + DonateAction** ❌ missing
-
-## 2. Page Inventory
-
-Existing: Home, About, Events, Programs (+ 5 sub-pages), Success Stories, Sponsors, Contact, Donate.
-
-**Missing / recommended pages:**
-- **Impact / Annual Report** — measurable outcomes, financial transparency, 990s
-- **News & Blog** — fuels SEO + AI search retrieval
-- **Ways to Give** (DAF, stock, employer match, legacy, vehicle, crypto) — separate from Donate checkout
-- **Volunteer / Get Involved**
-- **Press / Media Kit** — logos, founder bios, downloadable assets
-- **Privacy Policy, Terms, Refund/Donation Policy** (required for Stripe + trust)
-- **Thank You / Donation Confirmation** page (post-Stripe redirect)
-- **FAQ** (donor + program-applicant questions)
-- **Apply** pages — Junior Golfer Application, Veteran Program Application, Scholarship Application
-- **Newsletter subscribe** landing (Brevo list)
-
-## 3. Donation Conversion Improvements
-
-- Sticky "Donate" button in header on mobile + persistent CTA bar
-- Donate page: **monthly vs one-time toggle at top**, preset amounts as large buttons, custom field, "cover processing fee" checkbox
-- Replace placeholder Tax ID with real EIN; add 501(c)(3) trust badge
-- Add donor testimonial + impact stat next to checkout form
-- Use Stripe Checkout (hosted) for PCI simplicity; support Apple Pay / Google Pay / ACH
-- Show "X donors this month" social proof (pulled from Stripe metadata)
-- After-donation: thank-you page + auto-receipt email + add to Brevo donor list + suggest sharing
-- Add "In Honor / In Memory of" optional field
-- Add corporate matching gift lookup (Double the Donation widget or simple text)
-
-## 4. Stripe Integration
-
-Recommend **Lovable's built-in Stripe Payments** (no API key required). Implementation:
-- One-time + monthly recurring donations
-- Preset tiers ($50/$100/$250/$500/$1k/$5k) + custom amount
-- Edge functions: `create-checkout-session`, `stripe-webhook` (records donation, triggers Brevo)
-- `donations` table (amount, frequency, donor_email, name, message, stripe_session_id, status)
-- Success/cancel redirect pages
-
-## 5. Brevo Email Automation
-
-Extend existing Brevo integration:
-- **List 27** (contact form) — already wired ✅
-- New lists: Donors, Newsletter, Volunteers, Program Applicants
-- Automated flows:
-  - Donation receipt (transactional, tax-deductible language)
-  - Monthly donor welcome series (3 emails)
-  - New newsletter subscriber welcome
-  - Program application acknowledgment
-  - Quarterly impact newsletter (manual send)
-- Edge functions: `subscribe-newsletter`, extend `submit-contact` pattern, `stripe-webhook` → Brevo contact + transactional email
-
-## 6. SEO & AI Search Optimization
-
-- Add **react-helmet-async**; unique `<title>`, meta description, canonical, og:* per route
-- JSON-LD schemas: `NonProfit` (sitewide), `DonateAction`, `Event` (per event), `Person` (success stories), `FAQPage`, `Article` (blog), `BreadcrumbList`
-- Replace placeholder EIN; add `legalName`, `taxID`, `address`, `sameAs` (social links) in Organization schema
-- `public/sitemap.xml` generator (script in `scripts/generate-sitemap.ts`) covering all static + dynamic routes
-- `robots.txt` with Sitemap directive ✅ exists, needs sitemap line
-- Real OG image (1200×630) per major page
-- Semantic HTML: single H1 per page (Hero currently uses h1 ✅), proper heading hierarchy on sub-pages
-- Image alt text audit on all gallery + program images
-- Page speed: lazy-load gallery, preload hero, compress hero background (currently Unsplash hotlink — host locally)
-- **AI search (ChatGPT/Perplexity/Google AI)**: clear factual copy, FAQ schema, About page with founding date / EIN / location, structured impact numbers, llms.txt file
-
-## 7. Analytics & Trust
-
-- Google Analytics 4 + Google Search Console verification (use connector)
-- Cookie consent banner
-- Privacy policy + donation refund policy
-- Accessibility pass (WCAG AA): color contrast, focus states, alt text, keyboard nav
+Built around the existing `.lovable/plan.md` phases, locked to your three decisions:
+- Stripe = bring-your-own-key (your existing Stripe account)
+- Auth = staff/admins + program applicants (no donor accounts)
+- Backend storage = every form on the site (donations, newsletter, applications, volunteer/sponsor inquiry, contact)
 
 ---
 
-## Completion Checklist (Build Order)
+## Phase 1 — Foundation (SEO + Trust)
 
-### Phase 1 — Foundation (SEO + Trust)
-- [ ] Install `react-helmet-async`, add per-route meta + JSON-LD
-- [ ] Add Organization/NonProfit JSON-LD with real EIN in `index.html`
-- [ ] Generate `public/sitemap.xml` via build script; reference in robots.txt
-- [ ] Create Privacy Policy, Terms, Donation Refund Policy pages
-- [ ] Replace placeholder EIN sitewide
-- [ ] Host hero image locally; compress
+Goal: make the site credible to donors, search engines, and AI crawlers before driving traffic to it.
 
-### Phase 2 — Donation Engine
-- [ ] Enable Lovable Stripe Payments
-- [ ] Build `donations` table + RLS
-- [ ] Edge functions: `create-checkout-session`, `stripe-webhook`
-- [ ] Rebuild Donate page: monthly/one-time toggle, preset tiers, custom amount, tribute field, fee-cover
-- [ ] Thank You page + transactional receipt via Brevo
-- [ ] Sticky mobile Donate CTA
+- Wire `react-helmet-async` into every route; unique title, meta description, canonical, og:image.
+- Add `Organization` / `NonProfit` JSON-LD in `index.html` with real EIN, legal name, address, phone, `sameAs`.
+- Replace placeholder `XX-XXXXXXX` Tax ID sitewide (Donate page + footer).
+- Generate `public/sitemap.xml` from `scripts/generate-sitemap.ts` at build; add `Sitemap:` line to `robots.txt`.
+- Create Privacy Policy, Terms, and Donation Refund Policy pages (required for Stripe + trust).
+- Host hero image locally (currently hotlinked Unsplash), compress, add proper alt text across galleries.
 
-### Phase 3 — Email & Lists
-- [ ] Newsletter subscribe component (footer + dedicated page) → Brevo
-- [ ] Donor welcome automation in Brevo
-- [ ] Program application forms (Junior Golfer, Veteran, Scholarship) → Brevo lists
-
-### Phase 4 — Missing Content Pages
-- [ ] Impact / Annual Report page (with 990 downloads)
-- [ ] Ways to Give page (DAF, stock, legacy, employer match)
-- [ ] Volunteer page
-- [ ] Press / Media Kit page
-- [ ] FAQ page (with FAQPage schema)
-- [ ] News & Blog (simple CMS via Supabase table)
-
-### Phase 5 — Conversion Polish
-- [ ] Donor social proof + testimonials on Donate page
-- [ ] Add Apple Pay / Google Pay to Stripe checkout
-- [ ] "In Honor/Memory of" donations
-- [ ] Recurring-donor portal (manage subscription)
-
-### Phase 6 — Analytics & Compliance
-- [ ] GA4 + Search Console verification
-- [ ] Cookie consent
-- [ ] Accessibility audit (WCAG AA)
-- [ ] llms.txt for AI crawlers
-- [ ] Run SEO scan, fix all findings
+**Blocker to resolve before starting:** real EIN, legal address, and any 990 PDFs you want linked.
 
 ---
 
-## Questions Before I Start Building
+## Phase 2 — Donation Engine (BYOK Stripe)
 
-1. **Real EIN / Tax ID** — need it for trust + JSON-LD
-2. **Stripe** — confirm using Lovable built-in Stripe Payments (recommended) vs your existing Stripe account
-3. **Annual report / 990s** — do you have PDFs to upload, or skip Impact page for now?
-4. **Phase priority** — start with Phase 1 (SEO foundation) + Phase 2 (donation engine) together, then iterate?
+Goal: a high-conversion donate flow that records every gift in our database.
+
+- Add `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` as project secrets.
+- New table `donations` (amount, currency, frequency, donor name/email, tribute, message, stripe_session_id, stripe_customer_id, status, created_at) with RLS: public insert via edge fn only, staff read.
+- Edge functions:
+  - `create-checkout-session` — one-time + monthly, preset tiers ($50/100/250/500/1k/5k) + custom + "cover processing fee" + "In Honor/Memory of".
+  - `stripe-webhook` — verifies signature, writes donation row, triggers Brevo receipt + adds donor to "Donors" list.
+- Rebuild `/donate`: monthly/one-time toggle at top (monthly default), large preset tier buttons, custom amount, tribute field, fee-cover checkbox, donor social-proof + testimonial column.
+- Sticky mobile "Donate" CTA in header.
+- `/thank-you` post-checkout page with share prompt.
+
+---
+
+## Phase 3 — Authentication & Forms Backend
+
+Goal: staff dashboard + applicant portal, plus every form persists to the DB.
+
+**Auth**
+- Enable Supabase email/password + Google (Lovable Cloud managed OAuth).
+- `profiles` table (auto-created via trigger on signup) + separate `user_roles` table with `app_role` enum (`admin`, `staff`, `applicant`) and `has_role()` security-definer function — never store role on profiles.
+- `/auth` (login/signup), `/reset-password`, `/account` pages. Email confirmation ON.
+
+**Form tables (all with RLS — public insert via edge fn, staff-only read)**
+- `donations` (Phase 2)
+- `newsletter_subscribers` (email, source, created_at)
+- `program_applications` (program enum: junior_golf / veteran / scholarship, applicant_user_id nullable, payload jsonb, status, reviewer notes)
+- `volunteer_inquiries`
+- `sponsor_inquiries`
+- `contact_submissions` ✅ already exists
+
+**Edge functions** (one per form, modeled on existing `submit-contact`): IP rate-limit, Zod validation, write row, forward to Brevo list. Newsletter → Brevo List "Newsletter"; applications → Brevo List "Applicants"; etc.
+
+**Applicant portal**
+- `/apply/junior-golf`, `/apply/veteran`, `/apply/scholarship` — logged-in applicants submit and see status.
+- `/my-applications` — read their own rows (RLS scoped to `auth.uid()`).
+
+**Staff dashboard** `/admin` (gated by `has_role(auth.uid(), 'admin'|'staff')`):
+- Tabs: Donations, Applications, Newsletter, Volunteer, Sponsor, Contact.
+- CSV export per tab. Application status update (pending/review/approved/declined).
+- Donation totals (today / MTD / YTD), monthly donor count.
+
+---
+
+## Phase 4 — Email & Lists (Brevo)
+
+Goal: every form submission triggers the right automated email and lands in the right list.
+
+- Extend Brevo integration with lists: Donors, Newsletter, Volunteers, Sponsors, Applicants (Junior/Veteran/Scholarship).
+- Transactional flows: donation receipt (tax-deductible language + EIN), monthly donor 3-email welcome series, newsletter welcome, application acknowledgment per program, volunteer/sponsor reply-to.
+- Quarterly impact newsletter template (manual send from Brevo).
+
+---
+
+## Phase 5 — Missing Content Pages
+
+Goal: complete the site map donors and search engines expect.
+
+- `/impact` — annual report, measurable outcomes, 990 downloads, % of funds to programs.
+- `/ways-to-give` — DAF, stock, employer match, legacy, vehicle, crypto (info-only, links to forms).
+- `/volunteer` — form → `volunteer_inquiries`.
+- `/press` — media kit, founder bios, downloadable logos.
+- `/faq` — donor + applicant FAQs with `FAQPage` JSON-LD.
+- `/news` — simple blog backed by a `posts` table (staff-authored from `/admin`).
+- Newsletter signup component embedded in footer + `/subscribe` landing.
+
+---
+
+## Phase 6 — Analytics, Polish & Launch
+
+- GA4 + Google Search Console (via connector).
+- Cookie consent banner (required with GA4 + EU traffic).
+- WCAG AA pass: contrast, focus states, keyboard nav, alt text audit.
+- `public/llms.txt` for AI crawlers.
+- Run security scan + SEO scan; fix all findings.
+- Publish to `safgolf.lovable.app` (or custom domain if you have one).
+
+---
+
+## Technical Details
+
+- **Stripe BYOK** uses `enable_stripe` (not `enable_stripe_payments`); you provide `STRIPE_SECRET_KEY`. The Lovable seamless integration is unavailable since you're keeping your own account.
+- **Roles**: dedicated `user_roles` table + `has_role()` security-definer function (prevents privilege escalation and RLS recursion).
+- **Form edge functions** all follow the existing `submit-contact` pattern (CORS, Zod validation, IP rate-limit via `check_contact_rate_limit`-style RPCs, Brevo forward).
+- **RLS pattern** for every new form table: `INSERT` allowed to `anon` via edge fn only (edge fn uses service role); `SELECT` restricted via `has_role(auth.uid(), 'admin'|'staff')`; applicants read their own rows via `auth.uid() = applicant_user_id`.
+- **GRANTs**: every new public table gets explicit `GRANT` statements in the same migration (anon insert where allowed, authenticated CRUD scoped by RLS, service_role full).
+- **Aesthetic**: all new UI uses Playfair Display + Inter, primary `#690000`, generous whitespace, Lucide icons only, no emojis, no bounce animations — per project memory.
+
+---
+
+## Open Questions Before Phase 1
+
+1. Real EIN, legal name, and mailing address for JSON-LD + Tax ID display.
+2. Do you have 990 PDFs / annual report content, or stub the Impact page for v1?
+3. Custom domain to publish to, or stay on `safgolf.lovable.app`?
+4. Stripe: live keys ready now, or start in test mode and swap before launch?
+
+Approve this and I'll start Phase 1 immediately.
