@@ -1,4 +1,4 @@
-import { Handshake } from "lucide-react";
+import { Handshake, Trophy, Medal, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Sponsors = () => {
@@ -21,7 +21,7 @@ const Sponsors = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {/* Platinum */}
           <div className="bg-gradient-to-b from-muted to-background rounded-xl p-8 text-center border border-border">
-            <div className="text-3xl mb-4">🏆</div>
+            <Trophy className="h-10 w-10 text-primary mx-auto mb-4" aria-hidden="true" />
             <h3 className="font-display text-xl font-bold text-foreground mb-2">Platinum Sponsors</h3>
             <p className="text-muted-foreground text-sm mb-6">$10,000+</p>
             <div className="h-32 flex items-center justify-center text-muted-foreground italic">
@@ -31,7 +31,7 @@ const Sponsors = () => {
 
           {/* Gold */}
           <div className="bg-gradient-to-b from-secondary/20 to-secondary/5 rounded-xl p-8 text-center border border-secondary/30">
-            <div className="text-3xl mb-4">🥇</div>
+            <Medal className="h-10 w-10 text-primary mx-auto mb-4" aria-hidden="true" />
             <h3 className="font-display text-xl font-bold text-foreground mb-2">Gold Sponsors</h3>
             <p className="text-muted-foreground text-sm mb-6">$5,000+</p>
             <div className="h-32 flex items-center justify-center text-muted-foreground italic">
@@ -41,7 +41,7 @@ const Sponsors = () => {
 
           {/* Silver */}
           <div className="bg-gradient-to-b from-muted/50 to-muted rounded-xl p-8 text-center border border-border">
-            <div className="text-3xl mb-4">🥈</div>
+            <Award className="h-10 w-10 text-primary mx-auto mb-4" aria-hidden="true" />
             <h3 className="font-display text-xl font-bold text-foreground mb-2">Silver Sponsors</h3>
             <p className="text-muted-foreground text-sm mb-6">$2,500+</p>
             <div className="h-32 flex items-center justify-center text-muted-foreground italic">
