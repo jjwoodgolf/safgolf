@@ -47,6 +47,267 @@ export type Database = {
         }
         Relationships: []
       }
+      donations: {
+        Row: {
+          amount_cents: number
+          cover_fees: boolean
+          created_at: string
+          currency: string
+          donor_email: string | null
+          donor_name: string | null
+          frequency: string
+          id: string
+          message: string | null
+          metadata: Json
+          status: string
+          stripe_customer_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          tribute_name: string | null
+          tribute_type: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          cover_fees?: boolean
+          created_at?: string
+          currency?: string
+          donor_email?: string | null
+          donor_name?: string | null
+          frequency?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          tribute_name?: string | null
+          tribute_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          cover_fees?: boolean
+          created_at?: string
+          currency?: string
+          donor_email?: string | null
+          donor_name?: string | null
+          frequency?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          tribute_name?: string | null
+          tribute_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          metadata: Json
+          source: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          metadata?: Json
+          source?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          metadata?: Json
+          source?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      program_applications: {
+        Row: {
+          applicant_email: string
+          applicant_name: string
+          applicant_phone: string | null
+          applicant_user_id: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          payload: Json
+          program: Database["public"]["Enums"]["program_type"]
+          reviewer_notes: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          applicant_email: string
+          applicant_name: string
+          applicant_phone?: string | null
+          applicant_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          payload?: Json
+          program: Database["public"]["Enums"]["program_type"]
+          reviewer_notes?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          applicant_email?: string
+          applicant_name?: string
+          applicant_phone?: string | null
+          applicant_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          payload?: Json
+          program?: Database["public"]["Enums"]["program_type"]
+          reviewer_notes?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sponsor_inquiries: {
+        Row: {
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          interest_tier: string | null
+          message: string | null
+          metadata: Json
+          phone: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          interest_tier?: string | null
+          message?: string | null
+          metadata?: Json
+          phone?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          interest_tier?: string | null
+          message?: string | null
+          metadata?: Json
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      volunteer_inquiries: {
+        Row: {
+          availability: string | null
+          created_at: string
+          email: string
+          id: string
+          interest_areas: string[] | null
+          message: string | null
+          metadata: Json
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          availability?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          interest_areas?: string[] | null
+          message?: string | null
+          metadata?: Json
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          availability?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          interest_areas?: string[] | null
+          message?: string | null
+          metadata?: Json
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -56,9 +317,24 @@ export type Database = {
         Args: { client_ip: string }
         Returns: boolean
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "staff" | "applicant"
+      application_status:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "approved"
+        | "declined"
+      program_type: "junior_golf" | "veteran" | "scholarship"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -185,6 +461,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "staff", "applicant"],
+      application_status: [
+        "draft",
+        "submitted",
+        "in_review",
+        "approved",
+        "declined",
+      ],
+      program_type: ["junior_golf", "veteran", "scholarship"],
+    },
   },
 } as const
