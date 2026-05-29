@@ -15,14 +15,14 @@ import DonatePage from "./pages/DonatePage";
 import JuniorGolf from "./pages/programs/JuniorGolf";
 import CollegeScholarships from "./pages/programs/CollegeScholarships";
 import Veterans from "./pages/programs/Veterans";
-import JuniorGolf from "./pages/programs/JuniorGolf";
-import CollegeScholarships from "./pages/programs/CollegeScholarships";
-import Veterans from "./pages/programs/Veterans";
 import ShowcaseEvents from "./pages/programs/ShowcaseEvents";
 import Recruiting from "./pages/programs/Recruiting";
 import Scholarships from "./pages/Scholarships";
 import VeteransProgram from "./pages/VeteransProgram";
 import JuniorGolfDevelopment from "./pages/JuniorGolfDevelopment";
+
+const queryClient = new QueryClient();
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -43,6 +43,9 @@ const App = () => (
           <Route path="/sponsors" element={<SponsorsPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/donate" element={<DonatePage />} />
+          <Route path="/scholarships" element={<Scholarships />} />
+          <Route path="/veterans" element={<VeteransProgram />} />
+          <Route path="/junior-golf" element={<JuniorGolfDevelopment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
