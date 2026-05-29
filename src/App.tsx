@@ -15,11 +15,14 @@ import DonatePage from "./pages/DonatePage";
 import JuniorGolf from "./pages/programs/JuniorGolf";
 import CollegeScholarships from "./pages/programs/CollegeScholarships";
 import Veterans from "./pages/programs/Veterans";
+import JuniorGolf from "./pages/programs/JuniorGolf";
+import CollegeScholarships from "./pages/programs/CollegeScholarships";
+import Veterans from "./pages/programs/Veterans";
 import ShowcaseEvents from "./pages/programs/ShowcaseEvents";
 import Recruiting from "./pages/programs/Recruiting";
-
-const queryClient = new QueryClient();
-
+import Scholarships from "./pages/Scholarships";
+import VeteransProgram from "./pages/VeteransProgram";
+import JuniorGolfDevelopment from "./pages/JuniorGolfDevelopment";
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
