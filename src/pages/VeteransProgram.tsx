@@ -16,8 +16,8 @@ const VeteransProgram = () => {
   return (
     <Layout>
       <SEO
-        title="Veterans Golf Program | Student Athlete Foundation"
-        description="Transformative, complimentary golf programs and rehabilitation opportunities for military veterans and amputees."
+        title="Veterans Golf Program | PGA HOPE Partner | SAF"
+        description="Free PGA HOPE golf clinics, adaptive equipment, and rehabilitation opportunities for military veterans and amputees."
         path="/veterans"
       />
 

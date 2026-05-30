@@ -22,8 +22,8 @@ const DonatePage = () => {
   return (
     <Layout>
       <SEO
-        title="Donate | Student Athlete Foundation"
-        description="Make a tax-deductible donation to fund golf scholarships for junior athletes and free programs for military veterans."
+        title="Donate & Sponsor | Student Athlete Foundation"
+        description="Make a tax-deductible donation or sponsor a student-athlete. Fund golf scholarships for juniors and free programs for veterans."
         path="/donate"
       />
 
