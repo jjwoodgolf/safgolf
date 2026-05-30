@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+
 import { CheckCircle2, Heart, Loader2 } from "lucide-react";
 
 const ThankYou = () => {
@@ -18,13 +18,9 @@ const ThankYou = () => {
       return;
     }
     (async () => {
-      const { data, error } = await supabase.functions.invoke("verify-donation", {
-        method: "GET" as any,
-      });
-      // functions.invoke doesn't pass query params reliably; use fetch instead
       try {
         const res = await fetch(
-          `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/verify-donation?session_id=${encodeURIComponent(sessionId)}`,
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-donation?session_id=${encodeURIComponent(sessionId)}`,
           { headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY } }
         );
         const json = await res.json();
