@@ -21,6 +21,12 @@ import Scholarships from "./pages/Scholarships";
 import VeteransProgram from "./pages/VeteransProgram";
 import JuniorGolfDevelopment from "./pages/JuniorGolfDevelopment";
 import ThankYou from "./pages/ThankYou";
+import Login from "./pages/Login";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminOverview from "./pages/admin/Overview";
+import AdminDonations from "./pages/admin/Donations";
+import AdminApplications from "./pages/admin/Applications";
+import AdminSponsors from "./pages/admin/Sponsors";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +54,13 @@ const App = () => (
           <Route path="/veterans" element={<VeteransProgram />} />
           <Route path="/junior-golf" element={<JuniorGolfDevelopment />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminOverview />} />
+            <Route path="donations" element={<AdminDonations />} />
+            <Route path="applications" element={<AdminApplications />} />
+            <Route path="sponsors" element={<AdminSponsors />} />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
