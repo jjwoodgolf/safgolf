@@ -20,6 +20,7 @@ import Recruiting from "./pages/programs/Recruiting";
 import Scholarships from "./pages/Scholarships";
 import VeteransProgram from "./pages/VeteransProgram";
 import JuniorGolfDevelopment from "./pages/JuniorGolfDevelopment";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/scholarships" element={<Scholarships />} />
           <Route path="/veterans" element={<VeteransProgram />} />
           <Route path="/junior-golf" element={<JuniorGolfDevelopment />} />
+          <Route path="/thank-you" element={<ThankYou />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
