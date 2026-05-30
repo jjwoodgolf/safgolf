@@ -57,7 +57,7 @@ const DonationCard = () => {
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-xl border border-border p-8 md:p-10 max-w-xl mx-auto">
+    <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8 md:p-10 max-w-xl mx-auto w-full">
       {/* Frequency toggle */}
       <div className="inline-flex items-center bg-muted rounded-full p-1 mb-8 w-full">
         {(["one_time", "monthly"] as const).map((f) => (
@@ -176,7 +176,7 @@ const DonationCard = () => {
         )}
       </Button>
 
-      <div className="flex items-center justify-center gap-4 mt-5 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-5 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <Lock className="h-3.5 w-3.5" /> Secure checkout
         </span>
