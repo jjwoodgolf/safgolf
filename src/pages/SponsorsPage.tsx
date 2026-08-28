@@ -273,8 +273,8 @@ const SponsorsPage = () => {
                   Contact Us
                 </Button>
               </Link>
-              <Button variant="outline" size="lg">
-                Download Sponsor Packet
+              <Button variant="outline" size="lg" disabled>
+                Sponsor Packet Coming Soon
               </Button>
             </div>
           </div>
