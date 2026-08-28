@@ -1,5 +1,7 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Target, Users, Award, Heart, Trophy, Star } from "lucide-react";
 
 const About = () => {
