@@ -8,6 +8,48 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const BREVO_API_URL = "https://api.brevo.com/v3";
+const NOTIFICATION_EMAIL = "jj@gpghouston.com";
+
+async function sendBrevoReceipt(
+  apiKey: string,
+  args: { to: string; name: string | null; amount: number; currency: string; isRecurring: boolean }
+) {
+  try {
+    const amountFormatted = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: args.currency.toUpperCase(),
+    }).format(args.amount / 100);
+
+    const res = await fetch(`${BREVO_API_URL}/smtp/email`, {
+      method: "POST",
+      headers: {
+        "api-key": apiKey,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: "Student Athlete Foundation", email: NOTIFICATION_EMAIL },
+        to: [{ email: args.to, name: args.name || "Supporter" }],
+        subject: "Thank you for your donation to the Student Athlete Foundation",
+        htmlContent: `
+          <p>Dear ${args.name || "Friend"},</p>
+          <p>Thank you for your ${args.isRecurring ? "monthly" : "one-time"} donation of <strong>${amountFormatted}</strong> to the Student Athlete Foundation.</p>
+          <p>Your generosity directly supports scholarships for student-athletes, free golf clinics for veterans, and recruiting mentorship that changes lives.</p>
+          <p>This email serves as your receipt. Please retain it for your tax records.</p>
+          <p>With gratitude,<br/>The Student Athlete Foundation Team</p>
+        `,
+      }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`Brevo receipt failed [${res.status}]: ${text}`);
+    }
+  } catch (err) {
+    console.error("Brevo receipt error:", err);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -34,6 +76,12 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    const { data: existing } = await supabaseAdmin
+      .from("donations")
+      .select("status")
+      .eq("stripe_session_id", sessionId)
+      .single();
+
     await supabaseAdmin
       .from("donations")
       .update({
@@ -45,6 +93,19 @@ serve(async (req) => {
         donor_name: session.customer_details?.name ?? null,
       })
       .eq("stripe_session_id", sessionId);
+
+    if (paid && session.customer_details?.email) {
+      const brevoApiKey = Deno.env.get("BREVO_API_KEY");
+      if (brevoApiKey) {
+        await sendBrevoReceipt(brevoApiKey, {
+          to: session.customer_details.email,
+          name: session.customer_details.name,
+          amount: session.amount_total || 0,
+          currency: session.currency || "usd",
+          isRecurring: session.mode === "subscription",
+        });
+      }
+    }
 
     return new Response(
       JSON.stringify({
