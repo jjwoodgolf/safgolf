@@ -60,6 +60,11 @@ const App = () => (
           <Route path="/junior-golf" element={<JuniorGolfDevelopment />} />
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/apply/scholarship" element={<ScholarshipApplication />} />
+          <Route path="/apply/junior-golf" element={<JuniorGolfApplication />} />
+          <Route path="/apply/veterans" element={<VeteransApplication />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminOverview />} />
             <Route path="donations" element={<AdminDonations />} />
