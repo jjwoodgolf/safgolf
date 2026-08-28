@@ -72,8 +72,8 @@ const Donate = () => {
               <p className="text-muted-foreground text-sm mb-4">
                 {option.description}
               </p>
-              <Button variant="outline" size="sm" className="w-full">
-                {option.cta}
+              <Button asChild variant="outline" size="sm" className="w-full">
+                <Link to={option.href}>{option.cta}</Link>
               </Button>
             </div>
           ))}
