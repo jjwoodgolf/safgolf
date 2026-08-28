@@ -181,12 +181,17 @@ const ShowcaseEvents = () => {
             Ready to Compete?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-            Contact us to learn about upcoming showcase events and how to register.
+            Contact us to learn about upcoming showcase events and how to register, or donate to keep these exposure opportunities accessible.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/contact">
               <Button variant="accent" size="lg">
                 Register Now <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/donate">
+              <Button variant="outline" size="lg">
+                Sponsor a Showcase
               </Button>
             </Link>
             <Link to="/programs">

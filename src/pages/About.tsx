@@ -128,13 +128,30 @@ const About = () => {
         <div className="container-custom">
           <div className="text-center relative">
             <blockquote className="font-display text-2xl md:text-3xl text-white font-medium italic max-w-3xl mx-auto">
-              "Every young golfer deserves the chance to pursue their dreams, and every veteran 
+              "Every young golfer deserves the chance to pursue their dreams, and every veteran
               deserves to find healing and community on the course."
             </blockquote>
             <div className="mt-6 text-white/80">
               — Student Athlete Foundation
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Donate CTA */}
+      <section className="section-padding bg-cream">
+        <div className="container-custom text-center">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
+            Support Our Mission
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+            Your tax-deductible donation helps junior golfers reach college and provides healing programs for veterans.
+          </p>
+          <Link to="/donate">
+            <Button variant="hero" size="xl">
+              Donate Today
+            </Button>
+          </Link>
         </div>
       </section>
     </Layout>
