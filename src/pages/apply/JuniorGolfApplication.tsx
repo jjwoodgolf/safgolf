@@ -48,29 +48,31 @@ const JuniorGolfApplication = () => {
     e.preventDefault();
     if (!userId) return;
     setLoading(true);
-    const { error } = await supabase.from("program_applications").insert({
-      program: "junior_golf",
-      applicant_user_id: userId,
-      applicant_name: form.name,
-      applicant_email: form.email,
-      applicant_phone: form.phone,
-      payload: {
-        parent_name: form.parentName,
-        parent_email: form.parentEmail,
-        age: form.age,
-        school: form.school,
-        experience: form.experience,
-        goals: form.goals,
-      },
-      status: "submitted",
-    });
-    setLoading(false);
-    if (error) {
-      toast({ title: "Submission failed", description: error.message, variant: "destructive" });
-      return;
+    try {
+      const { error } = await supabase.functions.invoke("submit-application", {
+        body: {
+          program: "junior_golf",
+          applicant_name: form.name,
+          applicant_email: form.email,
+          applicant_phone: form.phone,
+          payload: {
+            parent_name: form.parentName,
+            parent_email: form.parentEmail,
+            age: form.age,
+            school: form.school,
+            experience: form.experience,
+            goals: form.goals,
+          },
+        },
+      });
+      if (error) throw error;
+      toast({ title: "Application submitted", description: "We will contact you about junior golf program options." });
+      navigate("/programs/junior-golf");
+    } catch (err: any) {
+      toast({ title: "Submission failed", description: err.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    toast({ title: "Application submitted", description: "We will contact you about junior golf program options." });
-    navigate("/programs/junior-golf");
   };
 
   if (!userId) return null;

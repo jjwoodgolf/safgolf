@@ -49,30 +49,32 @@ const ScholarshipApplication = () => {
     e.preventDefault();
     if (!userId) return;
     setLoading(true);
-    const { error } = await supabase.from("program_applications").insert({
-      program: "scholarship",
-      applicant_user_id: userId,
-      applicant_name: form.name,
-      applicant_email: form.email,
-      applicant_phone: form.phone,
-      payload: {
-        school: form.school,
-        gpa: form.gpa,
-        grad_year: form.gradYear,
-        tournaments: form.tournaments,
-        colleges: form.colleges,
-        need_statement: form.needStatement,
-        golf_experience: form.golfExperience,
-      },
-      status: "submitted",
-    });
-    setLoading(false);
-    if (error) {
-      toast({ title: "Submission failed", description: error.message, variant: "destructive" });
-      return;
+    try {
+      const { error } = await supabase.functions.invoke("submit-application", {
+        body: {
+          program: "scholarship",
+          applicant_name: form.name,
+          applicant_email: form.email,
+          applicant_phone: form.phone,
+          payload: {
+            school: form.school,
+            gpa: form.gpa,
+            grad_year: form.gradYear,
+            tournaments: form.tournaments,
+            colleges: form.colleges,
+            need_statement: form.needStatement,
+            golf_experience: form.golfExperience,
+          },
+        },
+      });
+      if (error) throw error;
+      toast({ title: "Application submitted", description: "We will review your scholarship application and be in touch." });
+      navigate("/success-stories");
+    } catch (err: any) {
+      toast({ title: "Submission failed", description: err.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    toast({ title: "Application submitted", description: "We will review your scholarship application and be in touch." });
-    navigate("/success-stories");
   };
 
   if (!userId) return null;

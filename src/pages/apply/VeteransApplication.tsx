@@ -47,28 +47,30 @@ const VeteransApplication = () => {
     e.preventDefault();
     if (!userId) return;
     setLoading(true);
-    const { error } = await supabase.from("program_applications").insert({
-      program: "veteran",
-      applicant_user_id: userId,
-      applicant_name: form.name,
-      applicant_email: form.email,
-      applicant_phone: form.phone,
-      payload: {
-        branch: form.branch,
-        service_era: form.serviceEra,
-        accommodations: form.accommodations,
-        golf_experience: form.golfExperience,
-        goals: form.goals,
-      },
-      status: "submitted",
-    });
-    setLoading(false);
-    if (error) {
-      toast({ title: "Submission failed", description: error.message, variant: "destructive" });
-      return;
+    try {
+      const { error } = await supabase.functions.invoke("submit-application", {
+        body: {
+          program: "veteran",
+          applicant_name: form.name,
+          applicant_email: form.email,
+          applicant_phone: form.phone,
+          payload: {
+            branch: form.branch,
+            service_era: form.serviceEra,
+            accommodations: form.accommodations,
+            golf_experience: form.golfExperience,
+            goals: form.goals,
+          },
+        },
+      });
+      if (error) throw error;
+      toast({ title: "Registration submitted", description: "We will contact you with clinic details and next steps." });
+      navigate("/veterans");
+    } catch (err: any) {
+      toast({ title: "Submission failed", description: err.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    toast({ title: "Registration submitted", description: "We will contact you with clinic details and next steps." });
-    navigate("/veterans");
   };
 
   if (!userId) return null;
