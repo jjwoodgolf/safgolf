@@ -149,7 +149,7 @@ const CollegeScholarships = () => {
             Ready to take the next step toward your college golf career? Contact us to learn about the application process or donate to fund future scholarships.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/contact">
+            <Link to="/apply/scholarship">
               <Button variant="accent" size="lg">
                 Apply Now <ArrowRight className="h-4 w-4 ml-2" />
               </Button>

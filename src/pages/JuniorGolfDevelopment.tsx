@@ -42,7 +42,7 @@ const JuniorGolfDevelopment = () => (
         description: "Strong juniors transition into the scholarship and recruiting mentorship tracks, ensuring the next step is clear when they are ready.",
       },
     ]}
-    primaryCta={{ label: "Join the program", href: "/contact" }}
+    primaryCta={{ label: "Apply now", href: "/apply/junior-golf" }}
     secondaryCta={{ label: "Support junior golf", href: "/donate" }}
   />
 );

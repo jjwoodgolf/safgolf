@@ -122,7 +122,7 @@ const JuniorGolf = () => {
             Contact us to learn more about enrollment and how we can help your junior golfer develop their skills, or donate to fund a junior's development.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/contact">
+            <Link to="/apply/junior-golf">
               <Button variant="accent" size="lg">
                 Contact Us <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
