@@ -197,8 +197,8 @@ const Scholarships = () => {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/donate">
-                Donate to the Scholarship Fund
+              <Link to="/apply/scholarship">
+                Apply for Mentorship
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
@@ -208,7 +208,7 @@ const Scholarships = () => {
               variant="outline"
               className="bg-transparent text-white border-white/40 hover:bg-white hover:text-primary"
             >
-              <Link to="/contact">Apply for Mentorship</Link>
+              <Link to="/donate">Donate to the Scholarship Fund</Link>
             </Button>
           </div>
         </div>

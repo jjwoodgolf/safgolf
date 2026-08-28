@@ -193,8 +193,8 @@ const VeteransProgram = () => {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/donate">
-                Donate to the Veterans Program
+              <Link to="/apply/veterans">
+                Register for a Clinic
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
@@ -204,7 +204,7 @@ const VeteransProgram = () => {
               variant="outline"
               className="bg-transparent text-white border-white/40 hover:bg-white hover:text-primary"
             >
-              <Link to="/contact">Register for a Clinic</Link>
+              <Link to="/donate">Donate to the Veterans Program</Link>
             </Button>
           </div>
         </div>

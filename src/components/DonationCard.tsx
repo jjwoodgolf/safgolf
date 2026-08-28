@@ -13,6 +13,23 @@ const STRIPE_FEE_FIXED = 0.3;
 
 const calcGross = (amount: number) => (amount + STRIPE_FEE_FIXED) / (1 - STRIPE_FEE_PERCENT);
 
+function getImpactText(amount: number, frequency: "one_time" | "monthly") {
+  if (frequency === "monthly") {
+    if (amount >= 500) return "Funds a complete scholarship application cycle every year.";
+    if (amount >= 250) return "Covers one month of training for a junior golfer each month.";
+    if (amount >= 100) return "Provides equipment for a veteran clinic participant each month.";
+    if (amount >= 50) return "Covers tournament entry fees for one junior golfer each month.";
+    return "Sustains our mission with reliable monthly support.";
+  }
+  if (amount >= 5000) return "Funds a complete college scholarship application cycle.";
+  if (amount >= 1000) return "Sends a student-athlete to a showcase event.";
+  if (amount >= 500) return "Funds a full 8-week veterans program for one participant.";
+  if (amount >= 250) return "Provides one month of training for a junior golfer.";
+  if (amount >= 100) return "Provides equipment for a veteran clinic participant.";
+  if (amount >= 50) return "Covers tournament entry fees for one junior golfer.";
+  return "Every dollar supports scholarships, veterans clinics, and recruiting mentorship.";
+}
+
 const DonationCard = () => {
   const [frequency, setFrequency] = useState<"one_time" | "monthly">("one_time");
   const [selected, setSelected] = useState<number | "custom">(100);
@@ -155,6 +172,11 @@ const DonationCard = () => {
           <span>Total {frequency === "monthly" ? "/ month" : ""}</span>
           <span>${totalCharged.toFixed(2)}</span>
         </div>
+        {baseAmount > 0 && (
+          <p className="text-sm text-muted-foreground mt-3">
+            {getImpactText(baseAmount, frequency)}
+          </p>
+        )}
       </div>
 
       <Button

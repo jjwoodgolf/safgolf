@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart, CreditCard, Building2, Gift } from "lucide-react";
 
@@ -8,24 +9,28 @@ const Donate = () => {
       title: "One-Time Gift",
       description: "Make an immediate impact with a single donation",
       cta: "Donate Now",
+      href: "/donate",
     },
     {
       icon: Heart,
       title: "Monthly Giving",
       description: "Become a sustaining partner with recurring support",
       cta: "Join Monthly",
+      href: "/donate",
     },
     {
       icon: Building2,
       title: "Corporate Giving",
       description: "Partner with us through corporate sponsorship",
       cta: "Learn More",
+      href: "/sponsors",
     },
     {
       icon: Gift,
       title: "Legacy Giving",
       description: "Include SAF in your estate planning",
       cta: "Plan Your Gift",
+      href: "/contact",
     },
   ];
 
@@ -42,9 +47,11 @@ const Donate = () => {
             Your tax-deductible donation directly supports junior golfers pursuing college dreams 
             and veterans finding healing through golf. Every dollar makes a difference.
           </p>
-          <Button variant="hero" size="xl" className="min-w-[250px]">
-            <Heart className="h-5 w-5" />
-            Donate Today
+          <Button asChild variant="hero" size="xl" className="min-w-[250px]">
+            <Link to="/donate">
+              <Heart className="h-5 w-5" />
+              Donate Today
+            </Link>
           </Button>
         </div>
 
@@ -65,8 +72,8 @@ const Donate = () => {
               <p className="text-muted-foreground text-sm mb-4">
                 {option.description}
               </p>
-              <Button variant="outline" size="sm" className="w-full">
-                {option.cta}
+              <Button asChild variant="outline" size="sm" className="w-full">
+                <Link to={option.href}>{option.cta}</Link>
               </Button>
             </div>
           ))}
@@ -78,7 +85,7 @@ const Donate = () => {
             The Student Athlete Foundation is a registered 501(c)(3) non-profit organization.
           </p>
           <p className="text-muted-foreground text-sm mt-2">
-            All donations are tax-deductible to the extent allowed by law. Tax ID: XX-XXXXXXX
+            All donations are tax-deductible to the extent allowed by law.
           </p>
         </div>
       </div>

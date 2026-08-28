@@ -107,8 +107,8 @@ const ProgramPage = ({
             Ready to take the next step?
           </h2>
           <p className="text-white/80 text-lg leading-relaxed mb-10">
-            Placeholder copy. Replace with a tailored call to action describing how
-            participants or supporters can engage with this program.
+            Whether you are a junior golfer ready to train or a supporter who wants to fund the
+            next generation, your next step starts here.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button asChild size="lg" variant="secondary">

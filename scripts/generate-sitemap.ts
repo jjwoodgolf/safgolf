@@ -19,10 +19,15 @@ const entries: SitemapEntry[] = [
   { path: "/programs/veterans", changefreq: "monthly", priority: "0.7" },
   { path: "/programs/showcase-events", changefreq: "monthly", priority: "0.7" },
   { path: "/programs/recruiting", changefreq: "monthly", priority: "0.7" },
+  { path: "/scholarships", changefreq: "monthly", priority: "0.8" },
+  { path: "/veterans", changefreq: "monthly", priority: "0.8" },
+  { path: "/junior-golf", changefreq: "monthly", priority: "0.8" },
   { path: "/success-stories", changefreq: "monthly", priority: "0.8" },
   { path: "/sponsors", changefreq: "monthly", priority: "0.8" },
   { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/donate", changefreq: "monthly", priority: "1.0" },
+  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+  { path: "/terms", changefreq: "yearly", priority: "0.3" },
 ];
 
 const urls = entries

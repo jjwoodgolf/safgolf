@@ -119,12 +119,17 @@ const JuniorGolf = () => {
             Ready to Get Started?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-            Contact us to learn more about enrollment and how we can help your junior golfer develop their skills.
+            Contact us to learn more about enrollment and how we can help your junior golfer develop their skills, or donate to fund a junior's development.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/contact">
+            <Link to="/apply/junior-golf">
               <Button variant="accent" size="lg">
                 Contact Us <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/donate">
+              <Button variant="outline" size="lg">
+                Support Junior Golf
               </Button>
             </Link>
             <Link to="/programs">

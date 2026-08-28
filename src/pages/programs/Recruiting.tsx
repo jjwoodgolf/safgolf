@@ -188,12 +188,17 @@ const Recruiting = () => {
             Start Your Recruiting Journey
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-            Contact us for a free initial consultation to discuss your college golf goals.
+            Contact us for a free initial consultation to discuss your college golf goals, or donate to fund recruiting mentorship for a student-athlete.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/contact">
               <Button variant="accent" size="lg">
                 Get Started <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/donate">
+              <Button variant="outline" size="lg">
+                Fund Recruiting Support
               </Button>
             </Link>
             <Link to="/success-stories">

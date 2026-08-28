@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,9 @@ import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const redirectTarget = searchParams.get("redirect") || location.state?.from || "/admin";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,13 +20,13 @@ export default function Login() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/admin", { replace: true });
+      if (data.session) navigate(redirectTarget, { replace: true });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) navigate("/admin", { replace: true });
+      if (session) navigate(redirectTarget, { replace: true });
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, redirectTarget]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +39,7 @@ export default function Login() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
+          options: { emailRedirectTo: `${window.location.origin}${redirectTarget}` },
         });
         if (error) throw error;
         toast.success("Account created. Check your email to confirm.");
@@ -55,9 +58,9 @@ export default function Login() {
           <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
             <Lock className="w-5 h-5 text-primary" />
           </div>
-          <h1 className="font-serif text-3xl">Admin Access</h1>
+          <h1 className="font-serif text-3xl">{redirectTarget.startsWith("/apply/") ? "Apply" : "Admin Access"}</h1>
           <p className="text-sm text-muted-foreground">
-            {mode === "signin" ? "Sign in to manage the foundation." : "Create an account to request access."}
+            {mode === "signin" ? "Sign in to continue." : "Create an account to request access."}
           </p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">

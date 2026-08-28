@@ -92,7 +92,7 @@ const DonatePage = () => {
               The Student Athlete Foundation is a registered 501(c)(3) non-profit organization.
             </p>
             <p className="text-muted-foreground text-sm mt-2">
-              All donations are tax-deductible to the extent allowed by law. Tax ID: XX-XXXXXXX
+              All donations are tax-deductible to the extent allowed by law.
             </p>
           </div>
         </div>
