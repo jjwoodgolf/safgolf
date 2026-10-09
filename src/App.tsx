@@ -23,6 +23,7 @@ import JuniorGolfDevelopment from "./pages/JuniorGolfDevelopment";
 import ThankYou from "./pages/ThankYou";
 import ManageDonation from "./pages/ManageDonation";
 import Login from "./pages/Login";
+import SetPassword from "./pages/SetPassword";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import ScholarshipApplication from "./pages/apply/ScholarshipApplication";
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/manage-donation" element={<ManageDonation />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/set-password" element={<SetPassword />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/apply/scholarship" element={<ScholarshipApplication />} />
