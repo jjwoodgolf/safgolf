@@ -8,6 +8,13 @@
       "when": 1791529548641,
       "tag": "0000_donation_receipts_ledger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791530013896,
+      "tag": "0001_donations_status_values",
+      "breakpoints": true
     }
   ]
 }
