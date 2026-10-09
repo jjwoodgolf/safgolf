@@ -27,12 +27,13 @@ Legal name, brand, EIN 45-3459562, donor name, payment date (America/Chicago), g
 
 ## Receipt outbox (reliability model)
 States: `pending` -> `sending` (claim; submission time persisted BEFORE the provider call) -> `sent` (provider accepted, message id stored).
-- `failed`: Brevo definitively rejected (HTTP 4xx incl. 429, or key missing). Retried by the worker with backoff (15 min doubling, max 12 h); after 6 attempts -> `needs_review`.
+- `failed`: Brevo definitively rejected a FIRST submission from `pending`/`failed` (HTTP 4xx incl. 429, or key missing). A 400 `duplicate_parameter` or any idempotency/duplicate conflict is classified as ambiguous, never as rejected. Retried by the worker with backoff (15 min doubling, max 12 h); after 6 attempts -> `needs_review`.
 - `unconfirmed`: outcome unknown (timeout after 15 s, network error, 5xx, accepted-without-id, or accepted but the DB write failed). Never treated as failed.
 - `needs_review`: delivery could not be proved or disproved. Never auto-resent. Shown in Admin; staff Resend is an explicit decision that may duplicate.
-- Idempotency: the persisted receipt UUID is sent as Brevo `headers.idempotencyKey`, plus a unique tag `receipt-<uuid>`. Brevo documents a finite dedupe TTL (15 min in its 2021 changelog; 30 min in current batch docs). We treat **14 min** from the first submission as the only window in which an ambiguous receipt may be resubmitted. This is not unlimited exactly-once.
-- After the window: the worker looks up Brevo's event log (`/smtp/statistics/events`, event `requests`, tag `receipt-<uuid>`, donor email). Found -> `sent`. Not found -> waits 2 h for logs to settle, then `needs_review`.
-- If an accepted send's DB write fails, the code tries to store the message id as `unconfirmed`; the worker finalizes it as `sent` without resending. If even that write fails, the row stays `sending`; after 10 min the worker treats it as `unconfirmed` and reconciles via the log.
+- No automatic resubmission of `unconfirmed` or stale `sending` receipts, ever (not even inside Brevo's idempotency TTL): a later 400/401/429 would not prove the first attempt was unsent. The database claim function only claims `pending`/`failed` rows (migration 0004).
+- Idempotency: the receipt UUID is still sent as Brevo `headers.idempotencyKey` plus unique tag `receipt-<uuid>`, as extra protection only; correctness does not depend on its finite TTL.
+- Reconciliation (immediately, hourly): stored message id -> `sent`; otherwise the worker looks up Brevo's event log (`/smtp/statistics/events`, event `requests`, `tags` = JSON-serialized array `["receipt-<uuid>"]` per Brevo's get-email-event-report reference, donor email); returned `tag`/`tags` are normalized (array, JSON string, or comma list) and matched exactly. Found -> `sent`. Not found -> waits 2 h for logs to settle, then `needs_review`.
+- If an accepted send's DB write fails, the code tries to store the message id as `unconfirmed`; the worker finalizes it as `sent` without resending. If even that write fails, the row stays `sending`; after 10 min the worker treats it as `unconfirmed` and reconciles via the log (a worker crash before the provider call therefore ends in `needs_review`, not a resend).
 - A busy claim (another worker holds it) returns `receipt_busy`, not `receipt_sent`. The Stripe event is marked processed only after the receipt row is durably in the ledger; recovery belongs to the worker.
 - Worker: `receipt-worker`, invoked hourly (minute 7, 24 runs/day) by database cron, only when non-sent receipts exist. Auth: random token held in `app_private_config`, read by the cron job inside the database. Batch 25. Max retry delay is about 1 hour plus backoff.
 - Stale-event guards: once a donation is paid/active/canceling/past_due/canceled/refunded, later unpaid, expired, failed or processing checkout events do not change it. `customer.subscription.updated` fetches the current subscription from Stripe, not the event payload. `canceled` is terminal.
@@ -58,15 +59,18 @@ States: `pending` -> `sending` (claim; submission time persisted BEFORE the prov
 | Unit: $0 invoice and payment_failed -> no receipt | PASS |
 | Unit: definite rejection -> failed + backoff; redelivery before due sends nothing; worker retry sends once | PASS |
 | Unit: provider accepted then DB write fails -> unconfirmed with message id -> reconciled to sent, no resend | PASS |
-| Unit: idempotency key is the same receipt UUID across retries | PASS |
+| Unit: unconfirmed is never resubmitted, even inside the key window; reconciled from log | PASS |
+| Unit (regression): accepted-but-timeout -> duplicate 400 (ambiguous) -> no send after TTL -> needs_review | PASS |
+| Unit: unconfirmed + later provider rejection never becomes retryable `failed` | PASS |
+| Unit: Brevo event tag normalization, no prefix false match | PASS |
 | Unit: timeout, then after TTL -> reconciled from provider log, no resend | PASS |
 | Unit: timeout, after TTL, no provider evidence -> awaiting logs, then needs_review; never auto-resent | PASS |
-| Unit: concurrent worker crash -> `receipt_busy` (not sent); stale sending recovered with one send | PASS |
+| Unit: concurrent worker crash -> `receipt_busy` (not sent); stale sending reconciled, never resubmitted -> needs_review | PASS |
 | Unit: claim DB error rethrown (Stripe retries), nothing sent | PASS |
 | Unit: paid, then stale expired/failed/unpaid events -> stays paid | PASS |
 | Unit: reordered subscription.updated uses canonical state; canceled is terminal | PASS |
 | Live: anon REST access to private config / claim RPC denied (42501); worker 401 without token; setup endpoint 404 | PASS |
-| Total unit tests (Deno) | 20 passed, 0 failed |
+| Total unit tests (Deno) | 23 passed, 0 failed |
 | Brevo idempotency/event-log lookup against the live provider | NOT TESTED (no new emails sent, per instruction); field names follow Brevo docs |
 | Unit: amount validation, origin allowlist, receipt fields/escaping/TEST labelling | PASS |
 | Live: missing / bad Stripe-Signature -> 400 | PASS |
