@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import type { Deps, Donation, Receipt } from "./donations.ts";
-import { sendReceiptEmail } from "./receipt.ts";
+import { findBrevoMessage, sendReceiptEmail } from "./receipt.ts";
 import type { Stripe } from "./saf.ts";
 
 export function adminClient() {
@@ -9,7 +9,7 @@ export function adminClient() {
   });
 }
 
-const DCOLS = "id,donor_name,donor_email,stripe_session_id,stripe_subscription_id,frequency";
+const DCOLS = "id,donor_name,donor_email,stripe_session_id,stripe_subscription_id,frequency,status";
 
 export function liveDeps(stripe: Stripe): Deps {
   const db = adminClient();
@@ -19,6 +19,12 @@ export function liveDeps(stripe: Stripe): Deps {
     return data;
   };
   return {
+    now: () => new Date(),
+    findProviderMessage: (r) => findBrevoMessage(r.id, r.donor_email),
+    retrieveSubscription: async (id) => {
+      const s = await stripe.subscriptions.retrieve(id);
+      return { status: s.status, cancel_at_period_end: s.cancel_at_period_end };
+    },
     findDonationBySession: (id) =>
       one<Donation>(db.from("donations").select(DCOLS).eq("stripe_session_id", id).maybeSingle()),
     findDonationBySubscription: (id) =>

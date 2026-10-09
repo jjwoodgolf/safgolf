@@ -15,7 +15,7 @@ verify_jwt = false
 [functions.stripe-webhook]
 verify_jwt = false
 
-[functions.stripe-webhook-setup]
+[functions.receipt-worker]
 verify_jwt = false
 
 [functions.donor-portal]

@@ -67,7 +67,7 @@ const Contact = () => {
           name: "Student Athlete Foundation",
           telephone: "+1-713-586-9569",
           email: "safsportshouston@gmail.com",
-          url: "https://safgolf.lovable.app/contact",
+          url: "https://safgolf.online/contact",
           address: {
             "@type": "PostalAddress",
             addressLocality: "Houston",

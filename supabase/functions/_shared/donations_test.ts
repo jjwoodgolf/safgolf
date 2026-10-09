@@ -1,17 +1,25 @@
 import { assert, assertEquals, assertRejects } from "jsr:@std/assert@1";
 import { type Deps, type Donation, handleEvent, type Receipt } from "./donations.ts";
+import { deliverReceipt, KEY_WINDOW_MS, LOG_SETTLE_MS, ProviderAmbiguous, ProviderRejected, recoverReceipt, STALE_SENDING_MS } from "./outbox.ts";
 import { allowedOrigin, grossWithFees, parseAmount } from "./saf.ts";
 import { escapeHtml, renderReceipt } from "./receipt.ts";
 
 const MD = { saf_donation: "1", gift_type: "pure_gift" };
 
-function fake(opts: { failEmails?: number } = {}) {
+type Mode = "ok" | "reject" | "timeout" | "accept_then_db_fail";
+function fake(opts: { failEmails?: number; modes?: Mode[] } = {}) {
   const donations = new Map<string, Donation & Record<string, unknown>>();
   const receipts = new Map<string, Receipt>();
-  const sent: string[] = [];
-  let failures = opts.failEmails ?? 0;
+  const sent: string[] = [];         // accepted by provider (simulated)
+  const keys: string[] = [];         // idempotency keys submitted
+  const providerLog = new Map<string, string>(); // receipt id -> messageId (what reconciliation can see)
+  const modes = [...(opts.modes ?? Array(opts.failEmails ?? 0).fill("reject"))];
+  let clock = new Date("2026-10-09T12:00:00Z");
+  let failNextMark = false;
+  let subState = { status: "active", cancel_at_period_end: false };
   let n = 1000;
   const deps: Deps = {
+    now: () => clock,
     findDonationBySession: async (sid) => [...donations.values()].find((d) => d.stripe_session_id === sid) ?? null,
     findDonationBySubscription: async (sub) => [...donations.values()].find((d) => d.stripe_subscription_id === sub) ?? null,
     updateDonation: async (id, p) => { Object.assign(donations.get(id)!, p); },
@@ -22,21 +30,49 @@ function fake(opts: { failEmails?: number } = {}) {
       receipts.set(row.id, row);
       return row;
     },
+    // Mirrors claim_donation_receipt() SQL semantics.
     claimReceipt: async (id) => {
       const r = receipts.get(id)!;
-      if (r.status === "sent" || r.status === "sending") return null;
-      r.status = "sending"; r.attempts++;
+      const t = clock.getTime();
+      const due = !r.next_attempt_at || new Date(r.next_attempt_at).getTime() <= t;
+      const okNew = (r.status === "pending" || r.status === "failed") && due;
+      const okRetry = r.status === "unconfirmed" && !r.provider_message_id &&
+        new Date(r.submission_started_at!).getTime() > t - 840_000;
+      if (!okNew && !okRetry) return null;
+      if (okNew) r.submission_started_at = clock.toISOString();
+      r.status = "sending"; r.attempts++; r.claimed_at = clock.toISOString(); r.next_attempt_at = null;
       return { ...r };
     },
-    markReceipt: async (id, p) => { Object.assign(receipts.get(id)!, p); },
-    sendEmail: async (r) => {
-      if (failures > 0) { failures--; throw new Error("Brevo [503]: unavailable"); }
-      sent.push(r.receipt_number);
-      return { messageId: `<m${sent.length}>` };
+    markReceipt: async (id, p) => {
+      if (failNextMark) { failNextMark = false; throw new Error("DB: connection reset"); }
+      Object.assign(receipts.get(id)!, p);
     },
+    sendEmail: async (r) => {
+      keys.push(r.id);
+      const m = modes.shift() ?? "ok";
+      if (m === "reject") throw new ProviderRejected("Brevo [400]: invalid");
+      // Provider-side idempotency: same key within TTL returns the original message, no second delivery.
+      const prior = providerLog.get(r.id);
+      if (m === "timeout") {
+        if (!prior) { sent.push(r.receipt_number); providerLog.set(r.id, `<m${sent.length}>`); } // accepted, response lost
+        throw new ProviderAmbiguous("Brevo request did not complete: timeout");
+      }
+      if (prior) return { messageId: prior };
+      sent.push(r.receipt_number);
+      const id = `<m${sent.length}>`; providerLog.set(r.id, id);
+      if (m === "accept_then_db_fail") failNextMark = true;
+      return { messageId: id };
+    },
+    findProviderMessage: async (r) => providerLog.get(r.id) ?? null,
     sessionIdForSubscription: async (sub) => sub === "sub_1" ? "cs_sub" : null,
+    retrieveSubscription: async () => subState,
   };
-  return { deps, donations, receipts, sent };
+  return {
+    deps, donations, receipts, sent, keys, providerLog,
+    advance: (ms: number) => { clock = new Date(clock.getTime() + ms); },
+    setSub: (s: typeof subState) => { subState = s; },
+    forgetProvider: () => providerLog.clear(),
+  };
 }
 
 const addDonation = (f: ReturnType<typeof fake>, id: string, sid: string, frequency = "one_time") =>
@@ -116,18 +152,110 @@ Deno.test("zero-amount and failed invoices issue no receipt", async () => {
   assertEquals(f.sent.length, 0);
 });
 
-Deno.test("email failure is surfaced, recorded, and a retry sends exactly once", async () => {
+Deno.test("definite provider rejection: recorded, backoff, worker retry sends exactly once", async () => {
   const f = fake({ failEmails: 1 }); addDonation(f, "d1", "cs_1");
-  await assertRejects(() => handleEvent(f.deps, ev("checkout.session.completed", session())), Error, "Brevo [503]");
+  const out = await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  assertEquals(out.action, "receipt_retry_scheduled");
   const r = [...f.receipts.values()][0];
-  assertEquals(r.status, "failed"); assert(String(r.last_error).includes("503"));
-  await handleEvent(f.deps, ev("checkout.session.completed", session())); // Stripe retry
+  assertEquals(r.status, "failed"); assert(String(r.last_error).includes("400")); assert(r.next_attempt_at);
+  // Stripe redelivery before backoff elapses does not resend.
   await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  assertEquals(f.sent.length, 0);
+  f.advance(16 * 60_000);
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "sent");
+  await recoverReceipt(f.deps, { ...r });
   assertEquals(f.sent.length, 1); assertEquals(r.status, "sent"); assertEquals(r.attempts, 2);
+});
+
+Deno.test("provider accepted then DB write fails: never resent, reconciled to sent", async () => {
+  const f = fake({ modes: ["accept_then_db_fail"] }); addDonation(f, "d1", "cs_1");
+  const out = await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  assertEquals(out.action, "receipt_accepted_unrecorded");
+  const r = [...f.receipts.values()][0];
+  assertEquals(r.status, "unconfirmed"); assert(r.provider_message_id);
+  await handleEvent(f.deps, ev("checkout.session.completed", session())); // Stripe retry
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "reconciled_sent");
+  assertEquals(f.sent.length, 1); assertEquals(r.status, "sent");
+});
+
+Deno.test("idempotency key is the stable receipt UUID across retries", async () => {
+  const f = fake({ modes: ["timeout", "ok"] }); addDonation(f, "d1", "cs_1");
+  await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  const r = [...f.receipts.values()][0];
+  assertEquals(r.status, "unconfirmed");
+  f.advance(60_000);
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "sent"); // inside window -> same key, provider dedupes
+  assertEquals(f.keys, [r.id, r.id]); assertEquals(f.sent.length, 1);
+});
+
+Deno.test("timeout ambiguous after TTL: reconciled from provider log, not resent", async () => {
+  const f = fake({ modes: ["timeout"] }); addDonation(f, "d1", "cs_1");
+  await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  const r = [...f.receipts.values()][0];
+  f.advance(KEY_WINDOW_MS + 60_000);
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "reconciled_sent");
+  assertEquals(f.keys.length, 1); assertEquals(f.sent.length, 1); assertEquals(r.status, "sent");
+});
+
+Deno.test("timeout after TTL with no provider evidence: held for staff, never auto-resent", async () => {
+  const f = fake({ modes: ["timeout"] }); addDonation(f, "d1", "cs_1");
+  await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  f.forgetProvider();
+  const r = [...f.receipts.values()][0];
+  f.advance(KEY_WINDOW_MS + 60_000);
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "awaiting_logs");
+  f.advance(LOG_SETTLE_MS);
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "needs_review");
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "skip");
+  assertEquals(f.keys.length, 1); assertEquals(r.status, "needs_review");
+});
+
+Deno.test("concurrent worker crash: busy claim is not 'sent'; stale sending recovered", async () => {
+  const f = fake(); addDonation(f, "d1", "cs_1");
+  const row = await f.deps.upsertReceipt({ donation_id: "d1", kind: "one_time", stripe_object_id: "pi_1", stripe_event_id: "e",
+    donor_name: "P", donor_email: "p@x.co", amount_cents: 100, currency: "usd", paid_at: "2026-10-09T12:00:00Z" });
+  await f.deps.claimReceipt(row.id); // worker A claims, then crashes before calling the provider
+  const out = await handleEvent(f.deps, ev("checkout.session.completed", session({ payment_intent: "pi_1" })));
+  assertEquals(out.action, "receipt_busy"); assertEquals(row.status, "sending");
+  assertEquals(await recoverReceipt(f.deps, { ...row }), "in_flight");
+  f.advance(STALE_SENDING_MS + 1000); // still inside the original key window -> safe resend with same key
+  assertEquals(await recoverReceipt(f.deps, { ...row }), "sent");
+  assertEquals(f.sent.length, 1);
+});
+
+Deno.test("deliverReceipt rethrows claim DB errors (nothing sent, Stripe retries)", async () => {
+  const f = fake();
+  f.deps.claimReceipt = () => Promise.reject(new Error("DB: down"));
+  await assertRejects(() => deliverReceipt(f.deps, "x"), Error, "DB: down");
+  assertEquals(f.sent.length, 0);
+});
+
+Deno.test("paid then stale unpaid/expired/processing events do not downgrade", async () => {
+  const f = fake(); addDonation(f, "d1", "cs_1");
+  await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  assertEquals(f.donations.get("d1")!.status, "paid");
+  for (const t of ["checkout.session.expired", "checkout.session.async_payment_failed"])
+    await handleEvent(f.deps, ev(t, session({ payment_status: "unpaid" })));
+  await handleEvent(f.deps, ev("checkout.session.completed", session({ payment_status: "unpaid" })));
+  assertEquals(f.donations.get("d1")!.status, "paid"); assertEquals(f.sent.length, 1);
+});
+
+Deno.test("reordered subscription.updated uses canonical Stripe state; canceled is terminal", async () => {
+  const f = fake(); addDonation(f, "d1", "cs_sub", "monthly"); f.donations.get("d1")!.stripe_subscription_id = "sub_1";
+  f.setSub({ status: "active", cancel_at_period_end: true });
+  // stale payload says plain active, canonical says canceling
+  await handleEvent(f.deps, ev("customer.subscription.updated", { id: "sub_1", status: "active", cancel_at_period_end: false, metadata: MD }));
+  assertEquals(f.donations.get("d1")!.status, "canceling");
+  await handleEvent(f.deps, ev("customer.subscription.deleted", { id: "sub_1", status: "canceled", metadata: MD }));
+  f.setSub({ status: "active", cancel_at_period_end: false });
+  await handleEvent(f.deps, ev("customer.subscription.updated", { id: "sub_1", status: "active", metadata: MD }));
+  await handleEvent(f.deps, ev("checkout.session.completed", session({ id: "cs_sub", mode: "subscription", subscription: "sub_1", payment_intent: null })));
+  assertEquals(f.donations.get("d1")!.status, "canceled");
 });
 
 Deno.test("subscription cancel/update statuses", async () => {
   const f = fake(); addDonation(f, "d1", "cs_sub", "monthly"); f.donations.get("d1")!.stripe_subscription_id = "sub_1";
+  f.setSub({ status: "active", cancel_at_period_end: true });
   await handleEvent(f.deps, ev("customer.subscription.updated", { id: "sub_1", status: "active", cancel_at_period_end: true, metadata: MD }));
   assertEquals(f.donations.get("d1")!.status, "canceling");
   await handleEvent(f.deps, ev("customer.subscription.deleted", { id: "sub_1", status: "canceled", metadata: MD }));

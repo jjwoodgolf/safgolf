@@ -2,6 +2,9 @@
 import { isSafMetadata, ORG } from "./saf.ts";
 import type { ReceiptData } from "./receipt.ts";
 
+import { deliverReceipt, type DeliveryResult, type OutboxDeps, type OutboxReceipt } from "./outbox.ts";
+export { deliverReceipt };
+
 export interface Donation {
   id: string;
   donor_name: string | null;
@@ -9,15 +12,9 @@ export interface Donation {
   stripe_session_id: string | null;
   stripe_subscription_id: string | null;
   frequency: string;
+  status: string;
 }
-export interface Receipt extends ReceiptData {
-  id: string;
-  donation_id: string | null;
-  stripe_object_id: string;
-  status: "pending" | "sending" | "sent" | "failed";
-  attempts: number;
-  last_error?: string | null;
-}
+export type Receipt = OutboxReceipt;
 export interface NewReceipt {
   donation_id: string | null;
   kind: "one_time" | "monthly_invoice";
@@ -29,17 +26,20 @@ export interface NewReceipt {
   currency: string;
   paid_at: string;
 }
-export interface Deps {
+export interface Deps extends OutboxDeps {
   findDonationBySession(sessionId: string): Promise<Donation | null>;
   findDonationBySubscription(subId: string): Promise<Donation | null>;
   updateDonation(id: string, patch: Record<string, unknown>): Promise<void>;
   /** Insert if absent (unique stripe_object_id) and return the stored row. */
   upsertReceipt(r: NewReceipt): Promise<Receipt>;
-  claimReceipt(id: string): Promise<Receipt | null>;
-  markReceipt(id: string, patch: Record<string, unknown>): Promise<void>;
-  sendEmail(r: ReceiptData): Promise<{ messageId: string }>;
   sessionIdForSubscription(subId: string): Promise<string | null>;
+  /** Canonical current subscription state from Stripe (guards against reordered update events). */
+  retrieveSubscription(subId: string): Promise<{ status: string; cancel_at_period_end: boolean }>;
 }
+
+/** Once money has moved, stale "unpaid" events must not downgrade the record. */
+export const SETTLED = new Set(["paid", "succeeded", "refunded", "active", "canceling", "past_due", "canceled"]);
+const ENDED = new Set(["canceled", "canceling"]);
 
 // deno-lint-ignore no-explicit-any
 type Obj = any;
@@ -64,20 +64,8 @@ export function manageUrl(sessionId: string | null | undefined) {
   return sessionId ? `${ORG.site}/manage-donation?session_id=${encodeURIComponent(sessionId)}` : null;
 }
 
-/** Claims and sends one receipt. Safe to call concurrently / repeatedly; sends at most once. */
-export async function deliverReceipt(deps: Deps, receiptId: string, manage: string | null = null): Promise<"sent" | "skipped"> {
-  const claimed = await deps.claimReceipt(receiptId);
-  if (!claimed) return "skipped"; // already sent or another worker holds it
-  try {
-    const { messageId } = await deps.sendEmail({ ...claimed, manage_url: manage });
-    await deps.markReceipt(claimed.id, { status: "sent", provider_message_id: messageId, sent_at: new Date().toISOString(), last_error: null });
-    return "sent";
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    await deps.markReceipt(claimed.id, { status: "failed", last_error: msg.slice(0, 1000) });
-    throw new Error(`Receipt ${claimed.receipt_number} failed: ${msg}`);
-  }
-}
+const receiptOutcome = (r: DeliveryResult, n: string): Outcome =>
+  ({ action: r === "sent" ? "receipt_sent" : `receipt_${r}`, receipt: n }); // row is durable; worker recovers non-sent
 
 async function paidOneTime(deps: Deps, s: Obj, eventId: string, eventCreated: number): Promise<Outcome> {
   const donation = await deps.findDonationBySession(s.id);
@@ -98,8 +86,7 @@ async function paidOneTime(deps: Deps, s: Obj, eventId: string, eventCreated: nu
     donor_name: name, donor_email: email, amount_cents: s.amount_total, currency: s.currency ?? "usd", paid_at: paidAt,
   });
   if (receipt.status === "sent") return { action: "already_receipted", receipt: receipt.receipt_number };
-  await deliverReceipt(deps, receipt.id);
-  return { action: "receipt_sent", receipt: receipt.receipt_number };
+  return receiptOutcome(await deliverReceipt(deps, receipt.id), receipt.receipt_number);
 }
 
 export async function handleEvent(deps: Deps, event: Obj): Promise<Outcome> {
@@ -111,7 +98,7 @@ export async function handleEvent(deps: Deps, event: Obj): Promise<Outcome> {
       if (o.mode === "payment") {
         if (o.payment_status !== "paid") {
           const d = await deps.findDonationBySession(o.id);
-          if (d) await deps.updateDonation(d.id, { status: "processing" });
+          if (d && !SETTLED.has(d.status)) await deps.updateDonation(d.id, { status: "processing" });
           return { action: "awaiting_payment" };
         }
         return paidOneTime(deps, o, event.id, event.created);
@@ -122,7 +109,7 @@ export async function handleEvent(deps: Deps, event: Obj): Promise<Outcome> {
         const sub = typeof o.subscription === "string" ? o.subscription : o.subscription?.id;
         if (d) {
           await deps.updateDonation(d.id, {
-            status: "active", stripe_subscription_id: sub, donor_email: o.customer_details?.email ?? d.donor_email,
+            ...(SETTLED.has(d.status) ? {} : { status: "active" }), stripe_subscription_id: sub, donor_email: o.customer_details?.email ?? d.donor_email,
             donor_name: donorNameFromSession(o) ?? d.donor_name,
             stripe_customer_id: typeof o.customer === "string" ? o.customer : null,
           });
@@ -135,6 +122,7 @@ export async function handleEvent(deps: Deps, event: Obj): Promise<Outcome> {
     case "checkout.session.expired": {
       if (!isSafMetadata(o.metadata)) return { action: "ignored_not_saf" };
       const d = await deps.findDonationBySession(o.id);
+      if (d && SETTLED.has(d.status)) return { action: "ignored_stale_unpaid" };
       if (d) await deps.updateDonation(d.id, { status: event.type.endsWith("expired") ? "expired" : "failed" });
       return { action: "marked_unpaid" };
     }
@@ -148,35 +136,39 @@ export async function handleEvent(deps: Deps, event: Obj): Promise<Outcome> {
         const sid = await deps.sessionIdForSubscription(subId);
         if (sid) {
           d = await deps.findDonationBySession(sid);
-          if (d) await deps.updateDonation(d.id, { stripe_subscription_id: subId, status: "active" });
+          if (d) await deps.updateDonation(d.id, { stripe_subscription_id: subId });
         }
       }
       const email = o.customer_email ?? d?.donor_email;
       if (!email) throw new Error(`Invoice ${o.id} has no donor email`);
       const paidAt = iso(o.status_transitions?.paid_at ?? event.created);
-      if (d) await deps.updateDonation(d.id, { status: "active", paid_at: paidAt });
+      if (d) await deps.updateDonation(d.id, { ...(ENDED.has(d.status) ? {} : { status: "active" }), paid_at: paidAt });
       const receipt = await deps.upsertReceipt({
         donation_id: d?.id ?? null, kind: "monthly_invoice", stripe_object_id: o.id, stripe_event_id: event.id,
         donor_name: d?.donor_name ?? o.customer_name ?? null, donor_email: email,
         amount_cents: o.amount_paid, currency: o.currency ?? "usd", paid_at: paidAt,
       });
       if (receipt.status === "sent") return { action: "already_receipted", receipt: receipt.receipt_number };
-      await deliverReceipt(deps, receipt.id, manageUrl(d?.stripe_session_id));
-      return { action: "receipt_sent", receipt: receipt.receipt_number };
+      return receiptOutcome(await deliverReceipt(deps, receipt.id, manageUrl(d?.stripe_session_id)), receipt.receipt_number);
     }
     case "invoice.payment_failed": {
       const { id: subId, metadata } = invoiceSubscription(o);
       if (!subId || !isSafMetadata(metadata)) return { action: "ignored_not_saf" };
       const d = await deps.findDonationBySubscription(subId);
-      if (d) await deps.updateDonation(d.id, { status: "past_due" });
+      if (d && !ENDED.has(d.status)) await deps.updateDonation(d.id, { status: "past_due" });
       return { action: "marked_past_due" };
     }
     case "customer.subscription.updated":
     case "customer.subscription.deleted": {
       if (!isSafMetadata(o.metadata)) return { action: "ignored_not_saf" };
       const d = await deps.findDonationBySubscription(o.id);
-      const status = event.type.endsWith("deleted") ? "canceled" : o.cancel_at_period_end ? "canceling" : o.status === "active" ? "active" : o.status;
-      if (d) await deps.updateDonation(d.id, { status });
+      let status: string;
+      if (event.type.endsWith("deleted") || d?.status === "canceled") status = "canceled"; // terminal
+      else {
+        const cur = await deps.retrieveSubscription(o.id); // canonical latest, not the possibly-stale payload
+        status = cur.status === "canceled" ? "canceled" : cur.cancel_at_period_end ? "canceling" : cur.status;
+      }
+      if (d && d.status !== status) await deps.updateDonation(d.id, { status });
       return { action: `subscription_${status}` };
     }
     default:

@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://safgolf.lovable.app/sitemap.xml
+Sitemap: https://safgolf.online/sitemap.xml
