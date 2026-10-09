@@ -5,9 +5,19 @@ import { Menu, X, ChevronDown, LogIn } from "lucide-react";
 import safLogoFull from "@/assets/saf-logo-full.png";
 
 const programLinks = [
-  { label: "College Scholarships", href: "/scholarships" },
-  { label: "Veterans Program", href: "/veterans" },
-  { label: "Junior Golf Development", href: "/junior-golf" },
+  { label: "All programs", href: "/programs" },
+  { label: "Junior golf / Varsity", href: "/junior-golf" },
+  { label: "Scholarships", href: "/scholarships" },
+  { label: "College recruiting", href: "/programs/recruiting" },
+  { label: "Veterans (PGA HOPE)", href: "/veterans" },
+  { label: "Showcases & events", href: "/events" },
+];
+
+const primaryLinks = [
+  { label: "About", href: "/about" },
+  { label: "Success stories", href: "/success-stories" },
+  { label: "Sponsors", href: "/sponsors" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Header = () => {
@@ -15,59 +25,43 @@ const Header = () => {
   const [programsOpen, setProgramsOpen] = useState(false);
   const location = useLocation();
 
-  const navLinks = [
-    { label: "About Us", href: "/about" },
-    { label: "Sponsors", href: "/sponsors" },
-  ];
-
-  const isActive = (href: string) =>
-    href === "/" ? location.pathname === "/" : location.pathname.startsWith(href);
-
+  const isActive = (href: string) => location.pathname.startsWith(href);
   const isProgramsActive = programLinks.some((l) => location.pathname.startsWith(l.href));
+  const linkCls = (active: boolean) =>
+    `text-[15px] font-medium transition-colors ${active ? "text-primary" : "text-foreground/75 hover:text-primary"}`;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-md border-b border-border">
-      <div className="container-custom pr-8">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
+      <div className="container-custom px-4 md:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center pl-[10px]">
-            <img src={safLogoFull} alt="Student Athlete Foundation" className="h-[62px] w-auto" />
+          <Link to="/" className="flex items-center" aria-label="The Student Athlete Foundation home">
+            <img src={safLogoFull} alt="The Student Athlete Foundation" className="h-[56px] w-auto" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6">
-            <Link
-              to="/about"
-              className={`font-medium transition-colors duration-200 ${
-                isActive("/about") ? "text-primary" : "text-foreground/80 hover:text-primary"
-              }`}
-            >
-              About Us
-            </Link>
-
-            {/* Programs dropdown */}
+          <nav className="hidden lg:flex items-center gap-7" aria-label="Main">
+            <Link to="/about" className={linkCls(isActive("/about"))}>About</Link>
             <div
               className="relative"
               onMouseEnter={() => setProgramsOpen(true)}
               onMouseLeave={() => setProgramsOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 font-medium transition-colors duration-200 ${
-                  isProgramsActive ? "text-primary" : "text-foreground/80 hover:text-primary"
-                }`}
+                className={`flex items-center gap-1 ${linkCls(isProgramsActive)}`}
                 aria-haspopup="true"
                 aria-expanded={programsOpen}
+                onClick={() => setProgramsOpen((v) => !v)}
               >
-                Programs
-                <ChevronDown className="h-4 w-4" />
+                Programs <ChevronDown className="h-4 w-4" />
               </button>
               {programsOpen && (
                 <div className="absolute left-0 top-full pt-3 min-w-[240px]">
-                  <div className="bg-white border border-border rounded-md shadow-lg py-2">
+                  <div className="bg-background border border-border rounded-sm py-2">
                     {programLinks.map((link) => (
                       <Link
                         key={link.href}
                         to={link.href}
-                        className="block px-4 py-2 text-sm text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                        onClick={() => setProgramsOpen(false)}
+                        className="block px-4 py-2 text-sm text-foreground/80 hover:text-primary hover:bg-muted"
                       >
                         {link.label}
                       </Link>
@@ -76,95 +70,44 @@ const Header = () => {
                 </div>
               )}
             </div>
-
-            <Link
-              to="/sponsors"
-              className={`font-medium transition-colors duration-200 ${
-                isActive("/sponsors") ? "text-primary" : "text-foreground/80 hover:text-primary"
-              }`}
-            >
-              Sponsors
+            {primaryLinks.slice(1).map((l) => (
+              <Link key={l.href} to={l.href} className={linkCls(isActive(l.href))}>{l.label}</Link>
+            ))}
+            <Link to="/login" aria-label="Staff login" className="p-1 text-foreground/50 hover:text-primary">
+              <LogIn className="h-4 w-4" />
             </Link>
-
-            <Link to="/donate">
-              <Button variant="donate" size="lg">
-                Donate Now
-              </Button>
-            </Link>
-
-            <Link
-              to="/login"
-              aria-label="Login"
-              className="p-2 text-foreground/70 hover:text-primary transition-colors"
-            >
-              <LogIn className="h-5 w-5" />
-            </Link>
+            <Button asChild>
+              <Link to="/donate">Donate</Link>
+            </Button>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
-            ) : (
-              <Menu className="h-6 w-6 text-foreground" />
-            )}
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <Button asChild size="sm">
+              <Link to="/donate">Donate</Link>
+            </Button>
+            <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+              {isMenuOpen ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-border animate-fade-in">
+          <nav className="lg:hidden py-4 border-t border-border" aria-label="Mobile">
             <div className="flex flex-col gap-1">
-              <Link
-                to="/about"
-                className="font-medium py-2 text-foreground/80 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About Us
-              </Link>
-
-              <div className="py-2">
-                <p className="font-medium text-foreground/60 text-sm uppercase tracking-wide mb-2">
-                  Programs
-                </p>
-                <div className="flex flex-col gap-2 pl-3 border-l border-border">
-                  {programLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      to={link.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-foreground/80 hover:text-primary py-1"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <Link
-                to="/sponsors"
-                className="font-medium py-2 text-foreground/80 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sponsors
-              </Link>
-
-              <Link
-                to="/login"
-                className="flex items-center gap-2 font-medium py-2 text-foreground/80 hover:text-primary"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <LogIn className="h-4 w-4" /> Login
-              </Link>
-
-              <Link to="/donate" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="donate" size="lg" className="mt-2 w-full">
-                  Donate Now
-                </Button>
+              <p className="eyebrow mt-2 mb-1">Programs</p>
+              {programLinks.map((link) => (
+                <Link key={link.href} to={link.href} onClick={() => setIsMenuOpen(false)} className="py-2 text-foreground/85">
+                  {link.label}
+                </Link>
+              ))}
+              <p className="eyebrow mt-4 mb-1">Foundation</p>
+              {primaryLinks.map((link) => (
+                <Link key={link.href} to={link.href} onClick={() => setIsMenuOpen(false)} className="py-2 text-foreground/85">
+                  {link.label}
+                </Link>
+              ))}
+              <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground/60 text-sm">
+                <LogIn className="h-4 w-4" /> Staff login
               </Link>
             </div>
           </nav>

@@ -1,21 +1,20 @@
-# Student Athlete Foundation
+# The Student Athlete Foundation (SAF Golf)
 
-> Houston-based 501(c)(3) non-profit helping junior golfers earn college scholarships and providing free golf programs for military veterans and amputees.
+> Houston-area 501(c)(3) nonprofit (legal name: JJ Wood Student Athlete Foundation Inc., EIN 45-3459562) funding need-based scholarship access to the Varsity junior golf coaching program delivered at Golf Performance Group, Timber Creek Golf Club, Friendswood, Texas.
 
-The Student Athlete Foundation (SAF) provides financial assistance, academic advisement, college coach exposure, and golf training. Programs include junior golf development, college scholarships, veterans rehabilitation through golf, showcase events, and recruiting services. Founded over 15 years ago, SAF has mentored 200+ junior golfers and served 50+ veterans.
+Families apply based on financial need; available funding and eligibility review determine awards. Donations to SAF are separate from paid Golf Performance Group or PGACOACH purchases. History: college golf combines and showcases since 2012; complimentary veterans and amputee programs with PGA HOPE beginning 2016; past scholarships through the Southern Texas PGA and Beltway Junior Golf Tour; equipment for underfunded high-school teams. Founder JJ Wood is a PGA professional and former assistant coach at Rice University and Ohio State.
 
 ## Pages
-
-- [Home](/): Mission overview, impact stats, featured programs.
-- [About](/about): Foundation history, values, leadership.
-- [Programs](/programs): All SAF programs at a glance.
-- [Junior Golf Development](/programs/junior-golf): Training and mentorship for young golfers.
-- [College Scholarships](/programs/college-scholarships): Financial aid and recruiting guidance.
-- [Veterans Golf Program](/programs/veterans): Free golf programs for military veterans.
-- [Golf Showcase Events](/programs/showcase-events): Exposure events with college coaches.
-- [Recruiting Services](/programs/recruiting): Profile building, video, and coach outreach.
-- [Success Stories](/success-stories): Real student-athletes and veterans we've helped.
-- [Sponsors](/sponsors): Sponsorship tiers and partnership opportunities.
-- [Events](/events): Tournament and fundraiser calendar.
-- [Donate](/donate): Tax-deductible donation options.
-- [Contact](/contact): Email, phone, and contact form.
+- [Home](/)
+- [About](/about)
+- [Programs](/programs)
+- [Junior golf / Varsity](/junior-golf)
+- [Scholarships](/scholarships)
+- [Apply for a scholarship](/apply/scholarship)
+- [College recruiting](/programs/recruiting): six steps; links to the College Recruiting Playbook (https://pgacoach.ai/course/college-recruiting-playbook/)
+- [Veterans (PGA HOPE)](/veterans)
+- [Showcases & events](/events)
+- [Success stories](/success-stories)
+- [Sponsors](/sponsors)
+- [Donate](/donate)
+- [Contact](/contact)

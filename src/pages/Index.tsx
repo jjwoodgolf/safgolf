@@ -1,266 +1,196 @@
 import { Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import Footer from "@/components/Footer";
+import { ArrowRight } from "lucide-react";
+import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Target, Users, Award, GraduationCap, Heart, Calendar, UserCheck, Quote, ArrowRight } from "lucide-react";
-import mediaLogos from "@/assets/media-logos.png";
-import SuccessGallerySlider from "@/components/SuccessGallerySlider";
+import PlaybookCTA from "@/components/site/PlaybookCTA";
+import PhotoGallery from "@/components/site/PhotoGallery";
+import { photos, communityGallery } from "@/components/site/photos";
+import { ORG } from "@/components/site/org";
 
-const Index = () => {
-  const values = [
-    {
-      icon: Target,
-      title: "Our Mission",
-      description: "To provide financial assistance, academic advisement, and exposure opportunities for junior golfers pursuing college scholarships.",
-    },
-    {
-      icon: Users,
-      title: "Who We Serve",
-      description: "Local student-athletes with dreams of playing college golf, and military veterans seeking rehabilitation through the game.",
-    },
-    {
-      icon: Award,
-      title: "Our Impact",
-      description: "Helping dozens of athletes earn college scholarships and providing complimentary golf programs for veterans.",
-    },
-  ];
+const varsity = [
+  "Coached group practice",
+  "On-course strategy",
+  "Technique and short game",
+  "Tournament preparation",
+  "Mental game",
+  "Progress tracking",
+  "College recruiting guidance",
+];
 
-  const programs = [
-    {
-      icon: GraduationCap,
-      title: "Junior Golf Development",
-      description: "Comprehensive training for young golfers looking to improve their skills.",
-      link: "/programs/junior-golf",
-    },
-    {
-      icon: Award,
-      title: "College Scholarships",
-      description: "Financial assistance and guidance for college-bound student-athletes.",
-      link: "/programs/college-scholarships",
-    },
-    {
-      icon: Heart,
-      title: "Veterans Program",
-      description: "Complimentary golf programs for military veterans in partnership with PGA.",
-      link: "/programs/veterans",
-    },
-    {
-      icon: Calendar,
-      title: "Showcase Events",
-      description: "Competitive events to get exposure to college coaches and scouts.",
-      link: "/programs/showcase-events",
-    },
-  ];
+const history = [
+  {
+    year: "2012",
+    title: "First college golf combine",
+    text: "SAF hosted its first college golf combine, followed by further combines and showcases where coaches from Rice, Houston Baptist, Arkansas–Little Rock and other programs watched juniors play.",
+    photo: photos.combineUh,
+  },
+  {
+    year: "2016",
+    title: "Veterans programs with PGA HOPE",
+    text: "A complimentary eight-week program for veterans and amputees began with the PGA of America's PGA HOPE initiative, offering adaptive instruction and community on the course.",
+    photo: photos.pgaHope,
+  },
+  {
+    year: "Past seasons",
+    title: "Scholarships, equipment and free coaching",
+    text: "SAF funded scholarships through the Southern Texas PGA and Beltway Junior Golf Tour, bought equipment for underfunded high-school teams, and, when funding allowed, offered summer recruiting and Varsity coaching free to many participants.",
+    photo: photos.varsitySeminar,
+  },
+];
 
-  const featuredStories = [
-    {
-      name: "Mario Carmona",
-      school: "Rice University",
-      image: "https://www.thestudentathletefoundation.org/wp-content/uploads/2014/09/MarioSigns-e1459736350341.jpg",
-      quote: "The foundation provided the resources and connections I needed to earn my scholarship at Rice.",
-    },
-    {
-      name: "Caylee Senn",
-      school: "Houston Baptist University",
-      image: "https://www.thestudentathletefoundation.org/wp-content/uploads/2018/01/cayleesenn-hbu-rin.jpeg",
-      quote: "Without SAF's support, I wouldn't be where I am today playing Division I golf.",
-    },
-  ];
+const Index = () => (
+  <Layout>
+    <SEO
+      title="The Student Athlete Foundation | Need-based junior golf scholarships, Houston"
+      description="SAF Golf is a Houston-area 501(c)(3) nonprofit funding need-based scholarship access to Varsity junior golf coaching and college recruiting guidance."
+      path="/"
+      jsonLd={{
+        "@context": "https://schema.org",
+        "@type": "NGO",
+        name: ORG.brand,
+        legalName: ORG.legalName,
+        alternateName: ORG.short,
+        taxID: ORG.ein,
+        nonprofitStatus: "Nonprofit501c3",
+        url: "https://safgolf.online",
+        email: ORG.email,
+        telephone: ORG.phone,
+        areaServed: "Houston, Texas",
+      }}
+    />
 
-  return (
-    <div className="min-h-screen">
-      <SEO
-        title="Student Athlete Foundation | Empowering Lives Through Golf"
-        description="Supporting junior golfers with college scholarships and providing transformative golf programs for military veterans."
-        path="/"
-      />
-      <Header />
-      <main>
-        <Hero />
-        
-        {/* Media Logos Banner */}
-        <section className="bg-white py-8">
-          <div className="px-[60px]">
-            <p className="text-[10px] text-muted-foreground text-center mb-4 lowercase font-bold">
-              golf programs have been featured on...
+    {/* Hero */}
+    <section className="pt-20 bg-background">
+      <div className="grid lg:grid-cols-[45fr_55fr] lg:min-h-[640px]">
+        <div className="order-2 lg:order-1 flex items-center px-4 md:px-8 lg:pl-[max(2rem,calc((100vw-80rem)/2+2rem))] lg:pr-12 py-12 lg:py-16">
+          <div className="max-w-xl">
+            <p className="eyebrow mb-5">Houston · 501(c)(3) nonprofit</p>
+            <h1 className="font-display text-[2.6rem] md:text-6xl leading-[1.05] text-foreground">
+              Give a young golfer a fair shot.
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+              The Student Athlete Foundation funds need-based scholarships so junior golfers can train in the
+              Varsity coaching program at Golf Performance Group, Timber Creek Golf Club in Friendswood.
             </p>
-            <img 
-              src={mediaLogos} 
-              alt="As featured in CBS, Fox Sports, ESPN Radio, KHOU 11, NewsFix CW39, NBC, Golf" 
-              className="w-full h-auto object-contain"
-              style={{ 
-                filter: 'grayscale(100%)'
-              }}
-            />
-          </div>
-        </section>
-        
-        {/* Mission Preview Section */}
-        <section className="section-padding bg-muted">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-accent font-semibold uppercase tracking-wider text-sm">About Us</span>
-              <p className="text-muted-foreground text-lg leading-relaxed mt-4">
-                The Student Athlete Foundation is a 501(c)(3) non-profit organization dedicated to 
-                empowering lives through the beautiful game of golf.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8 mb-12">
-              {values.map((value, index) => (
-                <div
-                  key={value.title}
-                  className="bg-card rounded-xl p-8 shadow-lg card-hover border border-border"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6">
-                    <value.icon className="h-7 w-7 text-accent" />
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-foreground mb-4">
-                    {value.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {value.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link to="/about">
-                <Button variant="accent" size="lg">
-                  Learn More About Us <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Programs Preview Section */}
-        <section className="section-padding bg-background">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-accent font-semibold uppercase tracking-wider text-sm">What We Offer</span>
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-                Our Programs
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Comprehensive programs designed to support junior golfers and veterans.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {programs.map((program, index) => (
-                <Link
-                  key={program.title}
-                  to={program.link}
-                  className="bg-card rounded-xl p-6 shadow-lg border border-border hover:shadow-xl transition-all group"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
-                    <program.icon className="h-6 w-6 text-accent" />
-                  </div>
-                  <h3 className="font-display text-lg font-bold text-foreground mb-2">
-                    {program.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    {program.description}
-                  </p>
-                </Link>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link to="/programs">
-                <Button variant="outline" size="lg">
-                  View All Programs <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Success Stories Preview */}
-        <section className="section-padding bg-muted">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-accent font-semibold uppercase tracking-wider text-sm">Success Stories</span>
-              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-                Dreams Realized
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Meet some of the student-athletes who achieved their college golf dreams with our help.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {featuredStories.map((story, index) => (
-                <div
-                  key={story.name}
-                  className="bg-card rounded-xl overflow-hidden shadow-lg border border-border flex flex-col md:flex-row"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="md:w-1/3 h-48 md:h-auto">
-                    <img
-                      src={story.image}
-                      alt={story.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 p-6 flex flex-col justify-center">
-                    <Quote className="h-6 w-6 text-accent/30 mb-3" />
-                    <p className="text-muted-foreground italic mb-4">
-                      "{story.quote}"
-                    </p>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-foreground">
-                        {story.name}
-                      </h3>
-                      <p className="text-accent text-sm">{story.school}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link to="/success-stories">
-                <Button variant="accent" size="lg">
-                  Read More Stories <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Student Athletes Gallery */}
-        <SuccessGallerySlider />
-
-        {/* Donate CTA Section */}
-        <section className="section-padding bg-cream">
-          <div className="container-custom text-center">
-            <span className="text-accent font-semibold uppercase tracking-wider text-sm">Support Our Mission</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-              Help Us Change Lives
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-              Your tax-deductible donation directly supports junior golfers pursuing college dreams 
-              and veterans finding healing through golf.
-            </p>
-            <Link to="/donate">
-              <Button variant="hero" size="xl">
-                <Heart className="h-5 w-5" />
-                Donate Today
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Button asChild size="lg">
+                <Link to="/donate">Donate</Link>
               </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/programs">Explore our programs</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="order-1 lg:order-2">
+          <img
+            src={photos.varsityShortGame.src}
+            alt={photos.varsityShortGame.alt}
+            className="w-full h-[300px] sm:h-[420px] lg:h-full object-cover"
+            fetchPriority="high"
+          />
+        </div>
+      </div>
+    </section>
+
+    {/* Access */}
+    <section className="section-padding bg-background border-t border-border">
+      <div className="container-custom grid lg:grid-cols-12 gap-12">
+        <div className="lg:col-span-5">
+          <p className="eyebrow mb-4">How your gift works</p>
+          <h2 className="font-display text-3xl md:text-[2.6rem] leading-tight">
+            The coaching exists. Access is what your gift makes possible.
+          </h2>
+        </div>
+        <div className="lg:col-span-7 space-y-5 text-lg text-muted-foreground leading-relaxed">
+          <p>
+            SAF programming and the GPG Varsity Group are one coaching pathway. Golf Performance Group delivers the
+            Varsity program; SAF provides scholarship access for families who could not otherwise take part.
+          </p>
+          <p>
+            Families apply based on financial need. Available funding and an eligibility review determine each
+            award. Donations to SAF are separate from paid Golf Performance Group or PGACOACH purchases.
+          </p>
+          <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 pt-4 text-base text-foreground">
+            {varsity.map((v) => (
+              <li key={v} className="border-b border-border py-2">{v}</li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-6 pt-4 text-base">
+            <Link to="/scholarships" className="inline-flex items-center gap-1 text-primary font-medium hover:underline">
+              How scholarships work <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/apply/scholarship" className="inline-flex items-center gap-1 text-primary font-medium hover:underline">
+              Apply for a scholarship <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
-  );
-};
+        </div>
+      </div>
+    </section>
+
+    {/* History */}
+    <section className="section-padding bg-muted">
+      <div className="container-custom">
+        <div className="max-w-3xl mb-12">
+          <p className="eyebrow mb-4">Our record</p>
+          <h2 className="font-display text-3xl md:text-4xl leading-tight">More than a decade of opening doors.</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {history.map((h) => (
+            <article key={h.title}>
+              <img src={h.photo.src} alt={h.photo.alt} loading="lazy" className="w-full aspect-[4/3] object-cover rounded-sm" />
+              <p className="mt-5 eyebrow">{h.year}</p>
+              <h3 className="mt-2 font-display text-xl">{h.title}</h3>
+              <p className="mt-2 text-muted-foreground leading-relaxed">{h.text}</p>
+            </article>
+          ))}
+        </div>
+        <p className="mt-12 max-w-3xl text-muted-foreground leading-relaxed">
+          Players from JJ Wood's coaching, SAF and Varsity community have won state junior and high-school
+          championships and gone on to college golf, the LPGA Tour, the PGA Tour and major championships. That is
+          shared program history; not every player received SAF funding, and no outcome is guaranteed. Our goal is to
+          raise enough to restore wider free participation.
+        </p>
+      </div>
+    </section>
+
+    {/* Founder */}
+    <section className="section-padding bg-background">
+      <div className="container-custom grid lg:grid-cols-2 gap-12 items-center">
+        <img src={photos.rice2014.src} alt={photos.rice2014.alt} loading="lazy" className="w-full aspect-[4/3] object-cover rounded-sm" />
+        <div>
+          <p className="eyebrow mb-4">Founder</p>
+          <h2 className="font-display text-3xl md:text-4xl leading-tight">College coaching experience, applied to junior golf.</h2>
+          <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+            JJ Wood is a PGA professional who played college golf at Pepperdine and Oklahoma. He served as an
+            assistant coach at Rice University, where he was on staff for the program's first Conference USA title in
+            2014, and then at Ohio State.
+          </p>
+          <Link to="/about" className="mt-6 inline-flex items-center gap-1 text-primary font-medium hover:underline">
+            About SAF and JJ Wood <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
+
+    <PlaybookCTA />
+
+    {/* Gallery */}
+    <section className="section-padding bg-background">
+      <div className="container-custom">
+        <div className="max-w-3xl mb-10">
+          <p className="eyebrow mb-4">Community</p>
+          <h2 className="font-display text-3xl md:text-4xl leading-tight">From the practice tee to signing day.</h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-3 mb-3">
+          <img src={photos.jjVarsityCommunity.src} alt={photos.jjVarsityCommunity.alt} loading="lazy" className="w-full aspect-[16/10] object-cover rounded-sm" />
+          <img src={photos.varsityCoachDiscussion.src} alt={photos.varsityCoachDiscussion.alt} loading="lazy" className="w-full aspect-[16/10] object-cover object-top rounded-sm" />
+        </div>
+        <PhotoGallery items={communityGallery.slice(0, 8)} caption="Players from the SAF and Varsity coaching community." />
+      </div>
+    </section>
+  </Layout>
+);
 
 export default Index;

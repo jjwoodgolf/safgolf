@@ -6,14 +6,15 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import safLogo from "@/assets/saf-logo.png";
+import { ORG } from "@/components/site/org";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const quickLinks = [
-    { label: "About Us", href: "/about" },
-    { label: "Events", href: "/events" },
+    { label: "About", href: "/about" },
+    { label: "Showcases & events", href: "/events" },
     { label: "Programs", href: "/programs" },
     { label: "Success Stories", href: "/success-stories" },
     { label: "Sponsors", href: "/sponsors" },
@@ -22,11 +23,11 @@ const Footer = () => {
   ];
 
   const programs = [
-    { label: "Junior Golf Development", href: "/junior-golf" },
-    { label: "College Scholarships", href: "/scholarships" },
-    { label: "Veterans Program", href: "/veterans" },
-    { label: "Showcase Events", href: "/programs/showcase-events" },
-    { label: "Recruiting Services", href: "/programs/recruiting" },
+    { label: "Junior golf / Varsity", href: "/junior-golf" },
+    { label: "Scholarships", href: "/scholarships" },
+    { label: "Apply for a scholarship", href: "/apply/scholarship" },
+    { label: "College recruiting", href: "/programs/recruiting" },
+    { label: "Veterans (PGA HOPE)", href: "/veterans" },
   ];
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -56,7 +57,7 @@ const Footer = () => {
   };
 
   return (
-    <footer id="contact" className="bg-primary text-white">
+    <footer id="contact" className="bg-primary text-primary-foreground">
       <div className="container-custom section-padding">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* About */}
@@ -67,8 +68,8 @@ const Footer = () => {
               className="h-24 w-auto mb-6 brightness-0 invert"
             />
             <p className="text-white/85 leading-relaxed">
-              Empowering lives through golf. Helping junior golfers achieve college dreams
-              and providing healing programs for military veterans.
+              The Student Athlete Foundation (SAF Golf) is a Houston-area 501(c)(3) nonprofit
+              funding need-based access to junior golf coaching and college guidance.
             </p>
           </div>
 
@@ -78,7 +79,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.href} className="text-white/85 hover:text-secondary transition-colors">
+                  <Link to={link.href} className="text-white/85 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -92,7 +93,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {programs.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.href} className="text-white/85 hover:text-secondary transition-colors">
+                  <Link to={link.href} className="text-white/85 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -146,7 +147,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-white/85 text-sm">
-            © {new Date().getFullYear()} Student Athlete Foundation. All rights reserved.
+            © {new Date().getFullYear()} {ORG.legalName}, a 501(c)(3) nonprofit. EIN {ORG.ein}.
           </p>
           <div className="flex flex-wrap gap-6 text-sm justify-center">
             <Link to="/privacy" className="text-white/85 hover:text-white transition-colors">
@@ -155,9 +156,7 @@ const Footer = () => {
             <Link to="/terms" className="text-white/85 hover:text-white transition-colors">
               Terms of Service
             </Link>
-            <Link to="/about" className="text-white/85 hover:text-white transition-colors">
-              501(c)(3) Status
-            </Link>
+
           </div>
         </div>
       </div>

@@ -60,6 +60,7 @@ export default {
         // Custom colors for SAF
         gold: "hsl(var(--gold-accent))",
         cream: "hsl(var(--warm-cream))",
+        charcoal: { DEFAULT: "hsl(var(--charcoal))", foreground: "hsl(var(--charcoal-foreground))" },
         success: "hsl(var(--success-green))",
         "icon-bg": "hsl(var(--icon-bg))",
       },
