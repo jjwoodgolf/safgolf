@@ -16,6 +16,7 @@ export interface Receipt extends ReceiptData {
   stripe_object_id: string;
   status: "pending" | "sending" | "sent" | "failed";
   attempts: number;
+  last_error?: string | null;
 }
 export interface NewReceipt {
   donation_id: string | null;
