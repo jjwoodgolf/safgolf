@@ -87,7 +87,7 @@ const Index = () => (
           <img
             src={photos.varsityShortGame.src}
             alt={photos.varsityShortGame.alt}
-            className="w-full h-[300px] sm:h-[420px] lg:h-full object-cover object-[65%_center]"
+            className="w-full h-[300px] sm:h-[420px] lg:h-full object-cover object-center lg:object-left"
             fetchPriority="high"
           />
         </div>
