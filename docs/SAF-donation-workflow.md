@@ -12,7 +12,7 @@ Status as of 2026-10-09. Stripe account: `acct_1SpUY5AnxhNHaMeq` (JJ Wood Studen
    - Subscription checkout completion links the subscription to the donation. **No receipt.**
    - `invoice.paid` (amount > 0) is the **only** monthly receipt trigger, covering the first payment and every renewal. Ledger key = invoice id. If the invoice arrives before checkout completion, the donation is found through the Checkout Session for that subscription.
    - `async_payment_failed`, `expired`, `invoice.payment_failed`, `customer.subscription.updated/deleted` update the donation status.
-6. Ledger `donation_receipts` has a unique `stripe_object_id`, a sequential receipt number (`SAF-YYYY-NNNNNN`), paid timestamp, gross USD cents received, state (pending/sending/sent/failed), attempts, last error and Brevo message id. `claim_donation_receipt()` atomically moves a row to `sending`, so concurrent or duplicate events send at most once. A stale `sending` row can be reclaimed after 10 minutes. `stripe_events` logs every event with its status and error.
+6. Ledger `donation_receipts` has a unique `stripe_object_id`, a sequential receipt number (`SAF-YYYY-NNNNNN`), paid timestamp, gross USD cents received, state, attempts, last error and Brevo message id. See "Receipt outbox" below. `stripe_events` logs every event with its status and error.
 7. When an email fails, the receipt is marked `failed` with the provider error, and the webhook returns 500 so Stripe retries (Stripe retries for up to 3 days). Staff can also click **Resend** in Admin -> Donations (`resend-receipt`, which checks for an admin/staff role).
 8. Monthly donors: every receipt links to `/manage-donation`, which opens the SAF Stripe Customer Portal (card update, invoice history, cancel at period end). The portal also has an email sign-in page: https://billing.stripe.com/p/login/6oU8wO1zU83t6c2ewV48000
 
@@ -21,8 +21,22 @@ Legal name, brand, EIN 45-3459562, donor name, payment date (America/Chicago), g
 
 ## Security
 - `donations`, `donation_receipts` and `stripe_events` can be read by staff only. No client-side insert or update path exists. Writes happen only from service-role backend functions.
-- The webhook signing secret is stored in `app_private_config` (service-role only, RLS with no policies). It was created by `stripe-webhook-setup` and is never returned or logged. Setting `STRIPE_WEBHOOK_SECRET` in Secrets would take precedence.
-- `stripe-webhook-setup` requires a staff session, or an HMAC proof made with the SAF Stripe secret key (which is never transmitted).
+- The webhook signing secret is stored in `app_private_config` (service-role only, RLS with no policies). It is never returned or logged. Setting `STRIPE_WEBHOOK_SECRET` in Secrets would take precedence.
+- The one-off `stripe-webhook-setup` function was removed (source and deployment) after setup; it now returns 404.
+- Verified 2026-10-09: anon/authenticated have no SELECT/INSERT on `app_private_config` and no EXECUTE on `claim_donation_receipt` (REST calls return 42501). Ledger tables (`donation_receipts`, `stripe_events`) grant authenticated SELECT only (RLS: staff), no writes for client roles. `receipt-worker` returns 401 without the token; `resend-receipt` returns "Staff only" without a staff session.
+
+## Receipt outbox (reliability model)
+States: `pending` -> `sending` (claim; submission time persisted BEFORE the provider call) -> `sent` (provider accepted, message id stored).
+- `failed`: Brevo definitively rejected (HTTP 4xx incl. 429, or key missing). Retried by the worker with backoff (15 min doubling, max 12 h); after 6 attempts -> `needs_review`.
+- `unconfirmed`: outcome unknown (timeout after 15 s, network error, 5xx, accepted-without-id, or accepted but the DB write failed). Never treated as failed.
+- `needs_review`: delivery could not be proved or disproved. Never auto-resent. Shown in Admin; staff Resend is an explicit decision that may duplicate.
+- Idempotency: the persisted receipt UUID is sent as Brevo `headers.idempotencyKey`, plus a unique tag `receipt-<uuid>`. Brevo documents a finite dedupe TTL (15 min in its 2021 changelog; 30 min in current batch docs). We treat **14 min** from the first submission as the only window in which an ambiguous receipt may be resubmitted. This is not unlimited exactly-once.
+- After the window: the worker looks up Brevo's event log (`/smtp/statistics/events`, event `requests`, tag `receipt-<uuid>`, donor email). Found -> `sent`. Not found -> waits 2 h for logs to settle, then `needs_review`.
+- If an accepted send's DB write fails, the code tries to store the message id as `unconfirmed`; the worker finalizes it as `sent` without resending. If even that write fails, the row stays `sending`; after 10 min the worker treats it as `unconfirmed` and reconciles via the log.
+- A busy claim (another worker holds it) returns `receipt_busy`, not `receipt_sent`. The Stripe event is marked processed only after the receipt row is durably in the ledger; recovery belongs to the worker.
+- Worker: `receipt-worker`, invoked hourly (minute 7, 24 runs/day) by database cron, only when non-sent receipts exist. Auth: random token held in `app_private_config`, read by the cron job inside the database. Batch 25. Max retry delay is about 1 hour plus backoff.
+- Stale-event guards: once a donation is paid/active/canceling/past_due/canceled/refunded, later unpaid, expired, failed or processing checkout events do not change it. `customer.subscription.updated` fetches the current subscription from Stripe, not the event payload. `canceled` is terminal.
+- Known limits: if Brevo's event log is unavailable or doesn't index the tag, ambiguous receipts end in `needs_review` (safe but manual). Duplicates are prevented within the tested model, but not provably impossible: for example, a staff resend from `needs_review` after an undetected delivery.
 
 ## Active configuration (verified 2026-10-09)
 | Item | State |
@@ -42,7 +56,18 @@ Legal name, brand, EIN 45-3459562, donor name, payment date (America/Chicago), g
 | Unit: monthly checkout alone -> no receipt; first + renewal invoice -> one receipt each; duplicates ignored | PASS |
 | Unit: invoice.paid before checkout.session.completed -> linked, no duplicate | PASS |
 | Unit: $0 invoice and payment_failed -> no receipt | PASS |
-| Unit: email failure recorded + surfaced; retry sends exactly once | PASS |
+| Unit: definite rejection -> failed + backoff; redelivery before due sends nothing; worker retry sends once | PASS |
+| Unit: provider accepted then DB write fails -> unconfirmed with message id -> reconciled to sent, no resend | PASS |
+| Unit: idempotency key is the same receipt UUID across retries | PASS |
+| Unit: timeout, then after TTL -> reconciled from provider log, no resend | PASS |
+| Unit: timeout, after TTL, no provider evidence -> awaiting logs, then needs_review; never auto-resent | PASS |
+| Unit: concurrent worker crash -> `receipt_busy` (not sent); stale sending recovered with one send | PASS |
+| Unit: claim DB error rethrown (Stripe retries), nothing sent | PASS |
+| Unit: paid, then stale expired/failed/unpaid events -> stays paid | PASS |
+| Unit: reordered subscription.updated uses canonical state; canceled is terminal | PASS |
+| Live: anon REST access to private config / claim RPC denied (42501); worker 401 without token; setup endpoint 404 | PASS |
+| Total unit tests (Deno) | 20 passed, 0 failed |
+| Brevo idempotency/event-log lookup against the live provider | NOT TESTED (no new emails sent, per instruction); field names follow Brevo docs |
 | Unit: amount validation, origin allowlist, receipt fields/escaping/TEST labelling | PASS |
 | Live: missing / bad Stripe-Signature -> 400 | PASS |
 | Live: $0.50, "abc", bad frequency -> 400; disallowed Origin -> 403 | PASS |
