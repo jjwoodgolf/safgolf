@@ -52,6 +52,12 @@
       ]
     }
     </script>
+      <script>
+      // Forward invite/recovery links to the password form before the app (and auth) loads.
+      if (/type=(invite|recovery)/.test(location.hash) && location.pathname !== "/set-password") {
+        history.replaceState(null, "", "/set-password" + location.hash);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
