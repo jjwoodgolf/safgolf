@@ -139,9 +139,18 @@ const DonationCard = () => {
 
       {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
 
-      <Button size="lg" className="mt-6 w-full" onClick={donate} disabled={loading}>
+      <Button
+        size="lg"
+        className="mt-6 w-full h-auto whitespace-normal py-4 text-center leading-snug break-words [&_svg]:shrink-0"
+        onClick={donate}
+        disabled={loading}
+      >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
-        {valid ? `Continue to secure checkout — ${usd(total)}${frequency === "monthly" ? "/mo" : ""}` : "Continue to secure checkout"}
+        {valid
+          ? frequency === "monthly"
+            ? `Give ${usd(total)} monthly`
+            : `Donate ${usd(total)}`
+          : "Continue to secure checkout"}
       </Button>
       <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
         Payment is processed by Stripe; we never see your card details. You'll get an emailed receipt once your payment
