@@ -16,29 +16,33 @@ const steps = [
 const PlaybookCTA = ({ compact = false }: { compact?: boolean }) => (
   <section className="section-padding bg-muted">
     <div className="container-custom grid lg:grid-cols-12 gap-12">
-      <div className="lg:col-span-5">
+      <div className="lg:col-span-5 min-w-0">
         <p className="eyebrow mb-4">College recruiting</p>
         <h2 className="font-display text-3xl md:text-4xl leading-tight text-foreground">
-          Six simple steps to college golf.
+          A clear plan for college golf.
         </h2>
         <p className="mt-5 text-muted-foreground leading-relaxed">
-          The College Recruiting Playbook is an online curriculum from PGACOACH that walks families through the
-          recruiting process. It is a separate membership resource and is currently included for Varsity members
-          at Golf Performance Group. It does not guarantee a roster spot or scholarship, and it is not a benefit of
-          donating.
+          JJ Wood's College Recruiting Playbook walks families through the process step by step, with templates and
+          coaching guidance at every stage — from an honest assessment of fit to comparing real opportunities.
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row gap-3">
-          <Button asChild size="lg">
+        <p className="mt-3 text-sm text-muted-foreground">
+          PGACOACH membership resource. Included for GPG Varsity members.
+        </p>
+        <div className="mt-8 flex flex-col items-start gap-4">
+          <Button asChild size="lg" className="max-w-full h-auto whitespace-normal text-left">
             <a href={PLAYBOOK_URL} target="_blank" rel="noopener noreferrer">
-              Explore the College Recruiting Playbook <ArrowUpRight className="h-4 w-4 ml-1" />
+              Explore the College Recruiting Playbook <ArrowUpRight className="h-4 w-4 ml-1 shrink-0" />
             </a>
           </Button>
           {!compact && (
-            <Button asChild size="lg" variant="outline">
-              <a href={RECRUITING_COACH_URL} target="_blank" rel="noopener noreferrer">
-                GolfRecruitingCoach.com
-              </a>
-            </Button>
+            <a
+              href={RECRUITING_COACH_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
+            >
+              More at GolfRecruitingCoach.com <ArrowUpRight className="h-4 w-4" />
+            </a>
           )}
         </div>
       </div>

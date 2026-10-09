@@ -87,7 +87,7 @@ const Index = () => (
           <img
             src={photos.varsityShortGame.src}
             alt={photos.varsityShortGame.alt}
-            className="w-full h-[300px] sm:h-[420px] lg:h-full object-cover"
+            className="w-full h-[300px] sm:h-[420px] lg:h-full object-cover object-[65%_center]"
             fetchPriority="high"
           />
         </div>
@@ -148,9 +148,8 @@ const Index = () => (
         </div>
         <p className="mt-12 max-w-3xl text-muted-foreground leading-relaxed">
           Players from JJ Wood's coaching, SAF and Varsity community have won state junior and high-school
-          championships and gone on to college golf, the LPGA Tour, the PGA Tour and major championships. That is
-          shared program history; not every player received SAF funding, and no outcome is guaranteed. Our goal is to
-          raise enough to restore wider free participation.
+          championships and gone on to college golf, the LPGA Tour, the PGA Tour and major championships. Our goal
+          now is to raise enough to put free participation within reach of many more junior golfers.
         </p>
       </div>
     </section>
