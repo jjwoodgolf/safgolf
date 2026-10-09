@@ -96,7 +96,8 @@ const BREVO = "https://api.brevo.com/v3";
 
 /**
  * Sends via Brevo with the persisted receipt UUID as idempotencyKey and a unique per-receipt tag.
- * 4xx (incl. 429) => ProviderRejected (definitely not accepted). Network/timeout/5xx/odd 2xx => ProviderAmbiguous.
+ * 4xx (incl. 429) on a first submission => ProviderRejected. duplicate_parameter / idempotency conflicts mean an
+ * earlier submission with this key may exist => ProviderAmbiguous. Network/timeout/5xx/odd 2xx => ProviderAmbiguous.
  */
 export async function sendReceiptEmail(r: ReceiptData & { id?: string }, apiKey = Deno.env.get("BREVO_API_KEY")) {
   if (!apiKey) throw new ProviderRejected("BREVO_API_KEY is not configured");
@@ -124,6 +125,7 @@ export async function sendReceiptEmail(r: ReceiptData & { id?: string }, apiKey 
     throw new ProviderAmbiguous(`Brevo request did not complete: ${e instanceof Error ? e.message : e}`);
   }
   const body = await res.text().catch(() => "");
+  if (isIdempotencyConflict(res.status, body)) throw new ProviderAmbiguous(`Brevo idempotency conflict [${res.status}]: ${body.slice(0, 500)}`);
   if (res.status >= 400 && res.status < 500) throw new ProviderRejected(`Brevo [${res.status}]: ${body.slice(0, 500)}`);
   if (!res.ok) throw new ProviderAmbiguous(`Brevo [${res.status}]: ${body.slice(0, 500)}`);
   let messageId: string | null = null;
@@ -141,7 +143,29 @@ export async function findBrevoMessage(id: string, email: string, apiKey = Deno.
   });
   const body = await res.text();
   if (!res.ok) throw new Error(`Brevo events [${res.status}]: ${body.slice(0, 300)}`);
-  const events = (JSON.parse(body || "{}").events ?? []) as Array<{ messageId?: string; tag?: string; tags?: string[] }>;
-  const hit = events.find((e) => (e.tags ?? [e.tag]).includes(receiptTag(id)) && e.messageId);
+  const events = (JSON.parse(body || "{}").events ?? []) as Array<{ messageId?: string; tag?: unknown; tags?: unknown }>;
+  const hit = events.find((e) => e.messageId && eventTags(e).includes(receiptTag(id)));
   return hit?.messageId ?? null;
+}
+
+/** Brevo 400 for a reused idempotencyKey (code duplicate_parameter) or any idempotency/duplicate conflict. */
+export function isIdempotencyConflict(status: number, body: string) {
+  if (status !== 400 && status !== 409 && status !== 422) return false;
+  let code = "", msg = "";
+  try { const j = JSON.parse(body); code = String(j.code ?? ""); msg = String(j.message ?? ""); } catch { msg = body; }
+  return code === "duplicate_parameter" || /idempoten|duplicate/i.test(msg);
+}
+
+/** Normalizes Brevo's event tag fields: array, JSON-serialized array string, comma list, or single string. */
+export function eventTags(e: { tag?: unknown; tags?: unknown }): string[] {
+  const out: string[] = [];
+  const add = (v: unknown) => {
+    if (Array.isArray(v)) return v.forEach(add);
+    if (typeof v !== "string" || !v.trim()) return;
+    const s = v.trim();
+    if (s.startsWith("[")) { try { return add(JSON.parse(s)); } catch { /* fall through */ } }
+    s.split(",").forEach((x) => { const t = x.trim().replace(/^"|"$/g, ""); if (t) out.push(t); });
+  };
+  add(e.tags); add(e.tag);
+  return out;
 }

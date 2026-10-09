@@ -8,12 +8,13 @@
 //   unconfirmed   ambiguous (timeout, network error, 5xx, accepted-but-DB-write-failed, worker crash)
 //   needs_review  delivery could not be proved or disproved -> held for staff; never auto-resent
 //
-// Brevo idempotencyKey = the persisted receipt UUID. Brevo documents a finite dedupe TTL (15 min in the
-// 2021 changelog, 30 min in newer batch docs); we conservatively treat 14 min as the safe resend window.
-// Outside that window an ambiguous receipt is reconciled from Brevo's event log by its unique tag, or held.
+// Only 'pending' and definitely-rejected ('failed') submissions are ever (re)submitted automatically.
+// An unconfirmed or stale 'sending' receipt is NEVER resubmitted — a later 400/401/429 would not prove the
+// first attempt was unsent. It is reconciled from provider_message_id or Brevo's event log (unique tag),
+// and held as needs_review if still unresolved after LOG_SETTLE_MS. The stable receipt-UUID
+// idempotencyKey remains as extra protection only; no correctness depends on its finite TTL.
 import type { ReceiptData } from "./receipt.ts";
 
-export const KEY_WINDOW_MS = 14 * 60_000;
 export const STALE_SENDING_MS = 10 * 60_000;
 export const LOG_SETTLE_MS = 2 * 60 * 60_000; // provider event logs can lag; wait before concluding "not sent"
 export const MAX_DEFINITE_ATTEMPTS = 6;
@@ -97,7 +98,7 @@ async function safeMark(deps: OutboxDeps, id: string, patch: Record<string, unkn
   }
 }
 
-/** Worker step for one non-sent receipt. Never blindly resends outside the idempotency window. */
+/** Worker step for one non-sent receipt. Never resubmits an unconfirmed/stale-sending receipt. */
 export async function recoverReceipt(deps: OutboxDeps, r: OutboxReceipt, manage: string | null = null): Promise<string> {
   const now = deps.now().getTime();
   const t = (s?: string | null) => (s ? new Date(s).getTime() : 0);
@@ -120,9 +121,6 @@ export async function recoverReceipt(deps: OutboxDeps, r: OutboxReceipt, manage:
     await deps.markReceipt(r.id, { status: "sent", sent_at: deps.now().toISOString(), last_error: null });
     return "reconciled_sent";
   }
-  if (now - t(r.submission_started_at) < KEY_WINDOW_MS) {
-    return deliverReceipt(deps, r.id, manage); // same idempotency key, inside provider dedupe window
-  }
   let found: string | null;
   try { found = await deps.findProviderMessage(r); } catch (e) {
     await deps.markReceipt(r.id, { last_error: `Reconcile lookup failed: ${errMsg(e)}` });
@@ -135,7 +133,7 @@ export async function recoverReceipt(deps: OutboxDeps, r: OutboxReceipt, manage:
   if (now - t(r.submission_started_at) < LOG_SETTLE_MS) return "awaiting_logs";
   await deps.markReceipt(r.id, {
     status: "needs_review",
-    review_reason: "Delivery could not be confirmed after the provider idempotency window; not auto-resent.",
+    review_reason: "Delivery could not be confirmed from provider records; not auto-resent.",
   });
   return "needs_review";
 }

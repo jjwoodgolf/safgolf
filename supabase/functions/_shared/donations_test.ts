@@ -1,8 +1,9 @@
 import { assert, assertEquals, assertRejects } from "jsr:@std/assert@1";
 import { type Deps, type Donation, handleEvent, type Receipt } from "./donations.ts";
-import { deliverReceipt, KEY_WINDOW_MS, LOG_SETTLE_MS, ProviderAmbiguous, ProviderRejected, recoverReceipt, STALE_SENDING_MS } from "./outbox.ts";
+import { deliverReceipt, LOG_SETTLE_MS, ProviderAmbiguous, ProviderRejected, recoverReceipt, STALE_SENDING_MS } from "./outbox.ts";
 import { allowedOrigin, grossWithFees, parseAmount } from "./saf.ts";
-import { escapeHtml, renderReceipt } from "./receipt.ts";
+import { escapeHtml, eventTags, isIdempotencyConflict, renderReceipt } from "./receipt.ts";
+const KEY_WINDOW_MS = 14 * 60_000;
 
 const MD = { saf_donation: "1", gift_type: "pure_gift" };
 
@@ -36,10 +37,8 @@ function fake(opts: { failEmails?: number; modes?: Mode[] } = {}) {
       const t = clock.getTime();
       const due = !r.next_attempt_at || new Date(r.next_attempt_at).getTime() <= t;
       const okNew = (r.status === "pending" || r.status === "failed") && due;
-      const okRetry = r.status === "unconfirmed" && !r.provider_message_id &&
-        new Date(r.submission_started_at!).getTime() > t - 840_000;
-      if (!okNew && !okRetry) return null;
-      if (okNew) r.submission_started_at = clock.toISOString();
+      if (!okNew) return null;
+      r.submission_started_at = clock.toISOString();
       r.status = "sending"; r.attempts++; r.claimed_at = clock.toISOString(); r.next_attempt_at = null;
       return { ...r };
     },
@@ -178,14 +177,51 @@ Deno.test("provider accepted then DB write fails: never resent, reconciled to se
   assertEquals(f.sent.length, 1); assertEquals(r.status, "sent");
 });
 
-Deno.test("idempotency key is the stable receipt UUID across retries", async () => {
+Deno.test("unconfirmed is never resubmitted, even inside the key window", async () => {
   const f = fake({ modes: ["timeout", "ok"] }); addDonation(f, "d1", "cs_1");
   await handleEvent(f.deps, ev("checkout.session.completed", session()));
   const r = [...f.receipts.values()][0];
   assertEquals(r.status, "unconfirmed");
   f.advance(60_000);
-  assertEquals(await recoverReceipt(f.deps, { ...r }), "sent"); // inside window -> same key, provider dedupes
-  assertEquals(f.keys, [r.id, r.id]); assertEquals(f.sent.length, 1);
+  assertEquals(await recoverReceipt(f.deps, { ...r }), "reconciled_sent"); // from provider log, no new send
+  assertEquals(f.keys, [r.id]); assertEquals(f.sent.length, 1);
+  assertEquals(await deliverReceipt(f.deps, r.id), "busy");
+});
+
+Deno.test("regression: accepted-but-timeout -> duplicate 400 -> never resent after TTL", async () => {
+  // Brevo answers a reused key with 400 duplicate_parameter; it must be ambiguous, not a definite rejection.
+  assert(isIdempotencyConflict(400, JSON.stringify({ code: "duplicate_parameter", message: "Idempotency key already used" })));
+  assert(!isIdempotencyConflict(400, JSON.stringify({ code: "invalid_parameter", message: "email is not valid" })));
+  const f = fake({ modes: ["timeout", "dup", "dup", "ok"] as Mode[] }); addDonation(f, "d1", "cs_1");
+  f.deps.sendEmail = ((orig) => async (r) => {
+    if ((f as any).peek?.() === "dup") throw new ProviderAmbiguous("Brevo idempotency conflict [400]: duplicate_parameter");
+    return orig(r);
+  })(f.deps.sendEmail);
+  await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  f.forgetProvider(); // provider log not (yet) visible
+  const r = [...f.receipts.values()][0];
+  for (const step of [60_000, KEY_WINDOW_MS, 60 * 60_000, LOG_SETTLE_MS]) {
+    f.advance(step); await recoverReceipt(f.deps, { ...r });
+  }
+  assertEquals(f.keys.length, 1); assertEquals(f.sent.length, 1); assertEquals(r.status, "needs_review");
+});
+
+Deno.test("unconfirmed + later provider rejection cannot become a retryable 'failed'", async () => {
+  const f = fake({ modes: ["timeout", "reject", "reject"] }); addDonation(f, "d1", "cs_1");
+  await handleEvent(f.deps, ev("checkout.session.completed", session()));
+  f.forgetProvider();
+  const r = [...f.receipts.values()][0];
+  await handleEvent(f.deps, ev("checkout.session.completed", session())); // Stripe retry
+  f.advance(60_000); await recoverReceipt(f.deps, { ...r });
+  f.advance(LOG_SETTLE_MS); await recoverReceipt(f.deps, { ...r });
+  assertEquals(f.keys.length, 1); assert(r.status !== "failed"); assertEquals(r.status, "needs_review");
+});
+
+Deno.test("Brevo event tags are normalized, not falsely matched", () => {
+  assertEquals(eventTags({ tags: ["a", "receipt-x"] }), ["a", "receipt-x"]);
+  assertEquals(eventTags({ tag: '["donation-receipt","receipt-x"]' }), ["donation-receipt", "receipt-x"]);
+  assertEquals(eventTags({ tag: "donation-receipt, receipt-x" }), ["donation-receipt", "receipt-x"]);
+  assert(!eventTags({ tag: "receipt-xy" }).includes("receipt-x"));
 });
 
 Deno.test("timeout ambiguous after TTL: reconciled from provider log, not resent", async () => {
@@ -218,9 +254,11 @@ Deno.test("concurrent worker crash: busy claim is not 'sent'; stale sending reco
   const out = await handleEvent(f.deps, ev("checkout.session.completed", session({ payment_intent: "pi_1" })));
   assertEquals(out.action, "receipt_busy"); assertEquals(row.status, "sending");
   assertEquals(await recoverReceipt(f.deps, { ...row }), "in_flight");
-  f.advance(STALE_SENDING_MS + 1000); // still inside the original key window -> safe resend with same key
-  assertEquals(await recoverReceipt(f.deps, { ...row }), "sent");
-  assertEquals(f.sent.length, 1);
+  f.advance(STALE_SENDING_MS + 1000); // stale: reconciled only, never resubmitted
+  assertEquals(await recoverReceipt(f.deps, { ...row }), "awaiting_logs");
+  f.advance(LOG_SETTLE_MS);
+  assertEquals(await recoverReceipt(f.deps, { ...row }), "needs_review");
+  assertEquals(f.sent.length, 0); assertEquals(f.keys.length, 0);
 });
 
 Deno.test("deliverReceipt rethrows claim DB errors (nothing sent, Stripe retries)", async () => {
