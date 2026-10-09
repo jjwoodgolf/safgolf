@@ -49,3 +49,12 @@ Every public claim on the site should trace to an entry here. Do not publish don
 | success-gallery/student-01..14 | Cropped from Drive "SAF Success.png" collage (generic captions only) |
 
 Drive folder (private): https://drive.google.com/drive/folders/1d-Fkiey5CdT7WFFxdf9owfkK_J-FBRJk — never use as a public image URL.
+
+## Alumni spotlights (/success-stories)
+Both players are named on SAF's own legacy page: https://www.thestudentathletefoundation.org/golf-recruiting-guide/ (Mario Carmona: Rice commit, Houston junior champion; Annika Clark: TCU commit, Texas junior champion). Presented as early program history, not as funded scholarship recipients or full-time tour members.
+- Mario Carmona, 2021 U.S. Open qualifier: https://riceowls.com/news/2021/5/25/mens-golf-former-golfer-mario-carmona-qualifies-for-121st-us-open ; https://riceowls.com/news/2021/6/16/mens-golf-carmona-readies-for-121st-us-open
+- Annika Clark, Texas State Girls Junior title, 2013/2014 TAPPS 2A titles, LPGA North Texas Shootout qualifier: https://gofrogs.com/news/2014/11/13/TCU_Women_s_Golf_Announces_Four_Signings ; 2018 LPGA Texas Classic qualifier: https://gofrogs.com/news/2018/7/4/3_Horned_Frogs_Named_WGCA_All_America_Scholars ; https://www.lpga.com/news/2018/2018-exemptions-for-the-volunteers-of-america-lpga-texas-classic
+- Photos (original uploads, matched by filename to captioned legacy thumbnails; no upscaling):
+  - `src/assets/alumni/mario-carmona-signing.jpg` (640x480) from https://www.thestudentathletefoundation.org/wp-content/uploads/2014/09/MarioSigns.jpg
+  - `src/assets/alumni/annika-clark-trophy.jpg` (630x280) from https://www.thestudentathletefoundation.org/wp-content/uploads/2016/03/Annika_holds_trophy.jpg
+- No quotes used.

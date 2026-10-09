@@ -187,6 +187,9 @@ const Index = () => (
           <img src={photos.varsityCoachDiscussion.src} alt={photos.varsityCoachDiscussion.alt} loading="lazy" className="w-full aspect-[16/10] object-cover object-top rounded-sm" />
         </div>
         <PhotoGallery items={communityGallery.slice(0, 8)} caption="Players from the SAF and Varsity coaching community." />
+        <a href="/success-stories" className="mt-8 inline-flex items-center gap-1.5 text-primary font-medium hover:underline underline-offset-4">
+          Read their stories <span aria-hidden>&rarr;</span>
+        </a>
       </div>
     </section>
   </Layout>
