@@ -14,13 +14,28 @@ const EVENTS = [
   "customer.subscription.deleted",
 ] as const;
 
+/** Alternative operator auth: HMAC(STRIPE_SECRET_KEY, "saf-webhook-setup:<ts>") proves possession of the
+ *  SAF Stripe secret key without transmitting it. 5-minute window. */
+async function validKeyProof(req: Request): Promise<boolean> {
+  const ts = Number(req.headers.get("x-setup-ts"));
+  const proof = req.headers.get("x-setup-proof") ?? "";
+  const key = Deno.env.get("STRIPE_SECRET_KEY");
+  if (!key || !Number.isFinite(ts) || Math.abs(Date.now() / 1000 - ts) > 300 || !/^[0-9a-f]{64}$/.test(proof)) return false;
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(`saf-webhook-setup:${ts}`)));
+  const hex = [...sig].map((b) => b.toString(16).padStart(2, "0")).join("");
+  let diff = 0;
+  for (let i = 0; i < 64; i++) diff |= hex.charCodeAt(i) ^ proof.charCodeAt(i);
+  return diff === 0;
+}
+
 Deno.serve(async (req) => {
   const cors = corsFor(req.headers.get("origin"));
   const json = (status: number, body: unknown) =>
     new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
   if (req.method !== "POST") return json(405, { error: "Method not allowed" });
-  if (!(await requireStaff(req))) return json(403, { error: "Staff only" });
+  if (!(await requireStaff(req)) && !(await validKeyProof(req))) return json(403, { error: "Not authorized" });
 
   const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/stripe-webhook`;
   try {
