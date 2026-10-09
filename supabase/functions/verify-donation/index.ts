@@ -1,129 +1,50 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+// READ-ONLY status lookup for the thank-you page. Never sends email or writes data.
+import { assertSafAccount, corsFor, isSafMetadata, stripeClient } from "../_shared/saf.ts";
+import { adminClient } from "../_shared/deps.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const SESSION_RE = /^cs_(live|test)_[A-Za-z0-9]{10,200}$/;
 
-const BREVO_API_URL = "https://api.brevo.com/v3";
-const NOTIFICATION_EMAIL = "jj@gpghouston.com";
+Deno.serve(async (req) => {
+  const cors = corsFor(req.headers.get("origin"));
+  const json = (status: number, body: unknown) =>
+    new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
-async function sendBrevoReceipt(
-  apiKey: string,
-  args: { to: string; name: string | null; amount: number; currency: string; isRecurring: boolean }
-) {
-  try {
-    const amountFormatted = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: args.currency.toUpperCase(),
-    }).format(args.amount / 100);
-
-    const res = await fetch(`${BREVO_API_URL}/smtp/email`, {
-      method: "POST",
-      headers: {
-        "api-key": apiKey,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        sender: { name: "Student Athlete Foundation", email: NOTIFICATION_EMAIL },
-        to: [{ email: args.to, name: args.name || "Supporter" }],
-        subject: "Thank you for your donation to the Student Athlete Foundation",
-        htmlContent: `
-          <p>Dear ${args.name || "Friend"},</p>
-          <p>Thank you for your ${args.isRecurring ? "monthly" : "one-time"} donation of <strong>${amountFormatted}</strong> to the Student Athlete Foundation.</p>
-          <p>Your generosity directly supports scholarships for student-athletes, free golf clinics for veterans, and recruiting mentorship that changes lives.</p>
-          <p>This email serves as your receipt. Please retain it for your tax records.</p>
-          <p>With gratitude,<br/>The Student Athlete Foundation Team</p>
-        `,
-      }),
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      console.error(`Brevo receipt failed [${res.status}]: ${text}`);
-    }
-  } catch (err) {
-    console.error("Brevo receipt error:", err);
-  }
-}
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const sessionId = new URL(req.url).searchParams.get("session_id") ?? "";
+  if (!SESSION_RE.test(sessionId)) return json(200, { state: "invalid" });
 
   try {
-    const url = new URL(req.url);
-    const sessionId = url.searchParams.get("session_id");
-    if (!sessionId) {
-      return new Response(JSON.stringify({ error: "session_id required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    const stripe = stripeClient();
+    await assertSafAccount(stripe);
+    let s;
+    try { s = await stripe.checkout.sessions.retrieve(sessionId); } catch { return json(200, { state: "invalid" }); }
+    if (!isSafMetadata(s.metadata)) return json(200, { state: "invalid" });
+
+    const mode = s.mode === "subscription" ? "monthly" : "one_time";
+    let state: "paid" | "processing" | "canceled";
+    if (s.status === "complete" && s.payment_status === "paid") state = "paid";
+    else if (s.status === "complete") state = "processing";
+    else state = "canceled";
+
+    let receipt: { status: string; number: string; paid_at: string } | null = null;
+    const objectId = mode === "one_time"
+      ? (typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id)
+      : (typeof s.invoice === "string" ? s.invoice : s.invoice?.id);
+    if (objectId) {
+      const { data } = await adminClient().from("donation_receipts")
+        .select("status,receipt_number,paid_at").eq("stripe_object_id", objectId).maybeSingle();
+      if (data) receipt = { status: data.status, number: data.receipt_number, paid_at: data.paid_at };
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+    const cf = s.custom_fields?.find((f) => f.key === "donor_name")?.text?.value ?? s.customer_details?.name ?? "";
+    return json(200, {
+      state, mode,
+      amount_total: s.amount_total, currency: s.currency,
+      first_name: cf.trim().split(/\s+/)[0] || null,
+      receipt,
     });
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    const paid = session.payment_status === "paid" || session.status === "complete";
-
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    const { data: existing } = await supabaseAdmin
-      .from("donations")
-      .select("status")
-      .eq("stripe_session_id", sessionId)
-      .single();
-
-    await supabaseAdmin
-      .from("donations")
-      .update({
-        status: paid ? "completed" : "failed",
-        stripe_customer_id: (session.customer as string) ?? null,
-        stripe_subscription_id: (session.subscription as string) ?? null,
-        stripe_payment_intent_id: (session.payment_intent as string) ?? null,
-        donor_email: session.customer_details?.email ?? null,
-        donor_name: session.customer_details?.name ?? null,
-      })
-      .eq("stripe_session_id", sessionId);
-
-    if (paid && session.customer_details?.email) {
-      const brevoApiKey = Deno.env.get("BREVO_API_KEY");
-      if (brevoApiKey) {
-        await sendBrevoReceipt(brevoApiKey, {
-          to: session.customer_details.email,
-          name: session.customer_details.name,
-          amount: session.amount_total || 0,
-          currency: session.currency || "usd",
-          isRecurring: session.mode === "subscription",
-        });
-      }
-    }
-
-    return new Response(
-      JSON.stringify({
-        paid,
-        amount_total: session.amount_total,
-        currency: session.currency,
-        donor_email: session.customer_details?.email,
-        donor_name: session.customer_details?.name,
-        mode: session.mode,
-      }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error("[verify-donation]", msg);
-    return new Response(JSON.stringify({ error: msg }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+  } catch (e) {
+    console.error("[verify-donation]", e instanceof Error ? e.message : e);
+    return json(500, { state: "error" });
   }
 });
