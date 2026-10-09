@@ -158,7 +158,7 @@ const Index = () => (
     {/* Founder */}
     <section className="section-padding bg-background">
       <div className="container-custom grid lg:grid-cols-2 gap-12 items-center">
-        <img src={photos.rice2014.src} alt={photos.rice2014.alt} loading="lazy" className="w-full aspect-[4/3] object-cover rounded-sm" />
+        <img src={photos.riceTeam.src} alt={photos.riceTeam.alt} loading="lazy" className="w-full aspect-[4/3] object-cover object-top rounded-sm" />
         <div>
           <p className="eyebrow mb-4">Founder</p>
           <h2 className="font-display text-3xl md:text-4xl leading-tight">College coaching experience, applied to junior golf.</h2>

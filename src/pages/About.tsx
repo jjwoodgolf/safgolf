@@ -47,7 +47,7 @@ const About = () => (
             recruiting and coaching college players to the families SAF serves.
           </p>
         </div>
-        <img src={photos.rice2014.src} alt={photos.rice2014.alt} loading="lazy" className="w-full aspect-[4/3] object-cover rounded-sm" />
+        <div className="grid grid-cols-2 gap-3"><img src={photos.riceCoaching.src} alt={photos.riceCoaching.alt} loading="lazy" className="w-full aspect-[4/5] object-cover rounded-sm" /><img src={photos.riceTeam.src} alt={photos.riceTeam.alt} loading="lazy" className="w-full aspect-[4/5] object-cover rounded-sm" /></div>
       </div>
     </Section>
 
