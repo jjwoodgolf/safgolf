@@ -96,3 +96,8 @@ Unit tests: `supabase/functions/_shared/donations_test.ts` (run with `deno test`
 - Owner action: open the email "Your SAF donation dashboard invitation", click the button, choose a password on `/set-password` (min 10 characters), then you land on `/admin/donations`. Later sign-ins: `https://safgolf.online/login`.
 - Expiry: single-use; backend default invite lifetime is 24 hours (not separately verified). If it expires, use password reset or request a new invite.
 - The one-off invite function was deleted after use. Email verification, signup settings and approval gates were not changed.
+
+## Owner invite redirect verification (2026-10-09)
+- Auth verify endpoint with a dummy (invalid) invite token and redirect_to=https://safgolf.online/set-password returned 303 to https://safgolf.online/set-password — the production domain is on the redirect allowlist. No real token used; invitation not consumed.
+- Invite/recovery forwarding moved from src/main.tsx into an inline script in index.html so it runs before the auth client loads. Local browser test with dummy hashes (type=invite, expired-error, type=recovery) on "/" all landed on /set-password and showed the invalid-link message; normal pages unaffected.
+- Brevo event log (read-only): TEST receipt delivered 2026-10-09 02:12 UTC; owner invitation delivered 2026-10-09 02:27 UTC. Neither opened yet at time of check.
