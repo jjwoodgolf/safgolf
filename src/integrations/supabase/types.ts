@@ -78,13 +78,16 @@ export type Database = {
           id: string
           kind: string
           last_error: string | null
+          next_attempt_at: string | null
           paid_at: string
           provider_message_id: string | null
           receipt_number: string
+          review_reason: string | null
           sent_at: string | null
           status: string
           stripe_event_id: string | null
           stripe_object_id: string
+          submission_started_at: string | null
           updated_at: string
         }
         Insert: {
@@ -99,13 +102,16 @@ export type Database = {
           id?: string
           kind: string
           last_error?: string | null
+          next_attempt_at?: string | null
           paid_at: string
           provider_message_id?: string | null
           receipt_number?: string
+          review_reason?: string | null
           sent_at?: string | null
           status?: string
           stripe_event_id?: string | null
           stripe_object_id: string
+          submission_started_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -120,13 +126,16 @@ export type Database = {
           id?: string
           kind?: string
           last_error?: string | null
+          next_attempt_at?: string | null
           paid_at?: string
           provider_message_id?: string | null
           receipt_number?: string
+          review_reason?: string | null
           sent_at?: string | null
           status?: string
           stripe_event_id?: string | null
           stripe_object_id?: string
+          submission_started_at?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -443,7 +452,7 @@ export type Database = {
         Returns: boolean
       }
       claim_donation_receipt: {
-        Args: { _id: string }
+        Args: { _id: string; _key_window_seconds?: number }
         Returns: {
           amount_cents: number
           attempts: number
@@ -456,13 +465,16 @@ export type Database = {
           id: string
           kind: string
           last_error: string | null
+          next_attempt_at: string | null
           paid_at: string
           provider_message_id: string | null
           receipt_number: string
+          review_reason: string | null
           sent_at: string | null
           status: string
           stripe_event_id: string | null
           stripe_object_id: string
+          submission_started_at: string | null
           updated_at: string
         }[]
         SetofOptions: {
