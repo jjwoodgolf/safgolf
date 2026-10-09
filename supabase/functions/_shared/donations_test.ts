@@ -7,7 +7,7 @@ const KEY_WINDOW_MS = 14 * 60_000;
 
 const MD = { saf_donation: "1", gift_type: "pure_gift" };
 
-type Mode = "ok" | "reject" | "timeout" | "accept_then_db_fail";
+type Mode = "ok" | "reject" | "timeout" | "dup" | "accept_then_db_fail";
 function fake(opts: { failEmails?: number; modes?: Mode[] } = {}) {
   const donations = new Map<string, Donation & Record<string, unknown>>();
   const receipts = new Map<string, Receipt>();
@@ -50,6 +50,7 @@ function fake(opts: { failEmails?: number; modes?: Mode[] } = {}) {
       keys.push(r.id);
       const m = modes.shift() ?? "ok";
       if (m === "reject") throw new ProviderRejected("Brevo [400]: invalid");
+      if (m === "dup") throw new ProviderAmbiguous("Brevo idempotency conflict [400]: duplicate_parameter");
       // Provider-side idempotency: same key within TTL returns the original message, no second delivery.
       const prior = providerLog.get(r.id);
       if (m === "timeout") {
@@ -192,11 +193,7 @@ Deno.test("regression: accepted-but-timeout -> duplicate 400 -> never resent aft
   // Brevo answers a reused key with 400 duplicate_parameter; it must be ambiguous, not a definite rejection.
   assert(isIdempotencyConflict(400, JSON.stringify({ code: "duplicate_parameter", message: "Idempotency key already used" })));
   assert(!isIdempotencyConflict(400, JSON.stringify({ code: "invalid_parameter", message: "email is not valid" })));
-  const f = fake({ modes: ["timeout", "dup", "dup", "ok"] as Mode[] }); addDonation(f, "d1", "cs_1");
-  f.deps.sendEmail = ((orig) => async (r) => {
-    if ((f as any).peek?.() === "dup") throw new ProviderAmbiguous("Brevo idempotency conflict [400]: duplicate_parameter");
-    return orig(r);
-  })(f.deps.sendEmail);
+  const f = fake({ modes: ["timeout", "dup", "dup", "ok"] }); addDonation(f, "d1", "cs_1");
   await handleEvent(f.deps, ev("checkout.session.completed", session()));
   f.forgetProvider(); // provider log not (yet) visible
   const r = [...f.receipts.values()][0];
