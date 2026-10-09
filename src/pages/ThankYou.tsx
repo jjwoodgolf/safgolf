@@ -12,7 +12,7 @@ type Status = {
   amount_total?: number;
   currency?: string;
   first_name?: string | null;
-  receipt?: { status: string; number: string; paid_at: string } | null;
+  receipt?: { status: string; delivery?: string; number: string; paid_at: string } | null;
 };
 
 const usd = (c: number) => (c / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -35,7 +35,7 @@ const ThankYou = () => {
         const json: Status = await res.json();
         setS(json);
         // Read-only polling while the webhook records the receipt (max ~30s).
-        if (json.state === "paid" && json.receipt?.status !== "sent" && tries++ < 10) timer = window.setTimeout(load, 3000);
+        if (json.state === "paid" && json.receipt?.delivery !== "sent" && tries++ < 10) timer = window.setTimeout(load, 3000);
       } catch {
         setS({ state: "error" });
       }
@@ -48,7 +48,10 @@ const ThankYou = () => {
   if (!s) {
     body = <p className="flex items-center gap-2 text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Confirming your gift…</p>;
   } else if (s.state === "paid") {
-    const rs = s.receipt?.status;
+    const rs = s.receipt?.delivery;
+    const paidDate = s.receipt?.paid_at
+      ? new Date(s.receipt.paid_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "America/Chicago" })
+      : null;
     body = (
       <>
         <h1 className="font-display text-4xl md:text-5xl leading-tight">Thank you{s.first_name ? `, ${s.first_name}` : ""}.</h1>
@@ -57,10 +60,13 @@ const ThankYou = () => {
         </p>
         <div className="mt-8 border border-border rounded-sm p-6 text-sm space-y-2">
           {s.receipt && <p><span className="text-muted-foreground">Receipt number:</span> {s.receipt.number}</p>}
+          {paidDate && <p><span className="text-muted-foreground">Payment date:</span> {paidDate}</p>}
+          <p><span className="text-muted-foreground">Amount:</span> {usd(s.amount_total ?? 0)}</p>
           <p>
             <span className="text-muted-foreground">Emailed receipt:</span>{" "}
             {rs === "sent" ? "sent to the email you used at checkout."
-              : rs === "failed" ? "delayed. Our team has been notified and will resend it."
+              : rs === "retrying" ? <>delivery is delayed. We will retry automatically; contact {ORG.email} if you need help.</>
+              : rs === "held" ? <>delivery is delayed. Contact {ORG.email} and we will send you a copy.</>
               : "being prepared — it will arrive by email shortly."}
           </p>
           <p className="text-muted-foreground">{ORG.legalName} · 501(c)(3) nonprofit · EIN {ORG.ein}</p>

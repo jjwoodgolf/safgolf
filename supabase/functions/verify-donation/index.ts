@@ -26,14 +26,20 @@ Deno.serve(async (req) => {
     else if (s.status === "complete") state = "processing";
     else state = "canceled";
 
-    let receipt: { status: string; number: string; paid_at: string } | null = null;
+    let receipt: { status: string; delivery: string; number: string; paid_at: string } | null = null;
     const objectId = mode === "one_time"
       ? (typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id)
       : (typeof s.invoice === "string" ? s.invoice : s.invoice?.id);
     if (objectId) {
       const { data } = await adminClient().from("donation_receipts")
         .select("status,receipt_number,paid_at").eq("stripe_object_id", objectId).maybeSingle();
-      if (data) receipt = { status: data.status, number: data.receipt_number, paid_at: data.paid_at };
+      if (data) {
+        const delivery = data.status === "sent" ? "sent"
+          : data.status === "needs_review" ? "held"
+          : data.status === "failed" || data.status === "unconfirmed" ? "retrying"
+          : "preparing";
+        receipt = { status: data.status, delivery, number: data.receipt_number, paid_at: data.paid_at };
+      }
     }
 
     const cf = s.custom_fields?.find((f) => f.key === "donor_name")?.text?.value ?? s.customer_details?.name ?? "";
