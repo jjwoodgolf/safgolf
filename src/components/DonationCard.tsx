@@ -1,200 +1,152 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
-import { Heart, Lock, Loader2, ShieldCheck } from "lucide-react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
+import { Lock, Loader2 } from "lucide-react";
 
-const PRESET_AMOUNTS = [50, 100, 250, 500];
-const STRIPE_FEE_PERCENT = 0.029;
-const STRIPE_FEE_FIXED = 0.3;
-
-const calcGross = (amount: number) => (amount + STRIPE_FEE_FIXED) / (1 - STRIPE_FEE_PERCENT);
-
-function getImpactText(_amount: number, frequency: "one_time" | "monthly") {
-  return frequency === "monthly"
-    ? "Monthly gifts give the scholarship fund steady, predictable support."
-    : "Your gift goes to the SAF scholarship fund for need-based access to coaching.";
-}
+const PRESETS = [25, 100, 250, 500];
+const MIN = 1;
+const MAX = 25000;
+const FEE_PERCENT = 0.029;
+const FEE_FIXED = 0.3;
+// Mirrors the server calculation (rounded to cents).
+const gross = (amt: number) => Math.round(((amt * 100 + FEE_FIXED * 100) / (1 - FEE_PERCENT))) / 100;
+const usd = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
 const DonationCard = () => {
+  const [params] = useSearchParams();
   const [frequency, setFrequency] = useState<"one_time" | "monthly">("one_time");
-  const [selected, setSelected] = useState<number | "custom">(100);
-  const [customAmount, setCustomAmount] = useState("");
-  const [coverFees, setCoverFees] = useState(true);
+  const [selected, setSelected] = useState<number | "custom" | null>(null);
+  const [custom, setCustom] = useState("");
+  const [coverFees, setCoverFees] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const canceled = params.get("canceled") === "1";
 
-  const baseAmount = useMemo(() => {
+  useEffect(() => setError(null), [selected, custom, frequency]);
+
+  const base = useMemo(() => {
     if (selected === "custom") {
-      const n = parseFloat(customAmount);
-      return Number.isFinite(n) && n > 0 ? n : 0;
+      const n = Number(custom);
+      return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
     }
-    return selected;
-  }, [selected, customAmount]);
+    return selected ?? 0;
+  }, [selected, custom]);
 
-  const totalCharged = useMemo(() => {
-    if (!baseAmount) return 0;
-    return coverFees ? calcGross(baseAmount) : baseAmount;
-  }, [baseAmount, coverFees]);
+  const valid = base >= MIN && base <= MAX;
+  const total = valid ? (coverFees ? gross(base) : base) : 0;
 
-  const handleDonate = async () => {
-    if (!baseAmount || baseAmount < 5) {
-      toast({ title: "Enter an amount", description: "Minimum donation is $5.", variant: "destructive" });
+  const donate = async () => {
+    if (!valid) {
+      setError(base > MAX ? "For gifts over $25,000 please contact us." : "Choose or enter an amount of at least $1.00.");
       return;
     }
     setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-donation-checkout", {
-        body: { amount: baseAmount, frequency, coverFees },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned");
+    setError(null);
+    const { data, error: err } = await supabase.functions.invoke("create-donation-checkout", {
+      body: { amount: base, frequency, coverFees },
+    });
+    if (err || !data?.url) {
+      let msg = "Unable to start checkout. Please try again.";
+      if (err instanceof FunctionsHttpError) {
+        try { msg = (await err.context.json()).error ?? msg; } catch { /* keep default */ }
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      toast({ title: "Checkout failed", description: msg, variant: "destructive" });
+      setError(msg);
       setLoading(false);
+      return;
     }
+    window.location.href = data.url;
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8 md:p-10 max-w-xl mx-auto w-full">
-      {/* Frequency toggle */}
-      <div className="inline-flex items-center bg-muted rounded-full p-1 mb-8 w-full">
-        {(["one_time", "monthly"] as const).map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => setFrequency(f)}
-            className={`flex-1 py-2.5 px-4 rounded-full text-sm font-semibold transition-all ${
-              frequency === f
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {f === "one_time" ? "One-Time" : "Monthly"}
-          </button>
-        ))}
-      </div>
+    <div className="bg-card border border-border rounded-sm p-6 sm:p-8 w-full max-w-xl mx-auto">
+      {canceled && (
+        <p className="mb-6 text-sm border border-border bg-muted px-4 py-3 rounded-sm">
+          Checkout was canceled. No payment was made.
+        </p>
+      )}
+      <fieldset>
+        <legend className="eyebrow mb-3">Frequency</legend>
+        <div className="grid grid-cols-2 border border-border rounded-sm overflow-hidden mb-8">
+          {(["one_time", "monthly"] as const).map((f) => (
+            <button
+              key={f}
+              type="button"
+              aria-pressed={frequency === f}
+              onClick={() => setFrequency(f)}
+              className={`py-3 text-sm font-semibold transition-colors ${frequency === f ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"}`}
+            >
+              {f === "one_time" ? "One time" : "Monthly"}
+            </button>
+          ))}
+        </div>
+      </fieldset>
 
-      {/* Amounts */}
-      <Label className="text-sm font-semibold text-foreground uppercase tracking-wider mb-3 block">
-        Select an amount
-      </Label>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        {PRESET_AMOUNTS.map((amt) => (
-          <button
-            key={amt}
-            type="button"
-            onClick={() => {
-              setSelected(amt);
-              setCustomAmount("");
-            }}
-            className={`py-4 rounded-xl border-2 font-display text-xl font-bold transition-all ${
-              selected === amt
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-border hover:border-primary/40 text-foreground"
-            }`}
-          >
-            ${amt}
-          </button>
-        ))}
-      </div>
-
-      <div
-        className={`rounded-xl border-2 transition-all ${
-          selected === "custom" ? "border-primary bg-primary/5" : "border-border"
-        }`}
-      >
-        <div className="flex items-center px-4">
-          <span className="text-muted-foreground font-medium">$</span>
+      <fieldset>
+        <legend className="eyebrow mb-3">Amount (USD)</legend>
+        <div className="grid grid-cols-4 gap-2">
+          {PRESETS.map((a) => (
+            <button
+              key={a}
+              type="button"
+              aria-pressed={selected === a}
+              onClick={() => setSelected(a)}
+              className={`py-3 border rounded-sm font-semibold transition-colors ${selected === a ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary"}`}
+            >
+              ${a}
+            </button>
+          ))}
+        </div>
+        <div className={`mt-2 flex items-center border rounded-sm px-3 ${selected === "custom" ? "border-primary" : "border-border"}`}>
+          <span className="text-muted-foreground">$</span>
           <Input
             type="number"
             inputMode="decimal"
-            placeholder="Custom amount"
-            min={5}
-            max={100000}
-            value={customAmount}
+            min={MIN}
+            max={MAX}
+            step="0.01"
+            placeholder="Other amount"
+            aria-label="Other amount in US dollars"
+            value={custom}
             onFocus={() => setSelected("custom")}
-            onChange={(e) => {
-              setSelected("custom");
-              setCustomAmount(e.target.value);
-            }}
-            className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium h-14"
+            onChange={(e) => { setSelected("custom"); setCustom(e.target.value); }}
+            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
+        <p className="mt-2 text-xs text-muted-foreground">Minimum online gift $1.00 · maximum $25,000.</p>
+      </fieldset>
+
+      <div className="mt-6 flex items-start gap-3">
+        <Checkbox id="cover" checked={coverFees} onCheckedChange={(v) => setCoverFees(v === true)} className="mt-0.5" />
+        <Label htmlFor="cover" className="text-sm font-normal leading-relaxed text-muted-foreground">
+          Add an estimated {usd(valid ? gross(base) - base : 0)} to help cover card processing fees (about 2.9% + $0.30). Optional.
+        </Label>
       </div>
 
-      {/* Cover fees */}
-      <label className="flex items-start gap-3 mt-6 mb-8 cursor-pointer group">
-        <Checkbox
-          checked={coverFees}
-          onCheckedChange={(v) => setCoverFees(Boolean(v))}
-          className="mt-1"
-        />
-        <div className="text-sm">
-          <p className="font-medium text-foreground">Cover processing fees</p>
-          <p className="text-muted-foreground">
-            Add a small amount so 100% of your gift reaches our programs.
-          </p>
-        </div>
-      </label>
-
-      {/* Summary + CTA */}
-      <div className="border-t border-border pt-6 mb-6">
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-          <span>Your gift</span>
-          <span>${baseAmount.toFixed(2)}</span>
-        </div>
-        {coverFees && baseAmount > 0 && (
-          <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-            <span>Processing fees</span>
-            <span>+${(totalCharged - baseAmount).toFixed(2)}</span>
-          </div>
+      <div className="mt-6 border-t border-border pt-4 text-sm space-y-1">
+        <div className="flex justify-between"><span className="text-muted-foreground">Gift</span><span>{valid ? usd(base) : "—"}</span></div>
+        {coverFees && valid && (
+          <div className="flex justify-between"><span className="text-muted-foreground">Processing support</span><span>{usd(total - base)}</span></div>
         )}
-        <div className="flex items-center justify-between font-display text-xl font-bold text-foreground mt-2">
-          <span>Total {frequency === "monthly" ? "/ month" : ""}</span>
-          <span>${totalCharged.toFixed(2)}</span>
+        <div className="flex justify-between font-semibold text-base pt-1">
+          <span>Total {frequency === "monthly" ? "each month" : "today"}</span><span>{valid ? usd(total) : "—"}</span>
         </div>
-        {baseAmount > 0 && (
-          <p className="text-sm text-muted-foreground mt-3">
-            {getImpactText(baseAmount, frequency)}
-          </p>
-        )}
       </div>
 
-      <Button
-        onClick={handleDonate}
-        disabled={loading || !baseAmount}
-        size="xl"
-        className="w-full"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="h-5 w-5 animate-spin" /> Redirecting…
-          </>
-        ) : (
-          <>
-            <Heart className="h-5 w-5" />
-            Donate ${baseAmount ? totalCharged.toFixed(2) : "—"}
-            {frequency === "monthly" ? " / month" : ""}
-          </>
-        )}
+      {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
+
+      <Button size="lg" className="mt-6 w-full" onClick={donate} disabled={loading}>
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+        {valid ? `Continue to secure checkout — ${usd(total)}${frequency === "monthly" ? "/mo" : ""}` : "Continue to secure checkout"}
       </Button>
-
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-5 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <Lock className="h-3.5 w-3.5" /> Secure checkout
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5" /> 501(c)(3) tax-deductible
-        </span>
-      </div>
+      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
+        Payment is processed by Stripe; we never see your card details. You'll get an emailed receipt once your payment
+        is confirmed.{frequency === "monthly" && " Monthly gifts can be canceled anytime from the link in each receipt."}
+      </p>
     </div>
   );
 };

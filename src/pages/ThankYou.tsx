@@ -3,98 +3,108 @@ import { Link, useSearchParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
+import { Loader2, Printer } from "lucide-react";
+import { ORG } from "@/components/site/org";
 
-import { CheckCircle2, Heart, Loader2 } from "lucide-react";
+type Status = {
+  state: "paid" | "processing" | "canceled" | "invalid" | "error";
+  mode?: "one_time" | "monthly";
+  amount_total?: number;
+  currency?: string;
+  first_name?: string | null;
+  receipt?: { status: string; number: string; paid_at: string } | null;
+};
+
+const usd = (c: number) => (c / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
 
 const ThankYou = () => {
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
-  const [state, setState] = useState<"loading" | "paid" | "failed">("loading");
-  const [info, setInfo] = useState<{ amount_total?: number; currency?: string; donor_name?: string; mode?: string } | null>(null);
+  const [s, setS] = useState<Status | null>(null);
 
   useEffect(() => {
-    if (!sessionId) {
-      setState("failed");
-      return;
-    }
-    (async () => {
+    if (!sessionId) { setS({ state: "invalid" }); return; }
+    let tries = 0;
+    let timer: number | undefined;
+    const load = async () => {
       try {
         const res = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-donation?session_id=${encodeURIComponent(sessionId)}`,
-          { headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY } }
+          { headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY } },
         );
-        const json = await res.json();
-        if (json.paid) {
-          setInfo(json);
-          setState("paid");
-        } else {
-          setState("failed");
-        }
+        const json: Status = await res.json();
+        setS(json);
+        // Read-only polling while the webhook records the receipt (max ~30s).
+        if (json.state === "paid" && json.receipt?.status !== "sent" && tries++ < 10) timer = window.setTimeout(load, 3000);
       } catch {
-        setState("failed");
+        setS({ state: "error" });
       }
-    })();
+    };
+    load();
+    return () => window.clearTimeout(timer);
   }, [sessionId]);
 
-  const formatted = info?.amount_total
-    ? new Intl.NumberFormat("en-US", { style: "currency", currency: (info.currency || "usd").toUpperCase() }).format(info.amount_total / 100)
-    : null;
+  let body: JSX.Element;
+  if (!s) {
+    body = <p className="flex items-center gap-2 text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Confirming your gift…</p>;
+  } else if (s.state === "paid") {
+    const rs = s.receipt?.status;
+    body = (
+      <>
+        <h1 className="font-display text-4xl md:text-5xl leading-tight">Thank you{s.first_name ? `, ${s.first_name}` : ""}.</h1>
+        <p className="mt-5 text-lg text-muted-foreground">
+          Your {s.mode === "monthly" ? "monthly gift" : "gift"} of {usd(s.amount_total ?? 0)}{s.mode === "monthly" ? " per month" : ""} has been received by {ORG.legalName}.
+        </p>
+        <div className="mt-8 border border-border rounded-sm p-6 text-sm space-y-2">
+          {s.receipt && <p><span className="text-muted-foreground">Receipt number:</span> {s.receipt.number}</p>}
+          <p>
+            <span className="text-muted-foreground">Emailed receipt:</span>{" "}
+            {rs === "sent" ? "sent to the email you used at checkout."
+              : rs === "failed" ? "delayed. Our team has been notified and will resend it."
+              : "being prepared — it will arrive by email shortly."}
+          </p>
+          <p className="text-muted-foreground">{ORG.legalName} · 501(c)(3) nonprofit · EIN {ORG.ein}</p>
+          <p className="text-muted-foreground">No goods or services were provided in exchange for this contribution. Contributions are tax-deductible to the extent permitted by law. Your emailed receipt is your official record.</p>
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3 print:hidden">
+          <Button variant="outline" onClick={() => window.print()}><Printer className="h-4 w-4" /> Print this page</Button>
+          {s.mode === "monthly" && sessionId && (
+            <Button asChild variant="outline"><Link to={`/manage-donation?session_id=${encodeURIComponent(sessionId)}`}>Manage monthly gift</Link></Button>
+          )}
+          <Button asChild><Link to="/">Return home</Link></Button>
+        </div>
+      </>
+    );
+  } else if (s.state === "processing") {
+    body = (
+      <>
+        <h1 className="font-display text-4xl leading-tight">Your payment is processing.</h1>
+        <p className="mt-5 text-lg text-muted-foreground">Some payment methods take a few days to confirm. We'll email your receipt once the payment clears. No receipt is issued until then.</p>
+      </>
+    );
+  } else if (s.state === "canceled") {
+    body = (
+      <>
+        <h1 className="font-display text-4xl leading-tight">This checkout was not completed.</h1>
+        <p className="mt-5 text-lg text-muted-foreground">No payment was made.</p>
+        <Button asChild className="mt-8"><Link to="/donate">Try again</Link></Button>
+      </>
+    );
+  } else {
+    body = (
+      <>
+        <h1 className="font-display text-4xl leading-tight">We couldn't find that donation.</h1>
+        <p className="mt-5 text-lg text-muted-foreground">The link may be incomplete. If you were charged, contact {ORG.email} and we'll help.</p>
+        <Button asChild className="mt-8"><Link to="/donate">Go to donate</Link></Button>
+      </>
+    );
+  }
 
   return (
-    <Layout>
-      <SEO title="Thank You | Student Athlete Foundation" description="Thank you for supporting the Student Athlete Foundation." path="/thank-you" />
-      <section className="pt-32 pb-24 bg-cream min-h-[70vh] flex items-center">
-        <div className="container-custom max-w-2xl text-center">
-          {state === "loading" && (
-            <div className="flex flex-col items-center gap-4 text-muted-foreground">
-              <Loader2 className="h-10 w-10 animate-spin text-primary" />
-              <p>Confirming your donation…</p>
-            </div>
-          )}
-
-          {state === "paid" && (
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-10 md:p-16">
-              <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-8">
-                <CheckCircle2 className="h-10 w-10 text-primary" />
-              </div>
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Thank You{info?.donor_name ? `, ${info.donor_name.split(" ")[0]}` : ""}.
-              </h1>
-              {formatted && (
-                <p className="text-lg text-muted-foreground mb-2">
-                  We received your {info?.mode === "subscription" ? "monthly" : "one-time"} gift of{" "}
-                  <span className="font-semibold text-foreground">{formatted}</span>.
-                </p>
-              )}
-              <p className="text-muted-foreground leading-relaxed mb-8 max-w-lg mx-auto">
-                Your support directly funds scholarships for junior golfers, free clinics for veterans, and recruiting
-                mentorship for student-athletes. A receipt has been sent to your email.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button asChild size="lg">
-                  <Link to="/">Return Home</Link>
-                </Button>
-                <Button asChild variant="outline" size="lg">
-                  <Link to="/programs">Explore Our Programs</Link>
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {state === "failed" && (
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-10">
-              <h1 className="font-display text-3xl font-bold text-foreground mb-4">We couldn't confirm your donation</h1>
-              <p className="text-muted-foreground mb-6">
-                If you were charged, please contact us and we'll sort it out immediately.
-              </p>
-              <Button asChild>
-                <Link to="/donate">
-                  <Heart className="h-4 w-4" /> Try Again
-                </Link>
-              </Button>
-            </div>
-          )}
-        </div>
+    <Layout hideDonateBand>
+      <SEO title="Thank you | The Student Athlete Foundation" description="Donation confirmation." path="/thank-you" />
+      <section className="pt-32 pb-24 bg-background">
+        <div className="container-custom px-4 md:px-8 max-w-2xl">{body}</div>
       </section>
     </Layout>
   );
