@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.resend-receipt]
 verify_jwt = false
+
+[functions.owner-invite]
+verify_jwt = false
