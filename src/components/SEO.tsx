@@ -8,7 +8,7 @@ interface SEOProps {
   jsonLd?: object | object[];
 }
 
-const SITE_URL = "https://safgolf.lovable.app";
+const SITE_URL = "https://safgolf.online";
 const DEFAULT_OG_IMAGE =
   "https://www.thestudentathletefoundation.org/wp-content/uploads/2014/09/MarioSigns-e1459736350341.jpg";
 
