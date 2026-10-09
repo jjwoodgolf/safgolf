@@ -84,3 +84,11 @@ Unit tests: `supabase/functions/_shared/donations_test.ts` (run with `deno test`
 - [ ] Create a staff account (no auth users exist yet) and grant it the `admin` role so the Admin dashboard and Resend can be used.
 - [ ] Optional: add a verified SAF mailing address to the receipt footer once confirmed.
 - [ ] Optional: scheduled automatic retry job. Today recovery relies on Stripe webhook retries (up to 3 days) plus staff Resend.
+
+## Owner admin handoff (2026-10-09)
+
+- Invitation sent 2026-10-09 07:27 UTC to jj@gpghouston.com only, via the existing Brevo sender (Brevo accepted: HTTP 201, tag `owner-invite`). Link generated with the backend's admin invite API; never logged or stored outside the email.
+- Account: one user, UUID `e9bccd98-c5fa-4d75-a202-0f3c91580121`, email not yet confirmed (confirms when JJ opens the link). Roles: `admin` (granted to that exact UUID) plus the default `applicant` added automatically at signup. No other accounts or roles exist or were changed.
+- Owner action: open the email "Your SAF donation dashboard invitation", click the button, choose a password on `/set-password` (min 10 characters), then you land on `/admin/donations`. Later sign-ins: `https://safgolf.online/login`.
+- Expiry: single-use; backend default invite lifetime is 24 hours (not separately verified). If it expires, use password reset or request a new invite.
+- The one-off invite function was deleted after use. Email verification, signup settings and approval gates were not changed.
