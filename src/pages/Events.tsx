@@ -25,7 +25,8 @@ const Events = () => (
           <p>
             At SAF combines and showcases, juniors played and trained while college coaches watched and spoke with
             players and parents. Coaches from Rice, Houston Baptist, Arkansas–Little Rock and other programs took part
-            in past events.
+            in past events. One example: a combine on January 6, 2014 at Pecan Grove Plantation Country Club combined
+            college coach evaluations, a recruiting presentation and an 18-hole event.
           </p>
           <p className="text-base">
             These were historical participants, not current partner endorsements. Upcoming events will be listed here

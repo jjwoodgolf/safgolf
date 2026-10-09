@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_private_config: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -47,6 +65,80 @@ export type Database = {
         }
         Relationships: []
       }
+      donation_receipts: {
+        Row: {
+          amount_cents: number
+          attempts: number
+          claimed_at: string | null
+          created_at: string
+          currency: string
+          donation_id: string | null
+          donor_email: string
+          donor_name: string | null
+          id: string
+          kind: string
+          last_error: string | null
+          paid_at: string
+          provider_message_id: string | null
+          receipt_number: string
+          sent_at: string | null
+          status: string
+          stripe_event_id: string | null
+          stripe_object_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          attempts?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          donation_id?: string | null
+          donor_email: string
+          donor_name?: string | null
+          id?: string
+          kind: string
+          last_error?: string | null
+          paid_at: string
+          provider_message_id?: string | null
+          receipt_number?: string
+          sent_at?: string | null
+          status?: string
+          stripe_event_id?: string | null
+          stripe_object_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          attempts?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          donation_id?: string | null
+          donor_email?: string
+          donor_name?: string | null
+          id?: string
+          kind?: string
+          last_error?: string | null
+          paid_at?: string
+          provider_message_id?: string | null
+          receipt_number?: string
+          sent_at?: string | null
+          status?: string
+          stripe_event_id?: string | null
+          stripe_object_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donation_receipts_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donations: {
         Row: {
           amount_cents: number
@@ -59,6 +151,7 @@ export type Database = {
           id: string
           message: string | null
           metadata: Json
+          paid_at: string | null
           status: string
           stripe_customer_id: string | null
           stripe_payment_intent_id: string | null
@@ -80,6 +173,7 @@ export type Database = {
           id?: string
           message?: string | null
           metadata?: Json
+          paid_at?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_payment_intent_id?: string | null
@@ -101,6 +195,7 @@ export type Database = {
           id?: string
           message?: string | null
           metadata?: Json
+          paid_at?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_payment_intent_id?: string | null
@@ -251,6 +346,36 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_events: {
+        Row: {
+          attempts: number
+          created_at: string
+          error: string | null
+          id: string
+          processed_at: string | null
+          status: string
+          type: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          error?: string | null
+          id: string
+          processed_at?: string | null
+          status?: string
+          type: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          error?: string | null
+          id?: string
+          processed_at?: string | null
+          status?: string
+          type?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -316,6 +441,36 @@ export type Database = {
       check_contact_rate_limit: {
         Args: { client_ip: string }
         Returns: boolean
+      }
+      claim_donation_receipt: {
+        Args: { _id: string }
+        Returns: {
+          amount_cents: number
+          attempts: number
+          claimed_at: string | null
+          created_at: string
+          currency: string
+          donation_id: string | null
+          donor_email: string
+          donor_name: string | null
+          id: string
+          kind: string
+          last_error: string | null
+          paid_at: string
+          provider_message_id: string | null
+          receipt_number: string
+          sent_at: string | null
+          status: string
+          stripe_event_id: string | null
+          stripe_object_id: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "donation_receipts"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       has_role: {
         Args: {

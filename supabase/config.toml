@@ -11,3 +11,15 @@ verify_jwt = false
 
 [functions.submit-application]
 verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.stripe-webhook-setup]
+verify_jwt = false
+
+[functions.donor-portal]
+verify_jwt = false
+
+[functions.resend-receipt]
+verify_jwt = false

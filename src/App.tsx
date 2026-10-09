@@ -21,6 +21,7 @@ import Scholarships from "./pages/Scholarships";
 import VeteransProgram from "./pages/VeteransProgram";
 import JuniorGolfDevelopment from "./pages/JuniorGolfDevelopment";
 import ThankYou from "./pages/ThankYou";
+import ManageDonation from "./pages/ManageDonation";
 import Login from "./pages/Login";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/veterans" element={<VeteransProgram />} />
           <Route path="/junior-golf" element={<JuniorGolfDevelopment />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/manage-donation" element={<ManageDonation />} />
           <Route path="/login" element={<Login />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
