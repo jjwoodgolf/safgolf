@@ -1,163 +1,74 @@
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Target, Users, Award, Heart, Trophy, Star } from "lucide-react";
+import PageHeader from "@/components/site/PageHeader";
+import Section from "@/components/site/Section";
+import { photos } from "@/components/site/photos";
+import { ORG } from "@/components/site/org";
 
-const About = () => {
-  const values = [
-    {
-      icon: Target,
-      title: "Our Mission",
-      description: "To provide financial assistance, academic advisement, and exposure opportunities for junior golfers pursuing college scholarships, while offering healing golf experiences for veterans.",
-    },
-    {
-      icon: Users,
-      title: "Who We Serve",
-      description: "Local student-athletes with dreams of playing college golf, and military veterans including amputees seeking rehabilitation and community through the game.",
-    },
-    {
-      icon: Award,
-      title: "Our Impact",
-      description: "Since our founding, we've helped dozens of athletes earn college scholarships and provided complimentary 8-week golf programs for veterans in partnership with the PGA of America.",
-    },
-  ];
+const About = () => (
+  <Layout>
+    <SEO
+      title="About | The Student Athlete Foundation"
+      description="The Student Athlete Foundation is a Houston-area 501(c)(3) nonprofit founded by PGA professional and former college coach JJ Wood."
+      path="/about"
+    />
+    <PageHeader
+      eyebrow="About"
+      title="A Houston golf foundation built around access."
+      intro="The Student Athlete Foundation (SAF Golf) helps junior golfers from families with financial need reach serious coaching, competition and college guidance."
+      image={photos.jjVarsityCommunity}
+    />
 
-  const coreValues = [
-    {
-      icon: Heart,
-      title: "Compassion",
-      description: "We believe in supporting every individual's journey with care and understanding.",
-    },
-    {
-      icon: Trophy,
-      title: "Excellence",
-      description: "We strive for excellence in everything we do, from our programs to our partnerships.",
-    },
-    {
-      icon: Star,
-      title: "Integrity",
-      description: "We operate with transparency and honesty in all our interactions and operations.",
-    },
-  ];
+    <Section eyebrow="What we do" title="One coaching pathway, funded by donors.">
+      <div className="grid md:grid-cols-2 gap-10 text-lg text-muted-foreground leading-relaxed">
+        <p>
+          SAF programming and the GPG Varsity Group are one pathway. The Varsity program is delivered at
+          {" "}{ORG.venue}. SAF provides need-based scholarship access so cost is not the reason a capable junior
+          stays on the sidelines.
+        </p>
+        <p>
+          Over the years SAF has also funded scholarships through the Southern Texas PGA and Beltway Junior Golf Tour,
+          bought equipment for underfunded high-school teams, hosted college golf combines and showcases since 2012,
+          and supported free veterans programs through PGA HOPE.
+        </p>
+      </div>
+    </Section>
 
-  return (
-    <Layout>
-      <SEO title="About Us | Student Athlete Foundation" description="Learn about SAF's mission to fund junior golf scholarships and support military veterans through golf in Houston, TX." path="/about" />
-            {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
-            About Us
-          </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            The Student Athlete Foundation is a 501(c)(3) non-profit organization dedicated to 
-            empowering lives through the beautiful game of golf.
+    <Section tone="muted" eyebrow="Founder" title="JJ Wood">
+      <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="space-y-5 text-lg text-muted-foreground leading-relaxed">
+          <p>
+            JJ Wood is a PGA professional who played college golf at Pepperdine and Oklahoma. He joined Rice
+            University as an assistant coach in January 2014 and was part of the staff for Rice's first Conference USA
+            men's golf title that year. In August 2014 he was hired as an assistant coach at Ohio State.
+          </p>
+          <p>
+            Today he leads junior coaching at Golf Performance Group in Friendswood, bringing what he learned
+            recruiting and coaching college players to the families SAF serves.
           </p>
         </div>
-      </section>
+        <img src={photos.rice2014.src} alt={photos.rice2014.alt} loading="lazy" className="w-full aspect-[4/3] object-cover rounded-sm" />
+      </div>
+    </Section>
 
-      {/* Mission Section */}
-      <section className="section-padding bg-muted">
-        <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-accent font-semibold uppercase tracking-wider text-sm">Our Foundation</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-              Transforming Lives Through the Power of Golf
-            </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              From aspiring college athletes to our nation's heroes, we're creating 
-              opportunities and changing lives one swing at a time.
-            </p>
+    <Section eyebrow="Governance" title="Nonprofit status">
+      <dl className="grid sm:grid-cols-3 gap-px bg-border border border-border rounded-sm overflow-hidden">
+        {[
+          ["Legal name", ORG.legalName],
+          ["Status", "501(c)(3) nonprofit"],
+          ["EIN", ORG.ein],
+        ].map(([k, v]) => (
+          <div key={k} className="bg-background p-6">
+            <dt className="eyebrow">{k}</dt>
+            <dd className="mt-2 text-foreground">{v}</dd>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {values.map((value, index) => (
-              <div
-                key={value.title}
-                className="bg-card rounded-xl p-8 shadow-lg card-hover border border-border"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6">
-                  <value.icon className="h-7 w-7 text-accent" />
-                </div>
-                <h3 className="font-display text-xl font-bold text-foreground mb-4">
-                  {value.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {value.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-accent font-semibold uppercase tracking-wider text-sm">What We Believe</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4 mb-6">
-              Our Core Values
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {coreValues.map((value, index) => (
-              <div
-                key={value.title}
-                className="text-center p-8"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <value.icon className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="font-display text-xl font-bold text-foreground mb-4">
-                  {value.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {value.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Founder Quote */}
-      <section className="section-padding bg-primary">
-        <div className="container-custom">
-          <div className="text-center relative">
-            <blockquote className="font-display text-2xl md:text-3xl text-white font-medium italic max-w-3xl mx-auto">
-              "Every young golfer deserves the chance to pursue their dreams, and every veteran
-              deserves to find healing and community on the course."
-            </blockquote>
-            <div className="mt-6 text-white/80">
-              — Student Athlete Foundation
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Donate CTA */}
-      <section className="section-padding bg-cream">
-        <div className="container-custom text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Support Our Mission
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-            Your tax-deductible donation helps junior golfers reach college and provides healing programs for veterans.
-          </p>
-          <Link to="/donate">
-            <Button variant="hero" size="xl">
-              Donate Today
-            </Button>
-          </Link>
-        </div>
-      </section>
-    </Layout>
-  );
-};
+        ))}
+      </dl>
+      <p className="mt-6 text-sm text-muted-foreground max-w-3xl">
+        Donations are tax-deductible to the extent allowed by law. Please consult your tax advisor.
+      </p>
+    </Section>
+  </Layout>
+);
 
 export default About;

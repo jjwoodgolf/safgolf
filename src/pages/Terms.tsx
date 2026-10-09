@@ -9,7 +9,7 @@ const Terms = () => {
         description="Terms of service for the Student Athlete Foundation website."
         path="/terms"
       />
-      <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary/90">
+      <section className="pt-32 pb-20 bg-primary">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
             Terms of Service

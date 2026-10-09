@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
+import PageHeader from "@/components/site/PageHeader";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,22 +87,19 @@ const ScholarshipApplication = () => {
         description="Apply for a college golf scholarship or recruiting mentorship through SAF."
         path="/apply/scholarship"
       />
-      <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary/90">
-        <div className="container-custom text-center">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <GraduationCap className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
-            Scholarship Application
-          </h1>
-          <p className="text-white/80 text-xl max-w-3xl mx-auto">
-            Apply for scholarship support and recruiting mentorship to help you reach the collegiate level.
-          </p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Apply"
+        title="Scholarship application"
+        intro="Junior families may apply for need-based scholarship access to the Varsity coaching program at Golf Performance Group, Timber Creek Golf Club in Friendswood."
+      />
 
       <section className="section-padding bg-background">
         <div className="container-custom max-w-3xl">
+          <div className="mb-10 border-l-2 border-primary pl-6 text-muted-foreground leading-relaxed space-y-3">
+            <p className="font-medium text-foreground">How funding and eligibility work</p>
+            <p>Awards are based on financial need and the funds available. Every application is reviewed, but applying does not guarantee an award or placement.</p>
+            <p>Scholarships come from donations to SAF. Paid Golf Performance Group or PGACOACH purchases are separate and are not donations.</p>
+          </div>
           <form onSubmit={handleSubmit} className="bg-card rounded-xl p-8 shadow-lg border border-border space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">

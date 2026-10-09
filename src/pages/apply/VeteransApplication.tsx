@@ -82,7 +82,7 @@ const VeteransApplication = () => {
         description="Register for SAF's complimentary golf program for military veterans."
         path="/apply/veterans"
       />
-      <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary/90">
+      <section className="pt-32 pb-20 bg-primary">
         <div className="container-custom text-center">
           <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <Shield className="h-8 w-8 text-white" />

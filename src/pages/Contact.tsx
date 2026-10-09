@@ -78,7 +78,7 @@ const Contact = () => {
         }}
       />
             {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary to-primary/90">
+      <section className="pt-32 pb-16 bg-primary">
         <div className="container-custom text-center">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6">
             Contact Us
