@@ -38,12 +38,12 @@ export default function Donations() {
     if (error) {
       const details = error instanceof FunctionsHttpError ? (await error.context.json().catch(() => ({}))).error : error.message;
       toast({ title: "Resend failed", description: details ?? "Unknown error", variant: "destructive" });
-    } else toast({ title: "Receipt sent" });
+    } else toast({ title: "Resend submitted" });
     setBusy(null);
     load();
   };
 
-  const failed = receipts.filter((r) => r.status === "failed" || r.status === "pending");
+  const failed = receipts.filter((r) => r.status === "needs_review");
 
   return (
     <div className="space-y-8 max-w-6xl">
@@ -55,7 +55,7 @@ export default function Donations() {
       {failed.length > 0 && (
         <Card className="p-4 border-destructive">
           <p className="font-medium">{failed.length} receipt(s) need attention.</p>
-          <p className="text-sm text-muted-foreground">Use Resend below. Each receipt can only be sent once.</p>
+          <p className="text-sm text-muted-foreground">Delivery could not be confirmed automatically. Check with the donor before using Resend, since an earlier copy may have arrived.</p>
         </Card>
       )}
 
@@ -80,12 +80,12 @@ export default function Donations() {
                 <TableCell className="font-medium">{usd(r.amount_cents)}</TableCell>
                 <TableCell className="text-muted-foreground">{new Date(r.paid_at).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Badge variant={r.status === "sent" ? "default" : r.status === "failed" ? "destructive" : "secondary"}>{r.status}</Badge>
+                  <Badge variant={r.status === "sent" ? "default" : r.status === "needs_review" ? "destructive" : "secondary"}>{r.status.replace("_", " ")}</Badge>
                   {r.last_error && <div className="text-xs text-destructive mt-1 max-w-xs truncate" title={r.last_error}>{r.last_error}</div>}
                   <div className="text-xs text-muted-foreground">{r.attempts} attempt(s)</div>
                 </TableCell>
                 <TableCell>
-                  {r.status !== "sent" && (
+                  {(r.status === "needs_review" || r.status === "failed") && (
                     <Button size="sm" variant="outline" disabled={busy === r.id} onClick={() => resend(r.id)}>Resend</Button>
                   )}
                 </TableCell>
