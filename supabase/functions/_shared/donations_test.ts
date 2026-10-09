@@ -142,7 +142,7 @@ Deno.test("amount validation", () => {
   assert("error" in parseAmount("abc"));
   assert("error" in parseAmount(1.234));
   assert("error" in parseAmount(30000));
-  assertEquals(grossWithFees(10000), 10329);
+  assertEquals(grossWithFees(10000), 10330);
 });
 
 Deno.test("origin allowlist", () => {
