@@ -28,7 +28,7 @@ Legal name, brand, EIN 45-3459562, donor name, payment date (America/Chicago), g
 | Item | State |
 |---|---|
 | Webhook endpoint `we_1UOXwiAnxhNHaMeqAZoRAuo9` on SAF account, API 2025-08-27.basil, 8 events | enabled |
-| Signature verification with real Stripe deliveries | PASS (checkout.session.expired deliveries were verified and processed) |
+| Signature verification with real Stripe deliveries | PASS — evt_1UOY11AnxhNHaMeqSC3TCOMg (checkout.session.expired) verified and processed; the first 3 test expirations failed on an old status constraint (since fixed) and will be completed by Stripe automatic retries |
 | Customer Portal config `bpc_1UOXwwAnxhNHaMeqfx5EOeGB` (default, login page on) | created |
 | Brevo sender jj@gpghouston.com, project key | active, PASS |
 
